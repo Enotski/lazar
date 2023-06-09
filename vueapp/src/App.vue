@@ -1,17 +1,26 @@
 <template>
-  <NavPannel/>
-  <FooterPannel/>
+  <div class="d-flex flex-column min-vh-100">
+    <div>
+      <NavPannel />
+    </div>
+    <div>
+      <MainContainer />
+    </div>
+    <FooterPannel />
+  </div>
 </template>
 
 <script>
 import NavPannel from './components/NavPannel.vue'
 import FooterPannel from './components/FooterPannel.vue'
+import MainContainer from './components/MainContainer.vue'
 
 export default {
   name: 'App',
   components: {
     NavPannel,
-    FooterPannel
+    FooterPannel,
+    MainContainer
   }
 }
 </script>
