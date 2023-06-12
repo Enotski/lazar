@@ -1,6 +1,6 @@
 <template>
     <div class="mt-auto footer fixed-bottom bg-light p-3 text-body-secondary footer-shadow">
-        <div class="container-fluid">
+        <div class="container-fluid text-secondary">
             <div class="row mr-row">
                 <div class="row col-auto me-auto">
                     <div class="col-auto d-content align-center">

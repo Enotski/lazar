@@ -1,17 +1,32 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+import { createRouter, createWebHistory } from 'vue-router'
 
 // Vuetify
 import 'vuetify/styles'
 import 'bootstrap/dist/css/bootstrap.css'
 import '@mdi/font/css/materialdesignicons.min.css'
+import './css/site.css'
+
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 
 const vuetify = createVuetify({
-  components,
-  directives,
+    components,
+    directives,
 })
 
-createApp(App).use(vuetify).mount('#app')
+import UsersPage from './components/UsersPage.vue'
+import MainContainer from './components/MainContainer.vue'
+const routes = [
+    { path: '/', component: MainContainer },
+    { path: '/users', component: UsersPage },
+]
+
+const router = createRouter({
+    routes: routes,
+    history: createWebHistory()
+})
+
+createApp(App).use(vuetify).use(router).mount('#app')

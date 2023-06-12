@@ -11,9 +11,13 @@
     "@mdi/font": "^5.4.55",
     "bootstrap": "^5.3.0",
     "core-js": "^3.8.3",
+    "devextreme": "22.2.6",
+    "devextreme-vue": "22.2.6",
     "jest": "^29.5.0",
     "jest-editor-support": "^31.0.1",
+    "vee-validate": "^4.9.6",
     "vue": "^3.2.13",
+    "vue-router": "^4.2.2",
     "vuetify": "^3.3.3"
   },
   "devDependencies": {

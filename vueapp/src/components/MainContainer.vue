@@ -1,6 +1,6 @@
 <template>
     <div class="parallax">
-        <div class="d-flex flex-column fill-height justify-center align-center text-white cards-mr-vertical">
+        <div class="d-flex flex-column fill-height justify-center align-center text-white cards-mr-vertical content-container">
             <div class="row mb-3">
                 <div class="col">
                     <v-card class="mx-auto" max-width="400">
@@ -264,11 +264,6 @@
 </template>
 
 <style>
-.cards-mr-vertical {
-    margin-bottom: 6rem !important;
-    margin-top: 6rem !important;
-}
-
 .parallax {
     background-image: url('../assets/bg-light.gif');
     background-attachment: fixed;
