@@ -18,10 +18,12 @@ const vuetify = createVuetify({
 })
 
 import UsersPage from './components/UsersPage.vue'
+import UserProfilePage from './components/UserProfilePage.vue'
 import MainContainer from './components/MainContainer.vue'
 const routes = [
     { path: '/', component: MainContainer },
     { path: '/users', component: UsersPage },
+    { path: '/user-profile-page', component: UserProfilePage },
 ]
 
 const router = createRouter({

@@ -6,7 +6,10 @@
         </div>
         <div>
             <router-link to="/users">Go to Users</router-link>
+            <v-spacer></v-spacer>
             <router-link to="/">Go to Main</router-link>
+            <v-spacer></v-spacer>
+            <router-link to="/user-profile-page">Go to UsersPage</router-link>
         </div>
         <div class="d-flex flex-row-reverse">
             <div class="col-auto btn-login">

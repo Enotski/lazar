@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="User\" />
+    <Folder Include="Repositories\Dsp\" />
   </ItemGroup>
 
 </Project>
