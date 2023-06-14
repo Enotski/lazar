@@ -31,7 +31,7 @@
 // using TMK.Utils.AD;
 // using TMK.Utils.Enums;
 // using TMK.Utils.Extensions;
-// using TMK.Utils.Interfaces.Base;
+// using lazarData.Interfaces.Base;
 
 // namespace SysRM.Data.Repositories {
 //     public class UserRepository : BaseRepository<UserViewModel, User> {

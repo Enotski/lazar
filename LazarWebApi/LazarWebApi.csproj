@@ -14,4 +14,8 @@
     <Folder Include="Controllers\Dsp\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\lazarData\lazarData.csproj" />
+  </ItemGroup>
+
 </Project>

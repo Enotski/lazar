@@ -1,6 +1,6 @@
 ﻿using lazarData.Enums;
 using lazarData.Interfaces;
-using lazarData.Models.Users;
+using lazarData.Models.Administration;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace lazarData.Models.LogEvents
 {
-    internal class LogEvent: IKeyEntity
+    internal class LogEvent: IKeyEntity, IChangedUserReference
     {
         public Guid Id { get; set; }
         public DateTime DateChange { get; set; }
         public string Description { get; set; }
         public EventType Type { get; set; }
-        public Guid ChangedUserId { get; set; }
+        public Guid? ChangedUserId { get; set; }
         public User ChangedUser { get; set; }
     }
 }

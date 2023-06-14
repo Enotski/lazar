@@ -1,4 +1,4 @@
-﻿using LazarModel.Users;
+﻿using lazarData.Models.Administration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
@@ -11,7 +11,9 @@ namespace LazarData.Context
 {
     public class LazarContext : DbContext
     {
-        public DbSet<User> Users => Set<User>();
+        internal DbSet<User> Users => Set<User>();
+        internal DbSet<Role> Roles => Set<Role>();
+        internal DbSet<UserRole> UserRoles => Set<UserRole>();
         public LazarContext(DbContextOptions<LazarContext> options) : base(options) => Database.EnsureCreated();
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -20,9 +22,9 @@ namespace LazarData.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().HasData(
-                    new User { Id = Guid.NewGuid(), Name = "Tom", Password = "adwa", Email = "aa@fawf.su" },
-                    new User { Id = Guid.NewGuid(), Name = "Bob", Password = "adwa", Email = "aa@fawf.su" },
-                    new User { Id = Guid.NewGuid(), Name = "Sam", Password = "adwa", Email = "aa@fawf.su" }
+                    new User { Id = Guid.NewGuid(), Login = "Tom", Password = "adwa", Email = "aa@fawf.su" },
+                    new User { Id = Guid.NewGuid(), Login = "Bob", Password = "adwa", Email = "aa@fawf.su" },
+                    new User { Id = Guid.NewGuid(), Login = "Sam", Password = "adwa", Email = "aa@fawf.su" }
             );
         }
     }

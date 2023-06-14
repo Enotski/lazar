@@ -13,7 +13,7 @@
 // using TMK.Utils.AD;
 // using TMK.Utils.Enums;
 // using TMK.Utils.Extensions;
-// using TMK.Utils.Interfaces.Base;
+// using lazarData.Interfaces.Base;
 // using TMK.Utils.Models.Result;
 
 // namespace SysRM.Data.Repositories {
