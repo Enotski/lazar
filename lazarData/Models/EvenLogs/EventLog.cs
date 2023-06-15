@@ -8,9 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace lazarData.Models.LogEvents
+namespace lazarData.Models.EventLogs
 {
-    internal class LogEvent: IKeyEntity, IChangedUserReference
+    internal class EventLog: IKeyEntity, IChangedUserReference
     {
         public Guid Id { get; set; }
         public DateTime DateChange { get; set; }

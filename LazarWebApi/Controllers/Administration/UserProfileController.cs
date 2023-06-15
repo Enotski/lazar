@@ -31,42 +31,44 @@
 //         }
 //     }
 // }
-// using SysRM.Data.Repositories;
-// using SysRM.Entities.Views.Response;
-// using SysRM.Entities.Views.ViewModels.User;
-// using System;
-// using System.Web.Mvc;
+using SysRM.Data.Repositories;
+using SysRM.Entities.Views.Response;
+using SysRM.Entities.Views.ViewModels.User;
+using System;
+using System.Web.Mvc;
 
-// namespace SysRM.Controllers.User {
-//     public class UserProfileController : BaseController {
-// 		protected override string _pathToView => "~/Views/User/UserProfile.cshtml";
-// 		public UserRepository userRepository = new UserRepository();
-
-// 		public JsonResult ChangeNotificationSettings(UserProfileNotificationSettings notificationSettings) {
-// 			var data = userRepository.ChangeNotificationSettings(notificationSettings, CurrentUser?.UserInfo?.UserId);
-// 			return Json(data);
-// 		}
-// 		[HttpPost]
-// 		public JsonResult GetIndicatorsTableGrid(int skip, int take, DataGridSort[] sorts, DataGridFilter[] filters) {
-// 			var data = userRepository.GetIndicatorsTableGrid(skip, take, sorts, filters, CurrentUser.UserInfo);
-// 			return Json(data, JsonRequestBehavior.AllowGet);
-// 		}
-// 		public JsonResult GetIndicatorModel(Guid? id) {
-// 			return Json(userRepository.GetIndicatorModel(id.Value, CurrentUser?.UserInfo.UserId));
-// 		}
-// 		/// <summary>
-// 		/// Установка пользовательской даты подачи заявки для показателя
-// 		/// </summary>
-// 		/// <param name="id"></param>
-// 		/// <param name="deadline"></param>
-// 		/// <returns></returns>
-// 		public JsonResult SetUserDeadlineForSubmitting(Guid id, DateTime? deadline, int type, int month, int day) {
-// 			var data = userRepository.SetUserDeadlineForSubmitting(id, deadline, type, month, day, CurrentUser?.UserInfo?.UserId);
-// 			return Json(data);
-// 		}
-// 		public JsonResult RemoveTableStorageSettings() {
-// 			var data = userRepository.RemoveTableStorageSettings(CurrentUser?.UserInfo?.UserId);
-// 			return Json(data);
-// 		}
-// 	}
-// }
+namespace SysRM.Controllers.User {
+    public class UserProfileController : BaseController {
+        protected override string _pathToView => "~/Views/User/UserProfile.cshtml";
+        public UserRepository userRepository = new UserRepository();
+        public JsonResult GetUserModel(Guid? id) {
+            if (id.HasValue) {
+                return Json(new BaseResponse(userRepository.GetViewById<Entities.Models.References.Administration.User>(id.Value,
+                    DeletedSearchType.Actual,
+                    true,
+                    x => x.Department,
+                    x => x.Post,
+                    x => x.Filial,
+                    x => x.Roles)));
+            }
+            return Json(new BaseResponse(new UserViewModel {
+                Id = null,
+                Name = "",
+                Surname = "",
+                Patronymic = "",
+                Login = "",
+                Email = "",
+                DepartmentName = "",
+                PostName = "",
+                FilialName = "",
+                DepartmentId = null,
+                PostId = null,
+                FilialId = CurrentUser?.UserInfo.FilialId ?? Guid.Empty
+            }));
+        }
+        public JsonResult AddEditUser(Guid? userId, Guid filialId/*, Guid? departmentId, Guid? postId*/, string userLogin, string userEmail, string userName, string userSurname, string userPatronymic) {
+            var data = userRepository.AddEditUser(userId, filialId, null, null, null, userLogin, userEmail, userName, userSurname, userPatronymic, CurrentUser?.UserInfo);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+    }
+}

@@ -11,11 +11,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\Dsp\" />
+    <ProjectReference Include="..\lazarData\lazarData.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\lazarData\lazarData.csproj" />
+    <Folder Include="Controllers\Dsp\" />
   </ItemGroup>
 
 </Project>
