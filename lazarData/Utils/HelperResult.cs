@@ -1,4 +1,5 @@
-﻿using System;
+﻿using lazarData.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,10 +30,6 @@ namespace lazarData.Utils {
                 return ResultState.Error;
             }
         }
-        /// <summary>
-        /// Ошибка
-        /// </summary>
-        [ScriptIgnore]
         public Exception Error { get; protected set; }
 
         /// <summary>

@@ -12,7 +12,8 @@ namespace lazarData.Models.Administration
         public Guid Id { get; set; }
         public string Name { get; set; }
         public DateTime DateChange { get; set; }
-        public List<UserRole> UserRoles { get; set; }
         public Guid? ChangedUserId { get; set; }
+        public List<User> Users { get; set; }
+        public User ChangedUser { get; set; }
     }
 }

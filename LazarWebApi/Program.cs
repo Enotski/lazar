@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace LazarWebApi
 {
     public class Program
@@ -14,6 +16,9 @@ namespace LazarWebApi
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            string connection = builder.Configuration.GetConnectionString("DefaultConnection");
+            builder.Services.AddDbContext<LazarData.Context.LazarContext>(options => options.UseSqlServer(connection));
 
             var app = builder.Build();
 
