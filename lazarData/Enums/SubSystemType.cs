@@ -6,15 +6,9 @@ using System.Threading.Tasks;
 
 namespace lazarData.Enums
 {
-    public enum EventType
+    public enum SubSystemType
     {
-        Create,
-        Update,
-        Delete,
-        Error,
-        LogIn,
-        LogOut,
-        Registration,
-        DeleteUser
+        Users,
+        Dsp
     }
 }

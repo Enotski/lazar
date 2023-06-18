@@ -10,16 +10,12 @@
         "projectUniqueName": "C:\\WorkShop\\lazar\\lazarData\\lazarData.csproj",
         "projectName": "lazarData",
         "projectPath": "C:\\WorkShop\\lazar\\lazarData\\lazarData.csproj",
-        "packagesPath": "C:\\Users\\zabigaluk\\.nuget\\packages\\",
+        "packagesPath": "C:\\Users\\Maki\\.nuget\\packages\\",
         "outputPath": "C:\\WorkShop\\lazar\\lazarData\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
-        ],
         "configFilePaths": [
-          "C:\\Users\\zabigaluk\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Users\\Maki\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
@@ -69,7 +65,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.304\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.302\\RuntimeIdentifierGraph.json"
         }
       }
     }

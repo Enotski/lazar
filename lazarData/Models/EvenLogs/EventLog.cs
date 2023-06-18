@@ -10,12 +10,13 @@ using System.Threading.Tasks;
 
 namespace lazarData.Models.EventLogs
 {
-    internal class EventLog: IKeyEntity, IChangedUserReference
+    public class EventLog: IKeyEntity, IChangedUserReference
     {
         public Guid Id { get; set; }
         public DateTime DateChange { get; set; }
         public string Description { get; set; }
-        public EventType Type { get; set; }
+        public SubSystemType SubSystem { get; set; }
+        public EventType EventType { get; set; }
         public Guid? ChangedUserId { get; set; }
         public User ChangedUser { get; set; }
     }

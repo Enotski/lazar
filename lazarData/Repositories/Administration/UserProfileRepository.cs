@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LazarData.Repositories.Administration
+namespace lazarData.Repositories.Administration
 {
     internal class UserProfileRepository
     {

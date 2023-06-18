@@ -18,7 +18,7 @@ namespace LazarWebApi
             builder.Services.AddSwaggerGen();
 
             string connection = builder.Configuration.GetConnectionString("DefaultConnection");
-            builder.Services.AddDbContext<LazarData.Context.LazarContext>(options => options.UseSqlServer(connection));
+            builder.Services.AddDbContext<lazarData.Context.LazarContext>(options => options.UseSqlServer(connection));
 
             var app = builder.Build();
 

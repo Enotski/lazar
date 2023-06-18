@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace lazarData.Models.Response.ViewModels {
-    class RoleViewModel : BaseResponseModel
+    public class RoleViewModel : BaseResponseModel
     {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using lazarData.Interfaces;
+using lazarData.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +13,7 @@ namespace lazarData.Models.Response.DataGrid {
 		public string error { get; set; } = string.Empty;
 		public ResultState State { get; set; } = ResultState.Success;
 
-		public static DataGridResponseModel<TViewModel> ErrorResponse(Exception exc) {
+		public static DataGridResponseModel<TViewModel> ProplemResponse(Exception exc) {
 			return new DataGridResponseModel<TViewModel> {
 				State = ResultState.Success,
 				error = exc.Message

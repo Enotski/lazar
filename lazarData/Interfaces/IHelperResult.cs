@@ -10,7 +10,7 @@ namespace lazarData.Interfaces
     /// <summary>
     /// Интерфейс результата
     /// </summary>
-    internal interface IHelperResult
+    public interface IHelperResult
     {
         /// <summary>
         /// Состояние выполнения

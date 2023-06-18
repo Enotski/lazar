@@ -5,7 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace lazarData.Models.Response.ViewModels {
-    class UserViewModel : BaseResponseModel
+    public class UserViewModel : BaseResponseModel
     {
+        public Guid? Id { get; set; }
+        public string Login { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
     }
 }

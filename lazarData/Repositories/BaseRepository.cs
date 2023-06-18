@@ -1,10 +1,10 @@
 ﻿using lazarData.Interfaces;
 using lazarData.Models.Response.ViewModels;
-using LazarData.Context;
+using lazarData.Context;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace LazarData.Repositories
+namespace lazarData.Repositories
 {
     public abstract class BaseRepository<TViewModel, TModel>
             where TViewModel : BaseResponseModel
@@ -29,7 +29,7 @@ namespace LazarData.Repositories
             where FModel : class, TModel {
             try {
                 if (Context == null) {
-                    throw new ArgumentNullException("Контекст не инициализирован");
+                    throw new ArgumentNullException("Context is not initialized");
                 }
                 var query = Context.Set<FModel>().AsQueryable();
                 if (includes != null && includes.Length > 0) {
@@ -52,7 +52,7 @@ namespace LazarData.Repositories
         /// <param name="Id">ИД записи</param>
         /// <param name="isNoTracking">Отслеживать изменения</param>
         /// <returns></returns>
-        public virtual TViewModel GetViewById<FModel>(Guid Id, bool isNoTracking = false, params Expression<Func<FModel, object>>[] includes)
+        public virtual TViewModel GetViewById<FModel>(Guid? Id, bool isNoTracking = false, params Expression<Func<FModel, object>>[] includes)
             where FModel : class, TModel, IKeyEntity {
             try {
                 var query = GetAll<FModel>(isNoTracking, includes);
@@ -95,7 +95,7 @@ namespace LazarData.Repositories
         /// <typeparam name="FModel"></typeparam>
         /// <param name="ids"></param>
         /// <returns></returns>
-        internal IHelperResult RemoveByIds<FModel>(Guid[] ids)
+        internal IHelperResult RemoveByIds<FModel>(IEnumerable<Guid> ids)
             where FModel : class, TModel, IKeyEntity, new() {
             try {
                 foreach (var id in ids) {

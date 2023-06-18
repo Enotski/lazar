@@ -1,35 +1,35 @@
-using SysRM.Data.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Web.Mvc;
-using SysRM.Entities.Views.Response;
-using TMK.Utils.AD;
-using TMK.Utils.Models.Result;
-using static SysRM.Entities.Views.ViewModels.OtherViewModels;
+using lazarData.Models.Administration;
+using lazarData.Models.Response.DataGrid.Base;
+using lazarData.Models.Response.ViewModels;
+using lazarData.Repositories.Administration;
+using Microsoft.AspNetCore.Mvc;
 
-namespace SysRM.Controllers.References {
+namespace LazarWebApi.Controllers.Administration
+{
+    [ApiController]
+    [Route("[controller]/[action]")]
     public class RolesController : BaseController {
-        protected override string _pathToView => "~/Views/Administration/Roles.cshtml";
 
         RoleRepository roleRepository = new RoleRepository();
 
-        [HttpPost]
-        public JsonResult GetRolesDataGrid(int skip, int take, DataGridSort[] sorts, DataGridFilter[] filters) {
-            var data = roleRepository.GetRolesDataGrid(skip, take, sorts, filters);
-            return Json(data, JsonRequestBehavior.AllowGet);
+        [HttpPost(Name = "getRoles")]
+        public JsonResult GetRolesDataGrid([FromBody] DataGridRequestModel args) {
+            var data = roleRepository.GetRolesDataGrid(args.skip, args.take, args.sorts, args.filters);
+            return Json(data);
         }
-        [HttpPost]
-        public JsonResult CommonMethodsChangeRoles(Guid? IdRole, string NameRole, string GroupAD, Guid[] Rights) {
-            var data = roleRepository.CommonMethodsChangeRoles(IdRole, NameRole, GroupAD, CurrentUser?.UserInfo, Rights);
-            return Json(data, JsonRequestBehavior.AllowGet);
+        [HttpPost(Name = "updateRole")]
+        public JsonResult UpdateRole([FromBody] RoleViewModel model) {
+            var data = roleRepository.UpdateRole(model.Id, model.Name, CurrentUser.Id);
+            return Json(data);
         }
-        [HttpPost]
-        public JsonResult DeleteRoles(List<Guid> ListIdRoles) {
-            var data = roleRepository.DeleteRoles(ListIdRoles, CurrentUser.UserInfo);
-            return Json(data, JsonRequestBehavior.AllowGet);
+        [HttpPost(Name = "removeRoles")]
+        public JsonResult DeleteRoles([FromBody] List<Guid> ListIdRoles) {
+            var data = roleRepository.DeleteRoles(ListIdRoles, CurrentUser.Id);
+            return Json(data);
         }
-        public JsonResult GetRoleModel(Guid? id) {
-            var res = roleRepository.GetRoleWithRights(id);
+        [HttpGet(Name = "getRoleModel")]
+        public JsonResult GetRoleModel(Guid? id = null) {
+            var res = roleRepository.GetViewById<Role>(id);
             return Json(res);
         }
     }
