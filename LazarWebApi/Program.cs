@@ -20,6 +20,9 @@ namespace LazarWebApi
             string connection = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<lazarData.Context.LazarContext>(options => options.UseSqlServer(connection));
 
+            builder.Services.AddAuthentication("Bearer").AddJwtBearer();
+            builder.Services.AddAuthorization();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -33,6 +36,7 @@ namespace LazarWebApi
 
             app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();
