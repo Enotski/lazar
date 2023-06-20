@@ -20,8 +20,8 @@ namespace lazarData.Context
         public LazarContext(DbContextOptions<LazarContext> options) : base(options) => Database.EnsureCreated();
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //optionsBuilder.UseSqlServer(@"Persist Security Info=False;Trusted_Connection=True;Initial Catalog=lazar_db;Server=LILITH\SQLEXPRESS;Encrypt=False;");
-            optionsBuilder.UseSqlServer(@"Persist Security Info=False;Trusted_Connection=True;Initial Catalog=lazar_db;Server=KOMP2\LILITHSERVER;Encrypt=False;");
+            optionsBuilder.UseSqlServer(@"Persist Security Info=False;Trusted_Connection=True;Initial Catalog=lazar_db;Server=LILITH\SQLEXPRESS;Encrypt=False;");
+            //optionsBuilder.UseSqlServer(@"Persist Security Info=False;Trusted_Connection=True;Initial Catalog=lazar_db;Server=KOMP2\LILITHSERVER;Encrypt=False;");
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
