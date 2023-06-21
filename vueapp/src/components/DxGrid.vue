@@ -30,6 +30,7 @@
   </div>
 </template>
 <script>
+import DxDataGrid from 'devextreme-vue/data-grid';
 import DataSource from "devextreme/data/data_source";
 import CustomStore from "devextreme/data/custom_store";
 
@@ -208,6 +209,9 @@ export const DataGrid = {
 let gridDataSource = [];
 
 export default {
+  components: {
+        DxDataGrid,
+    },
   props: {
     events: {
       type: Object,
