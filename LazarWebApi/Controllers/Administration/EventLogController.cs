@@ -1,5 +1,6 @@
 using lazarData.Models.Response;
 using lazarData.Models.Response.DataGrid.Base;
+using lazarData.Repositories;
 using lazarData.Repositories.Administration;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,7 +10,11 @@ namespace LazarWebApi.Controllers.Administration
     [Route("[controller]/[action]")]
     public class EventLogsController : BaseController
     {
-        EventLogRepository eventLogRepository = new EventLogRepository();
+        EventLogRepository eventLogRepository;
+        public EventLogsController(ContextRepository contextRepo)
+        {
+            eventLogRepository = new EventLogRepository(contextRepo);
+        }
         [HttpPost(Name = "getLog")]
         public JsonResult GetEventLogsDataGrid([FromBody] DataGridRequestModel args)
         {

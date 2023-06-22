@@ -1,5 +1,6 @@
 using lazarData.Models.Administration;
 using lazarData.Models.Response.ViewModels;
+using lazarData.Repositories;
 using lazarData.Repositories.Administration;
 using lazarData.Utils;
 using Microsoft.AspNetCore.Mvc;
@@ -10,15 +11,16 @@ namespace LazarWebApi.Controllers.Administration
     [Route("[controller]/[action]")]
     public class UserProfileController : BaseController
     {
-        public UserRepository userRepository = new UserRepository();
+        public UserRepository userRepository;
+        public UserProfileController(ContextRepository contextRepo)
+        {
+            userRepository = new UserRepository(contextRepo);
+        }
         [HttpPost(Name = "getUserModel")]
         public JsonResult GetUserModel([FromBody] Guid? id)
         {
-            if (id.HasValue)
-            {
-                return Json(new BaseResponse(userRepository.GetViewById<User>(id.Value, true, x => x.Roles)));
-            }
-            return Json(new BaseResponse(new UserViewModel()));
+            var res = userRepository.GetView(id);
+            return Json(res);
         }
         [HttpPost(Name = "updateUser")]
         public JsonResult AddEditUser([FromBody] UserViewModel model)

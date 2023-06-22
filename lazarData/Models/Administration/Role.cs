@@ -7,11 +7,9 @@ using System.Threading.Tasks;
 
 namespace lazarData.Models.Administration
 {
-    public class Role: IKeyEntity, IName, IDateChange
+    public class Role: EntityBase, IName
     {
-        public Guid Id { get; set; }
         public string Name { get; set; }
-        public DateTime DateChange { get; set; }
         public List<User> Users { get; set; }
     }
 }

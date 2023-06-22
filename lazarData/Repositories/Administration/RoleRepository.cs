@@ -14,16 +14,14 @@ namespace lazarData.Repositories.Administration
         /// <summary>
         /// Репозиторий логирования
         /// </summary>
-        EventLogRepository logRepo = new EventLogRepository();
-        /// <summary>
-        /// Конструктор
-        /// </summary>
-        public RoleRepository() : base() { }
+        EventLogRepository logRepo;
         /// <summary>
         /// Конструктор
         /// </summary>
         /// <param name="context">Контекст</param>
-        public RoleRepository(LazarContext context) : base(context) { }
+        public RoleRepository(ContextRepository context) : base(context) {
+            logRepo = new EventLogRepository(context);
+        }
 
         public static void FilterData(ref IQueryable<Role> source, IEnumerable<DataGridFilter> filters)
         {
@@ -128,13 +126,20 @@ namespace lazarData.Repositories.Administration
         /// Преобразовывает сущности роли в модель представления роли
         /// </summary>
         /// <returns></returns>
-        public override Func<Role, RoleViewModel> ModelToViewModel()
+        public Func<Role, RoleViewModel> ModelToViewModel()
         {
             return model => new RoleViewModel
             {
                 Id = model.Id,
                 Name = model.Name,
             };
+        }
+        public BaseResponse GetView(Guid? id)
+        {
+            try
+            {
+                return new BaseResponse(GetViewById(id, ModelToViewModel(), true));
+            }catch(Exception ex) { return new BaseResponse(ex); }
         }
         /// <summary>
         /// Общий метод редактирования и добавлние новой роли

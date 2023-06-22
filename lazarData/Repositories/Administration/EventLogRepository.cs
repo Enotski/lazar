@@ -13,8 +13,7 @@ namespace lazarData.Repositories.Administration
 {
     public class EventLogRepository : BaseRepository<EventLogViewModel, EventLog>
     {
-        public EventLogRepository() : base() { }
-        public EventLogRepository(LazarContext context) : base(context) { }
+        public EventLogRepository(ContextRepository context) : base(context) { }
 
         /// <summary>
         /// Возвращает список логирования событий
@@ -211,7 +210,7 @@ namespace lazarData.Repositories.Administration
         /// Преобразовывает сущности показателя в модель представления показателя
         /// </summary>
         /// <returns></returns>
-        public override Func<EventLog, EventLogViewModel> ModelToViewModel()
+        public Func<EventLog, EventLogViewModel> ModelToViewModel()
         {
             return model => new EventLogViewModel
             {

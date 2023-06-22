@@ -9,16 +9,10 @@ namespace lazarData.Repositories
     public abstract class BaseRepository<TViewModel, TModel>
             where TViewModel : BaseResponseModel
             where TModel : class {
-        private LazarContext _context;
-        /// <summary>
-        /// Контекст
-        /// </summary>
-        public LazarContext Context => _context ?? (_context = new LazarContext(new DbContextOptions<LazarContext>()));
-        /// <summary>
-        /// Преобразовывает сущность из базы данных в модель представления
-        /// </summary>
-        /// <returns></returns>
-        public abstract Func<TModel, TViewModel> ModelToViewModel();
+        private ContextRepository _contextRepo;
+
+        public BaseRepository(ContextRepository context) => _contextRepo = context;
+        public LazarContext Context { get => _contextRepo.Context; }
 
         /// <summary>
         /// Получить все записи в таблице
@@ -28,19 +22,7 @@ namespace lazarData.Repositories
         public IQueryable<FModel> GetAll<FModel>(bool isNoTracking = false, params Expression<Func<FModel, object>>[] includes)
             where FModel : class, TModel {
             try {
-                if (Context == null) {
-                    throw new ArgumentNullException("Context is not initialized");
-                }
-                var query = Context.Set<FModel>().AsQueryable();
-                if (includes != null && includes.Length > 0) {
-                    foreach (var include in includes) {
-                        query = query.Include(include);
-                    }
-                }
-                if (isNoTracking) {
-                    return query.AsNoTracking();
-                }
-                return query;
+                return _contextRepo.GetAll(isNoTracking, includes);
             } catch (Exception ex) {
                 throw ex;
             }
@@ -52,12 +34,10 @@ namespace lazarData.Repositories
         /// <param name="Id">ИД записи</param>
         /// <param name="isNoTracking">Отслеживать изменения</param>
         /// <returns></returns>
-        public virtual TViewModel GetViewById<FModel>(Guid? Id, bool isNoTracking = false, params Expression<Func<FModel, object>>[] includes)
-            where FModel : class, TModel, IKeyEntity {
+        public virtual TViewModel GetViewById<TModel>(Guid? Id, Func<TModel, TViewModel> toViewModel, bool isNoTracking = false, params Expression<Func<TModel, object>>[] includes)
+            where TModel : class, IKeyEntity {
             try {
-                var query = GetAll<FModel>(isNoTracking, includes);
-                var order = query.Where(x => x.Id == Id).Select(ModelToViewModel()).FirstOrDefault();
-                return order;
+                return _contextRepo.GetViewById(Id, toViewModel, isNoTracking, includes);
             } catch (Exception exp) {
                 return null;
             }
@@ -72,9 +52,7 @@ namespace lazarData.Repositories
         public virtual FModel GetEntityById<FModel>(Guid Id, bool isNoTracking = false, params Expression<Func<FModel, object>>[] includes)
             where FModel : class, TModel, IKeyEntity {
             try {
-                var query = GetAll<FModel>(isNoTracking, includes);
-                var order = query.FirstOrDefault(x => x.Id == Id);
-                return order;
+                return _contextRepo.GetEntityById(Id, isNoTracking, includes);
             } catch (Exception exp) {
                 return null;
             }
@@ -87,7 +65,7 @@ namespace lazarData.Repositories
         /// <returns></returns>
         internal IHelperResult RemoveById<FModel>(Guid id)
             where FModel : class, TModel, IKeyEntity, new() {
-            return RemoveByIds<FModel>(new Guid[] { id });
+            return _contextRepo.RemoveById<FModel>(id);
         }
         /// <summary>
         /// Удаление по ид
@@ -98,24 +76,10 @@ namespace lazarData.Repositories
         internal IHelperResult RemoveByIds<FModel>(IEnumerable<Guid> ids)
             where FModel : class, TModel, IKeyEntity, new() {
             try {
-                foreach (var id in ids) {
-                    var entry = Context.Entry<FModel>(new FModel() {
-                        Id = id
-                    });
-                    entry.State = EntityState.Deleted;
-                }
-
-                Context.SaveChanges();
-
-                return new BaseResponse(new BaseResponseModel());
+                return _contextRepo.RemoveByIds<FModel>(ids);
             } catch (Exception ex) {
                 return new BaseResponse(ex);
             }
-        }
-        public BaseRepository() { }
-
-        public BaseRepository(LazarContext context) {
-            _context = context;
         }
     }
 }

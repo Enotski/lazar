@@ -1,6 +1,7 @@
 using lazarData.Models.Administration;
 using lazarData.Models.Response.DataGrid.Base;
 using lazarData.Models.Response.ViewModels;
+using lazarData.Repositories;
 using lazarData.Repositories.Administration;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,7 +11,11 @@ namespace LazarWebApi.Controllers.Administration
     [Route("[controller]/[action]")]
     public class RolesController : BaseController {
 
-        RoleRepository roleRepository = new RoleRepository();
+        RoleRepository roleRepository;
+        public RolesController(ContextRepository contextRepo)
+        {
+            roleRepository = new RoleRepository(contextRepo);
+        }
 
         [HttpPost(Name = "getRoles")]
         public JsonResult GetRolesDataGrid([FromBody] DataGridRequestModel args) {
@@ -28,8 +33,9 @@ namespace LazarWebApi.Controllers.Administration
             return Json(data);
         }
         [HttpGet(Name = "getRoleModel")]
-        public JsonResult GetRoleModel(Guid? id = null) {
-            var res = roleRepository.GetViewById<Role>(id);
+        public JsonResult GetRoleModel(Guid? id = null)
+        {
+            var res = roleRepository.GetView(id);
             return Json(res);
         }
     }

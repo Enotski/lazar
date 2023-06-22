@@ -11,17 +11,11 @@ namespace lazarData.Repositories.Administration
 {
     public class UserRepository : BaseRepository<UserViewModel, User>
     {
-        EventLogRepository eventLogRepository = new EventLogRepository();
-
-        public UserRepository() : base()
+        EventLogRepository logRepo;
+        public UserRepository(ContextRepository context) : base(context)
         {
+            logRepo = new EventLogRepository(context);
         }
-        public UserRepository(LazarContext context) : base(context)
-        {
-        }
-
-        private EventLogRepository _eventLogRepository = new EventLogRepository();
-
         public IHelperResult GetUsersDataGrid(int skip, int take, IEnumerable<DataGridSort>  sorts, IEnumerable<DataGridFilter> filters)
         {
             try
@@ -270,7 +264,7 @@ namespace lazarData.Repositories.Administration
             }
         }
 
-        public override Func<User, UserViewModel> ModelToViewModel()
+        public Func<User, UserViewModel> ModelToViewModel()
         {
             return model => new UserViewModel
             {
@@ -280,7 +274,13 @@ namespace lazarData.Repositories.Administration
                 Password = model.Password
             };
         }
-
+        public BaseResponse GetView(Guid? id)
+        {
+            try
+            {
+                return new BaseResponse(GetViewById(id, ModelToViewModel(), true));
+            } catch (Exception ex) { return new BaseResponse(ex); }
+        }
         public BaseResponse<UserViewModel> AddEditUser(UserViewModel model, Guid currentUserId)
         {
             try
@@ -315,11 +315,11 @@ namespace lazarData.Repositories.Administration
                 }
 
                 Context.SaveChanges();
-                eventLogRepository.LogEvent(SubSystemType.Users, type, currentUserId);
+                logRepo.LogEvent(SubSystemType.Users, type, currentUserId);
                 return new BaseResponse<UserViewModel>(ModelToViewModel().Invoke(user));
             } catch (Exception exp)
             {
-                eventLogRepository.LogEvent(SubSystemType.Users, EventType.Error, currentUserId);
+                logRepo.LogEvent(SubSystemType.Users, EventType.Error, currentUserId);
                 return new BaseResponse<UserViewModel>(exp);
             }
         }
