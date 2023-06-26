@@ -1,2 +1,0 @@
-C:\WorkShop\lazar\vueapp\obj\Debug\vueapp.esproj.SuggestedBindingRedirects.cache
-C:\WorkShop\lazar\vueapp\obj\Debug\vueapp.esproj.CoreCompileInputs.cache
