@@ -1,0 +1,38 @@
+.dx-header-row {
+    background-color: #D3D3D3;
+    color: black;
+    font-weight: 500;
+    font-size: small;
+}
+tr.dx-selection > td.dx-cell-selected {
+    border-color: red !important;
+    border-width: 3px;
+    border-style: double;
+    color: #ffffff !important;
+}
+tbody > tr > .dx-selection > td > a,
+tbody > tr.dx-selection > td > a {
+    color: #dadada !important;
+}
+
+tbody > tr.dx-group-row {
+    background-color: #90edff !important;
+}
+
+tbody > tr.dx-group-row-second {
+    background-color: #93cfff !important;
+}
+/* Настраиваем под себя вид скролла таблицы devExtreme */
+.dx-datagrid .dx-scrollable-scrollbar.dx-scrollbar-vertical,
+.dx-datagrid .dx-scrollable-scrollbar.dx-scrollbar-vertical .dx-scrollable-scroll {
+    width: 15px;
+}
+
+.dx-datagrid .dx-scrollable-scrollbar {
+    background-color: rgba(191, 191, 191, 0.2);
+}
+
+    .dx-datagrid .dx-scrollable-scrollbar.dx-scrollbar-horizontal,
+    .dx-datagrid .dx-scrollable-scrollbar.dx-scrollbar-horizontal .dx-scrollable-scroll {
+        height: 15px;
+    }

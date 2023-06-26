@@ -6,6 +6,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import 'vuetify/styles'
 import 'bootstrap/dist/css/bootstrap.css'
 import '@mdi/font/css/materialdesignicons.min.css'
+import 'devextreme/dist/css/dx.light.css'
 import './css/site.css'
 
 import { createVuetify } from 'vuetify'
