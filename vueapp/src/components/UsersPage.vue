@@ -26,6 +26,7 @@ export default {
     return {
       urlGetUsers: "https://localhost:7188/Users/GetUsersDataGrid",
       urlGetRoles: "https://localhost:7188/Roles/GetRolesDataGrid",
+      urlGetRolesList: "https://localhost:7188/Roles/GetRoles",
       userColumns: [
         {
           caption: "№ п/п",
@@ -66,7 +67,7 @@ export default {
       ],
       userEvents:{
         onSelectionChanged: function(e) {
-            
+            console.log(e);
         }
       }
     };

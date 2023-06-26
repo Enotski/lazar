@@ -111,6 +111,17 @@ namespace lazarData.Repositories.Administration
                 return new BaseResponse(exp);
             }
         }
+        public IHelperResult GetRoles(string name)
+        {
+            try
+            {
+                var query = GetAll<Role>(true).Where(x => x.Name.ToLower().Trim().Contains(name.Trim().ToLower()));
+                return new BaseResponseEnumerable<RoleViewModel>(query.Select(ModelToViewModel()));
+            } catch (Exception exp)
+            {
+                return new BaseResponse(exp);
+            }
+        }
         public Func<Role, int, RoleDataGrid> ModelToDataGridViewModel()
         {
             return (x, index) => new RoleDataGrid

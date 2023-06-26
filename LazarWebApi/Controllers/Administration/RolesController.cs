@@ -16,9 +16,15 @@ namespace LazarWebApi.Controllers.Administration
             roleRepository = new RoleRepository(contextRepo);
         }
 
-        [HttpPost(Name = "getRoles")]
+        [HttpPost(Name = "getRolesGrid")]
         public JsonResult GetRolesDataGrid([FromBody] DataGridRequestModel args) {
             var data = roleRepository.GetRolesDataGrid(args.skip, args.take, args.sorts, args.filters);
+            return Json(data);
+        }
+        [HttpPost(Name = "getRoles")]
+        public JsonResult GetRoles([FromBody] string name = "")
+        {
+            var data = roleRepository.GetRoles(name);
             return Json(data);
         }
         [HttpPost(Name = "updateRole")]

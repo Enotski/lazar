@@ -1,5 +1,4 @@
 <template>
-  <div class="container-fluid p-3">
     <DxDataGrid
       :data-source="dataSource"
       :columns="columns"
@@ -35,7 +34,6 @@
       v-on:content-ready="onContentReady"
     >
     </DxDataGrid>
-  </div>
 </template>
 
 <style scoped>
