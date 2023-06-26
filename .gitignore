@@ -14,6 +14,10 @@ bin
 obj
 packages
 
+# Ignore any files in /bin and /obj Folders
+**/bin/*
+**/obj/*
+
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
