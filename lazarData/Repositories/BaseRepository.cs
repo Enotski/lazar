@@ -9,9 +9,9 @@ namespace lazarData.Repositories
     public abstract class BaseRepository<TViewModel, TModel>
             where TViewModel : BaseResponseModel
             where TModel : class {
-        private ContextRepository _contextRepo;
+        private IContextRepository _contextRepo;
 
-        public BaseRepository(ContextRepository context) => _contextRepo = context;
+        public BaseRepository(IContextRepository context) => _contextRepo = context;
         public LazarContext Context { get => _contextRepo.Context; }
 
         /// <summary>

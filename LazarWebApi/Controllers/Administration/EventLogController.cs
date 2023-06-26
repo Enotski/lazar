@@ -1,3 +1,4 @@
+using lazarData.Interfaces;
 using lazarData.Models.Response;
 using lazarData.Models.Response.DataGrid.Base;
 using lazarData.Repositories;
@@ -11,7 +12,7 @@ namespace LazarWebApi.Controllers.Administration
     public class EventLogsController : BaseController
     {
         EventLogRepository eventLogRepository;
-        public EventLogsController(ContextRepository contextRepo)
+        public EventLogsController(IContextRepository contextRepo)
         {
             eventLogRepository = new EventLogRepository(contextRepo);
         }

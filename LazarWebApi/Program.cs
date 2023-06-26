@@ -1,3 +1,4 @@
+using lazarData.Interfaces;
 using lazarData.Repositories;
 using lazarData.Repositories.Administration;
 using Microsoft.EntityFrameworkCore;
@@ -14,8 +15,7 @@ namespace LazarWebApi
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddControllers().AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null); ;
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -25,7 +25,7 @@ namespace LazarWebApi
             builder.Services.AddAuthentication();
             builder.Services.AddAuthorization();
 
-            builder.Services.AddTransient<ContextRepository>();
+            builder.Services.AddTransient<IContextRepository, ContextRepository>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -36,13 +36,13 @@ namespace LazarWebApi
             }
 
             app.UseHttpsRedirection();
-
             app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();
+
 
             app.Run();
         }

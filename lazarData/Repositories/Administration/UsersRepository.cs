@@ -12,7 +12,7 @@ namespace lazarData.Repositories.Administration
     public class UserRepository : BaseRepository<UserViewModel, User>
     {
         EventLogRepository logRepo;
-        public UserRepository(ContextRepository context) : base(context)
+        public UserRepository(IContextRepository context) : base(context)
         {
             logRepo = new EventLogRepository(context);
         }

@@ -13,7 +13,7 @@ namespace lazarData.Repositories.Administration
 {
     public class EventLogRepository : BaseRepository<EventLogViewModel, EventLog>
     {
-        public EventLogRepository(ContextRepository context) : base(context) { }
+        public EventLogRepository(IContextRepository context) : base(context) { }
 
         /// <summary>
         /// Возвращает список логирования событий

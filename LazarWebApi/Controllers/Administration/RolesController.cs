@@ -1,7 +1,6 @@
-using lazarData.Models.Administration;
+using lazarData.Interfaces;
 using lazarData.Models.Response.DataGrid.Base;
 using lazarData.Models.Response.ViewModels;
-using lazarData.Repositories;
 using lazarData.Repositories.Administration;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,7 +11,7 @@ namespace LazarWebApi.Controllers.Administration
     public class RolesController : BaseController {
 
         RoleRepository roleRepository;
-        public RolesController(ContextRepository contextRepo)
+        public RolesController(IContextRepository contextRepo)
         {
             roleRepository = new RoleRepository(contextRepo);
         }

@@ -1,5 +1,5 @@
+using lazarData.Interfaces;
 using lazarData.Models.Response.DataGrid.Base;
-using lazarData.Repositories;
 using lazarData.Repositories.Administration;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,7 +9,7 @@ namespace LazarWebApi.Controllers.Administration
     [Route("[controller]/[action]")]
     public class UsersController : BaseController {
         UserRepository userRepository;
-        public UsersController(ContextRepository contextRepo)
+        public UsersController(IContextRepository contextRepo)
         {
             userRepository = new UserRepository(contextRepo);
         }

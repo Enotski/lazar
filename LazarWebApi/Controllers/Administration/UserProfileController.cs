@@ -1,3 +1,4 @@
+using lazarData.Interfaces;
 using lazarData.Models.Administration;
 using lazarData.Models.Response.ViewModels;
 using lazarData.Repositories;
@@ -12,7 +13,7 @@ namespace LazarWebApi.Controllers.Administration
     public class UserProfileController : BaseController
     {
         public UserRepository userRepository;
-        public UserProfileController(ContextRepository contextRepo)
+        public UserProfileController(IContextRepository contextRepo)
         {
             userRepository = new UserRepository(contextRepo);
         }

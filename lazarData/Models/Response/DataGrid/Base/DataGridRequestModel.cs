@@ -10,7 +10,7 @@ namespace lazarData.Models.Response.DataGrid.Base
     {
         public int skip { get; set; }
         public int take { get; set; }
-        public IEnumerable<DataGridFilter> filters { get; set; }
-        public IEnumerable<DataGridSort> sorts { get; set; }
+        public IEnumerable<DataGridFilter>? filters { get; set; }
+        public IEnumerable<DataGridSort>? sorts { get; set; }
     }
 }

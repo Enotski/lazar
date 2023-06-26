@@ -2,16 +2,11 @@
 using lazarData.Interfaces;
 using lazarData.Models.Response.ViewModels;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace lazarData.Repositories
 {
-    public class ContextRepository
+    public class ContextRepository : IContextRepository
     {
         private LazarContext _context;
 
@@ -61,7 +56,7 @@ namespace lazarData.Repositories
         /// <param name="Id">ИД записи</param>
         /// <param name="isNoTracking">Отслеживать изменения</param>
         /// <returns></returns>
-        public virtual TViewModel GetViewById<FModel, TViewModel>(Guid? Id, Func<FModel, TViewModel> toViewModel, bool isNoTracking = false, params Expression<Func<FModel, object>>[] includes)
+        public TViewModel GetViewById<FModel, TViewModel>(Guid? Id, Func<FModel, TViewModel> toViewModel, bool isNoTracking = false, params Expression<Func<FModel, object>>[] includes)
             where FModel : class, IKeyEntity
             where TViewModel: class
         {
@@ -82,7 +77,7 @@ namespace lazarData.Repositories
         /// <param name="Id">ИД записи</param>
         /// <param name="isNoTracking">Отслеживать изменения</param>
         /// <returns></returns>
-        public virtual FModel GetEntityById<FModel>(Guid Id, bool isNoTracking = false, params Expression<Func<FModel, object>>[] includes)
+        public FModel GetEntityById<FModel>(Guid Id, bool isNoTracking = false, params Expression<Func<FModel, object>>[] includes)
             where FModel : class, IKeyEntity
         {
             try
@@ -101,7 +96,7 @@ namespace lazarData.Repositories
         /// <typeparam name="FModel"></typeparam>
         /// <param name="ids"></param>
         /// <returns></returns>
-        internal IHelperResult RemoveById<FModel>(Guid id)
+        public IHelperResult RemoveById<FModel>(Guid id)
             where FModel : class, IKeyEntity, new()
         {
             return RemoveByIds<FModel>(new Guid[] { id });
@@ -112,7 +107,7 @@ namespace lazarData.Repositories
         /// <typeparam name="FModel"></typeparam>
         /// <param name="ids"></param>
         /// <returns></returns>
-        internal IHelperResult RemoveByIds<FModel>(IEnumerable<Guid> ids)
+        public IHelperResult RemoveByIds<FModel>(IEnumerable<Guid> ids)
             where FModel : class, IKeyEntity, new()
         {
             try

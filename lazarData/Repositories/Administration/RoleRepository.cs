@@ -1,4 +1,3 @@
-using lazarData.Context;
 using lazarData.Enums;
 using lazarData.Interfaces;
 using lazarData.Models.Administration;
@@ -19,7 +18,7 @@ namespace lazarData.Repositories.Administration
         /// Конструктор
         /// </summary>
         /// <param name="context">Контекст</param>
-        public RoleRepository(ContextRepository context) : base(context) {
+        public RoleRepository(IContextRepository context) : base(context) {
             logRepo = new EventLogRepository(context);
         }
 

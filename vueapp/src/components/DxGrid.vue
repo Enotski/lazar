@@ -16,23 +16,32 @@
       :show-row-lines="showRowLines"
       :row-alternation-enabled="rowAlternationEnabled"
       :show-borders="showBorders"
-      v-bind:filter-row="filterRow"
-      v-bind:header-filter="headerFilter"
       :column-chooser="columnChooser"
       :column-resizing-mode="columnResizingMode"
       :column-width="columnWidth"
       :no-data-mess="noDataMess"
       :allow-column-reordering="allowColumnReordering"
       :allow-column-resizing="allowColumnResizing"
-      v-bind:column-auto-width="columnAutoWidth"
+      v-on:initialized="onInitialized"
+      v-on:row-click="onRowClick"
+      v-on:row-dbl-click="onRowDblClick"
+      v-on:selection-changed="onSelectionChanged"
+      v-on:init-new-row="onInitNewRow"
+      v-on:row-prepared="onRowPrepared"
+      v-on:row-updated="onRowUpdated"
+      v-on:option-changed="onOptionChanged"
+      v-on:context-menu-preparing="onContextMenuPreparing"
+      v-on:cell-click="onCellClick"
+      v-on:content-ready="onContentReady"
     >
     </DxDataGrid>
   </div>
 </template>
 <script>
-import DxDataGrid from 'devextreme-vue/data-grid';
-import DataSource from "devextreme/data/data_source";
+import DxDataGrid from "devextreme-vue/data-grid";
 import CustomStore from "devextreme/data/custom_store";
+
+import moment from "moment";
 
 export const DataGrid = {
   getFilterType: function (filterOperation) {
@@ -180,17 +189,20 @@ export const DataGrid = {
     }
     return this.defaultCalculateFilterExpression.apply(this, arguments);
   },
-  getColumnLookup: function (url, data) {
+  getColumnLookup: function (url, params) {
     return {
       dataSource: new CustomStore({
         loadMode: "raw",
         load: async function () {
-          return await $fetch(url, {
-            method: "post",
-            body: { params },
+          return await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(params),
           })
-            .then((response) => response.res)
-            .then((data) => {
+            .then((response) => response.json())
+            .then(async function (data) {
               let options = [];
               data.forEach(function (item) {
                 options.push(item.Text);
@@ -200,7 +212,7 @@ export const DataGrid = {
             .catch(() => {
               throw new Error("Data Loading Error");
             });
-        }.bind(this),
+        },
       }),
     };
   },
@@ -210,8 +222,8 @@ let gridDataSource = [];
 
 export default {
   components: {
-        DxDataGrid,
-    },
+    DxDataGrid,
+  },
   props: {
     events: {
       type: Object,
@@ -349,120 +361,157 @@ export default {
       dataSource: gridDataSource,
     };
   },
-  beforeCreate: function(){
-    console.log(this.dataUrl + '  ' + this.keyExpr);
+  beforeCreate: function () {
     let key_exp = this.keyExpr;
     let data_url = this.dataUrl;
-    gridDataSource = new DataSource({
-        key: key_exp,
-        load: async function (loadOptions) {
-          console.log('load Data');
-          let sorts = [];
-          let filters = [];
-          if (!!loadOptions["sort"]) {
-            loadOptions["sort"].forEach(function (item) {
-              sorts.push({
-                ColumnName: item.selector,
-                Type: item.desc ? 1 : 0,
-              });
+
+    gridDataSource = new CustomStore({
+      key: key_exp,
+      load: async function (loadOptions) {
+        console.log("load Data");
+        let sorts = [];
+        let filters = [];
+        if (loadOptions["sort"] !== undefined && loadOptions["sort"] !== null) {
+          loadOptions["sort"].forEach(function (item) {
+            sorts.push({
+              ColumnName: item.selector,
+              Type: item.desc ? 1 : 0,
             });
-          }
-          if (!!loadOptions["filter"]) {
-            if (loadOptions["filter"].hasOwnProperty("filterValue")) {
-              filters.push({
-                ColumnName: loadOptions["filter"][0],
-                Type: DataGrid.getFilterType(loadOptions["filter"][1]),
-                Value: loadOptions["filter"][2],
-              });
-            } else {
-              loadOptions["filter"]
-                .filter(function (item) {
-                  return item !== "and" && item !== "or";
-                })
-                .forEach(function (item) {
-                  filters.push({
-                    ColumnName: item[0],
-                    Type: DataGrid.getFilterType(item[1]),
-                    value: item[2],
-                  });
+          });
+        }
+        if (
+          loadOptions["filter"] !== undefined &&
+          loadOptions["filter"] !== null
+        ) {
+          if (
+            Object.prototype.hasOwnProperty.call(
+              loadOptions["filter"],
+              "filterValue"
+            )
+          ) {
+            filters.push({
+              ColumnName: loadOptions["filter"][0],
+              Type: DataGrid.getFilterType(loadOptions["filter"][1]),
+              Value: loadOptions["filter"][2],
+            });
+          } else {
+            loadOptions["filter"]
+              .filter(function (item) {
+                return item !== "and" && item !== "or";
+              })
+              .forEach(function (item) {
+                filters.push({
+                  ColumnName: item[0],
+                  Type: DataGrid.getFilterType(item[1]),
+                  value: item[2],
                 });
+              });
+          }
+        }
+        var args = {
+          skip: loadOptions["skip"] || 0,
+          take: loadOptions["take"] || 1000,
+          sorts: sorts,
+          filters: filters,
+        };
+        let data = {};
+        if (data !== undefined && data !== null) {
+          switch (typeof data) {
+            case "object": {
+              args = Object.assign({}, args, data);
+              break;
+            }
+            case "function": {
+              args = Object.assign({}, args, data());
+              break;
             }
           }
-          var params = {
-            skip: loadOptions["skip"] || 0,
-            take: loadOptions["take"] || 1000,
-            sorts: sorts,
-            filters: filters,
-          };
-          let data = {};
-          if (!!data) {
-            switch (typeof data) {
-              case "object": {
-                params = Object.assign({}, params, data);
-                break;
-              }
-              case "function": {
-                params = Object.assign({}, params, data());
-                break;
-              }
-            }
-          }
-          return await $fetch(data_url, {
-            method: "post",
-            body: { params },
-          })
-            .then((response) => response.res)
-            .then((data) => ({
+        }
+        return await fetch(data_url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(args),
+        })
+          .then((response) => response.json())
+          .then(async function (data) {
+            return {
               data: data.data,
               totalCount: data.totalCount,
               summary: data.summary,
               groupCount: data.groupCount,
-            }))
-            .catch(() => {
-              throw new Error("Data Loading Error");
-            });
-        },
-      })
+            };
+          })
+          .catch(() => {
+            throw new Error("Data Loading Error");
+          });
+      },
+    });
   },
   methods: {
     onInitialized: function (e) {
-      if (!!events.onInitialized) {
-        events.onInitialized(e);
+      if (
+        this.events.onInitialized !== undefined &&
+        this.events.onInitialized !== null
+      ) {
+        this.events.onInitialized(e);
       }
     },
     onRowClick: function (e) {
-      if (!!events.onRowClick) {
-        events.onRowClick(e);
+      if (
+        this.events.onRowClick !== undefined &&
+        this.events.onRowClick !== null
+      ) {
+        this.events.onRowClick(e);
       }
     },
     onRowDblClick: function (e) {
-      if (!!events.onRowDblClick) {
-        events.onRowDblClick(e);
+      if (
+        this.events.onRowDblClick !== undefined &&
+        this.events.onRowDblClick !== null
+      ) {
+        this.events.onRowDblClick(e);
       }
     },
     onSelectionChanged: function (e) {
-      if (!!events.onSelectionChanged) {
-        events.onSelectionChanged(e);
+      if (
+        this.events.onSelectionChanged !== undefined &&
+        this.events.onSelectionChanged !== null
+      ) {
+        this.events.onSelectionChanged(e);
       }
     },
     onInitNewRow: function (e) {
-      if (!!events.onInitNewRow) {
-        events.onInitNewRow(e);
+      if (
+        this.events.onInitNewRow !== undefined &&
+        this.events.onInitNewRow !== null
+      ) {
+        this.events.onInitNewRow(e);
       }
     },
     onRowPrepared: function (e) {
-      if (!!events.onRowPrepared) {
-        events.onRowPrepared(e);
+      if (
+        this.events.onRowPrepared !== undefined &&
+        this.events.onRowPrepared !== null
+      ) {
+        this.events.onRowPrepared(e);
       }
     },
     onRowUpdated: function (e) {
-      if (!!events.onRowUpdated) {
-        events.onRowUpdated(e);
+      if (
+        this.events.onRowUpdated !== undefined &&
+        this.events.onRowUpdated !== null
+      ) {
+        this.events.onRowUpdated(e);
       }
     },
     onOptionChanged: function (e) {
-      if (!!events.onOptionChanged) {
-        events.onOptionChanged(e);
+      if (
+        this.events.onOptionChanged != undefined &&
+        this.events.onOptionChanged !== null
+      ) {
+        this.events.onOptionChanged(e);
       }
     },
     onContextMenuPreparing: function (e) {
@@ -472,7 +521,7 @@ export default {
           e.items.push({
             text: "Сбросить фильтры",
             onItemClick: function () {
-              table.clearFilter();
+              this.table.clearFilter();
             },
           });
         }
@@ -481,21 +530,18 @@ export default {
           e.items.push({
             text: "Выбор столбцов",
             onItemClick: function () {
-              table.showColumnChooser();
+              this.table.showColumnChooser();
             },
           });
         }
       }
     },
     onCellClick: function (e) {
-      if (!!events.onCellClick) {
-        events.onCellClick(e);
-      }
-    },
-    onCellDblClick: function (e) {
-      Vue.$copyTextContent(e.cellElement[0]);
-      if (!!events.onCellDblClick) {
-        events.onCellDblClick(e);
+      if (
+        this.events.onCellClick !== undefined &&
+        this.events.onCellClick !== null
+      ) {
+        this.events.onCellClick(e);
       }
     },
     onContentReady: function (e) {
@@ -520,8 +566,11 @@ export default {
           at: "center",
         });
       }
-      if (!!events.onContentReady) {
-        events.onContentReady(e);
+      if (
+        this.events.onContentReady !== undefined &&
+        this.events.onContentReady !== null
+      ) {
+        this.events.onContentReady(e);
       }
     },
   },
