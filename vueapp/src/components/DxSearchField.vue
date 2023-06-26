@@ -113,32 +113,12 @@ export default {
         };
       },
     },
-    pager: {
-      type: Object,
-      default: () => {
-        return {
-          showPageSizeSelector: true,
-          allowedPageSizes: [50, 100, 200, 1000],
-          showNavigationButtons: true,
-          visible: true,
-        };
-      },
-    },
     selection: {
       type: Object,
       default: () => {
         return {
           mode: "multiple",
           showCheckBoxesMode: "none",
-        };
-      },
-    },
-    columnChooser: {
-      type: Object,
-      default: () => {
-        return {
-          enabled: false,
-          mode: "select",
         };
       },
     },
@@ -149,38 +129,6 @@ export default {
           mode: "multiple",
         };
       },
-    },
-    columnWidth: {
-      type: Number,
-      default: 200,
-    },
-    columnResizingMode: {
-      type: String,
-      default: "widget",
-    },
-    noDataMess: {
-      type: String,
-      default: "",
-    },
-    remoteOperations: {
-      type: Boolean,
-      default: true,
-    },
-    allowColumnReordering: {
-      type: Boolean,
-      default: true,
-    },
-    allowColumnResizing: {
-      type: Boolean,
-      default: true,
-    },
-    columnAutoWidth: {
-      type: Boolean,
-      default: true,
-    },
-    columns: {
-      type: Array,
-      default: () => [],
     },
   },
   data: function () {

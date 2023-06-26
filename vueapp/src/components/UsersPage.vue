@@ -66,7 +66,7 @@ export default {
       ],
       userEvents:{
         onSelectionChanged: function(e) {
-
+            
         }
       }
     };
