@@ -1,5 +1,6 @@
 <template>
     <DxDataGrid
+    :ref="refKey"
       :data-source="dataSource"
       :columns="columns"
       :remote-operations="remoteOperations"
@@ -229,13 +230,19 @@ export default {
   props: {
     events: {
       type: Object,
-      default: () => {
-        return {};
-      },
+      default: () => { return {}},
+    },
+    paramsData:{
+      type: Object,
+      default: () => { return {}}
     },
     height: {
       type: Number,
       default: 700,
+    },
+    refKey: {
+      type: String,
+      default: "dx_grid",
     },
     dataUrl: {
       type: String,
@@ -358,6 +365,11 @@ export default {
       default: () => [],
     },
   },
+  computed: {
+        dx_grid: function() {
+            return this.$refs[this.refKey].instance;
+        }
+    },
   data: function () {
     return {
       dataSource: gridDataSource,
@@ -366,11 +378,11 @@ export default {
   beforeCreate: function () {
     let key_exp = this.keyExpr;
     let data_url = this.dataUrl;
-
+    let params_data = this.paramsData;
+    
     gridDataSource = new CustomStore({
       key: key_exp,
       load: async function (loadOptions) {
-        console.log("load Data");
         let sorts = [];
         let filters = [];
         if (loadOptions["sort"] !== undefined && loadOptions["sort"] !== null) {
@@ -416,15 +428,10 @@ export default {
           sorts: sorts,
           filters: filters,
         };
-        let data = {};
-        if (data !== undefined && data !== null) {
-          switch (typeof data) {
+        if (params_data !== undefined && params_data !== null) {
+          switch (typeof params_data) {
             case "object": {
-              args = Object.assign({}, args, data);
-              break;
-            }
-            case "function": {
-              args = Object.assign({}, args, data());
+              args = Object.assign({}, args, params_data);
               break;
             }
           }
@@ -452,6 +459,9 @@ export default {
     });
   },
   methods: {
+    getDxGrid: function(){
+      return this.dx_grid;
+    },
     onInitialized: function (e) {
       if (
         this.events.onInitialized !== undefined &&

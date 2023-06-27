@@ -323,7 +323,33 @@ namespace lazarData.Repositories.Administration
                 return new BaseResponse<UserViewModel>(exp);
             }
         }
+        public BaseResponse<UserViewModel> SetRoleToUser(Guid? userId, Guid? roleId)
+        {
+            try
+            {
+                EventType type;
+                if (userId.HasValue && roleId.HasValue)
+                {
+                    var user = Context.Users.Include(x => x.Roles).FirstOrDefault(w => w.Id == userId.Value);
+                    if (user == null)
+                    {
+                        return new BaseResponse<UserViewModel>(new Exception("Пользователь отсутствует"));
+                    }
+                    var role = Context.Roles.FirstOrDefault(x => x.Id == roleId.Value);
 
+                    user.Roles.Add(role);
+                    user.DateChange = DateTime.UtcNow;
+                    type = EventType.Update;
+                    Context.SaveChanges();
+                    //logRepo.LogEvent(SubSystemType.Users, type, currentUserId);
+                }
+                return new BaseResponse<UserViewModel>(new UserViewModel());
+            } catch (Exception exp)
+            {
+                //logRepo.LogEvent(SubSystemType.Users, EventType.Error, currentUserId);
+                return new BaseResponse<UserViewModel>(exp);
+            }
+        }
         public BaseResponseEnumerable DeleteUsers(IEnumerable<Guid> userIds)
         {
             try

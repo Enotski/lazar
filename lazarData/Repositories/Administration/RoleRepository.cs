@@ -22,9 +22,9 @@ namespace lazarData.Repositories.Administration
             logRepo = new EventLogRepository(context);
         }
 
-        public static void FilterData(ref IQueryable<Role> source, IEnumerable<DataGridFilter> filters)
+        public static void FilterData(ref IEnumerable<Role> source, IEnumerable<DataGridFilter> filters)
         {
-            if (filters == null || !filters.Any()) return;
+            if (filters == null || !filters.Any() || source == null) return;
             foreach (var filter in filters)
             {
                 filter.Value = filter.Value.Trim().ToLower();
@@ -75,9 +75,9 @@ namespace lazarData.Repositories.Administration
             }
         }
 
-        public static void SortData(ref IOrderedQueryable<Role> source, IEnumerable<DataGridSort> sorts)
+        public static void SortData(ref IOrderedEnumerable<Role> source, IEnumerable<DataGridSort> sorts)
         {
-            if (sorts == null || !sorts.Any()) return;
+            if (sorts == null || !sorts.Any() || source == null) return;
             foreach (var sort in sorts)
             {
                 switch (sort.ColumnName)
@@ -93,12 +93,24 @@ namespace lazarData.Repositories.Administration
             }
         }
 
-        public IHelperResult GetRolesDataGrid(int skip, int take, IEnumerable<DataGridSort> sorts, IEnumerable<DataGridFilter> filters)
+        public IHelperResult GetRolesDataGrid(int skip, int take, IEnumerable<DataGridSort> sorts, IEnumerable<DataGridFilter> filters, string userKey)
         {
             try
             {
                 DataGridResponseModel<RoleDataGrid> model = new DataGridResponseModel<RoleDataGrid>();
-                var query = GetAll<Role>(true);
+
+                IEnumerable<Role> query = null;
+                if (!string.IsNullOrWhiteSpace(userKey) && Guid.TryParse(userKey, out Guid userId))
+                {
+                    var user = Context.Users.Include(x => x.Roles).FirstOrDefault(x => x.Id == userId);
+                    if(user != null)
+                    {
+                        query = user.Roles ?? new List<Role>();
+                    }
+                } else
+                {
+                    query = GetAll<Role>(true);
+                }
                 FilterData(ref query, filters);
                 var orderedQuery = query.OrderBy(x => 0);
                 SortData(ref orderedQuery, sorts);

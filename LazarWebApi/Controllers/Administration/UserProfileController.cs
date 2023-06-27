@@ -29,6 +29,12 @@ namespace LazarWebApi.Controllers.Administration
             var data = userRepository.AddEditUser(model, CurrentUser.Id);
             return Json(data);
         }
+        [HttpPost(Name = "setRoleToUser")]
+        public JsonResult SetRoleToUser([FromBody] UserViewModel model)
+        {
+            var data = userRepository.SetRoleToUser(model.Id, model.RoleId/*, CurrentUser.Id*/);
+            return Json(data);
+        }
         [HttpGet(Name = "isUserAdmin")]
         public JsonResult IsUserAdmin()
         {

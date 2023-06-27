@@ -1,9 +1,17 @@
 <template>
-    <DxSelectBox
-      :data-source="source"
-      :display-expr="displayExpr"
-      :value-expr="keyExpr"
-    />
+  <DxSelectBox
+    :ref="refKey"
+    :search-enabled="true"
+    :data-source="store"
+    :display-expr="displayExpr"
+    :search-mode="searchModeOption"
+    :search-expr="searchExprOption"
+    :min-search-length="minSearchLengthOption"
+    :show-data-before-search="showDataBeforeSearchOption"
+    :search-timeout="searchTimeoutOption"
+    :height="height"
+    :value="value"
+  />
 </template>
 
 <style scoped></style>
@@ -25,6 +33,16 @@ export default {
         return {};
       },
     },
+    paramsData: {
+      type: Object,
+      default: () => {
+        return {};
+      },
+    },
+    refKey: {
+      type: String,
+      default: "dx_select",
+    },
     dataUrl: {
       type: String,
       default: "",
@@ -37,74 +55,67 @@ export default {
       type: String,
       default: "Id",
     },
+    searchEnabled: {
+      type: Boolean,
+      default: true,
+    },
+    searchModeOption: {
+      type: String,
+      default: "contains",
+    },
+    searchExprOption: {
+      type: String,
+      default: "Name",
+    },
+    searchTimeoutOption: {
+      type: Number,
+      default: 0,
+    },
+    minSearchLengthOption: {
+      type: Number,
+      default: 0,
+    },
+    height: {
+      type: Number,
+      default: 34,
+    },
+    showDataBeforeSearchOption: {
+      type: Boolean,
+      default: false,
+    },
+    // value: {
+    //   type: String,
+    //   default: ''
+    // },
+  },
+  computed: {
+    dx_select: function () {
+      return this.$refs[this.refKey].instance;
+    },
   },
   data: function () {
     return {
       store: source,
+      value: {},
     };
   },
   beforeCreate: function () {
     let key_exp = this.keyExpr;
     let data_url = this.dataUrl;
+    let params_data = this.paramsData;
 
     source = new CustomStore({
       key: key_exp,
       load: async function (loadOptions) {
-        console.log("load Data");
-        let sorts = [];
-        let filters = [];
-        if (loadOptions["sort"] !== undefined && loadOptions["sort"] !== null) {
-          loadOptions["sort"].forEach(function (item) {
-            sorts.push({
-              ColumnName: item.selector,
-              Type: item.desc ? 1 : 0,
-            });
-          });
-        }
-        if (
-          loadOptions["filter"] !== undefined &&
-          loadOptions["filter"] !== null
-        ) {
-          if (
-            Object.prototype.hasOwnProperty.call(
-              loadOptions["filter"],
-              "filterValue"
-            )
-          ) {
-            filters.push({
-              ColumnName: loadOptions["filter"][0],
-              Type: DataGrid.getFilterType(loadOptions["filter"][1]),
-              Value: loadOptions["filter"][2],
-            });
-          } else {
-            loadOptions["filter"]
-              .filter(function (item) {
-                return item !== "and" && item !== "or";
-              })
-              .forEach(function (item) {
-                filters.push({
-                  ColumnName: item[0],
-                  Type: DataGrid.getFilterType(item[1]),
-                  value: item[2],
-                });
-              });
-          }
-        }
-        var args = {
-          skip: loadOptions["skip"] || 0,
-          take: loadOptions["take"] || 1000,
-          sorts: sorts,
-          filters: filters,
+        let args = {
+          searchExpr: loadOptions.searchExpr,
+          searchOperation: loadOptions.searchOperation,
+          searchValue: loadOptions.searchValue,
         };
-        let data = {};
-        if (data !== undefined && data !== null) {
-          switch (typeof data) {
+        if (params_data !== undefined && params_data !== null) {
+          switch (typeof params_data) {
             case "object": {
-              args = Object.assign({}, args, data);
-              break;
-            }
-            case "function": {
-              args = Object.assign({}, args, data());
+              args = Object.assign({}, args, params_data);
               break;
             }
           }
@@ -117,14 +128,7 @@ export default {
           body: JSON.stringify(args),
         })
           .then((response) => response.json())
-          .then(async function (data) {
-            return {
-              data: data.data,
-              totalCount: data.totalCount,
-              summary: data.summary,
-              groupCount: data.groupCount,
-            };
-          })
+          .then((data) => data.Result)
           .catch(() => {
             throw new Error("Data Loading Error");
           });
@@ -132,6 +136,9 @@ export default {
     });
   },
   methods: {
+    getDxSelect: function () {
+      return this.dx_select;
+    },
     onInitialized: function (e) {
       if (
         this.events.onInitialized !== undefined &&

@@ -1,4 +1,5 @@
 using lazarData.Interfaces;
+using lazarData.Models.Response.DataGrid;
 using lazarData.Models.Response.DataGrid.Base;
 using lazarData.Models.Response.ViewModels;
 using lazarData.Repositories.Administration;
@@ -17,14 +18,14 @@ namespace LazarWebApi.Controllers.Administration
         }
 
         [HttpPost(Name = "getRolesGrid")]
-        public JsonResult GetRolesDataGrid([FromBody] DataGridRequestModel args) {
-            var data = roleRepository.GetRolesDataGrid(args.skip, args.take, args.sorts, args.filters);
+        public JsonResult GetRolesDataGrid([FromBody] RoleDataGridRequest args) {
+            var data = roleRepository.GetRolesDataGrid(args.skip, args.take, args.sorts, args.filters, args.selectedUserId);
             return Json(data);
         }
         [HttpPost(Name = "getRoles")]
-        public JsonResult GetRoles([FromBody] string name = "")
+        public JsonResult GetRoles([FromBody] DxSelectRequestModel args)
         {
-            var data = roleRepository.GetRoles(name);
+            var data = roleRepository.GetRoles(args.searchValue ?? "");
             return Json(data);
         }
         [HttpPost(Name = "updateRole")]
