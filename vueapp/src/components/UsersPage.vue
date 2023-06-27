@@ -59,7 +59,7 @@ export default {
       return this.$refs[this.rolesGridRef].getDxGrid();
     },
     dxUsersGrid: function () {
-      return this.$refs[this.rolesGridRef].getDxGrid();
+      return this.$refs[this.usersGridRef].getDxGrid();
     },
     dxSelect: function () {
       return this.$refs[this.rolesSelectRef].getDxSelect();

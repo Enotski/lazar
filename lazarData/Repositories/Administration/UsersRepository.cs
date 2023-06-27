@@ -335,6 +335,8 @@ namespace lazarData.Repositories.Administration
                     {
                         return new BaseResponse<UserViewModel>(new Exception("Пользователь отсутствует"));
                     }
+                    if(user.Roles.Any(x => x.Id ==  roleId.Value)) { return new BaseResponse<UserViewModel>(new UserViewModel()); }
+
                     var role = Context.Roles.FirstOrDefault(x => x.Id == roleId.Value);
 
                     user.Roles.Add(role);
