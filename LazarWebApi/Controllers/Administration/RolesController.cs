@@ -1,6 +1,6 @@
 using lazarData.Interfaces;
 using lazarData.Models.Response.DataGrid;
-using lazarData.Models.Response.DataGrid.Base;
+using lazarData.Models.Response.Dx;
 using lazarData.Models.Response.ViewModels;
 using lazarData.Repositories.Administration;
 using Microsoft.AspNetCore.Mvc;
@@ -23,9 +23,9 @@ namespace LazarWebApi.Controllers.Administration
             return Json(data);
         }
         [HttpPost(Name = "getRoles")]
-        public JsonResult GetRoles([FromBody] DxSelectRequestModel args)
+        public JsonResult GetRoles([FromBody] DxSelectRoleRequest args)
         {
-            var data = roleRepository.GetRoles(args.searchValue ?? "");
+            var data = roleRepository.GetRoles(args.searchValue ?? "", args.selectedUserId);
             return Json(data);
         }
         [HttpPost(Name = "updateRole")]

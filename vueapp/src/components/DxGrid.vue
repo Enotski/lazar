@@ -22,6 +22,7 @@
       :no-data-mess="noDataMess"
       :allow-column-reordering="allowColumnReordering"
       :allow-column-resizing="allowColumnResizing"
+      :editing="editing"
       v-on:initialized="onInitialized"
       v-on:row-click="onRowClick"
       v-on:row-dbl-click="onRowDblClick"
@@ -364,6 +365,30 @@ export default {
       type: Array,
       default: () => [],
     },
+    editing: {
+      type: Object,
+      default: () => {
+        return {
+          allowAdding: false,
+          allowUpdating: false,
+          allowDeleting: false,
+          confirmDelete: false,
+          useIcons: true,
+          mode: 'row',
+          refreshMode: 'full'
+        };
+      },
+    },
+    dataEditFunctions: {
+      type: Object,
+      default: () => {
+        return {
+          insert: null,
+          update: null,
+          remove: null
+        };
+      },
+    },
   },
   computed: {
         dx_grid: function() {
@@ -379,9 +404,13 @@ export default {
     let key_exp = this.keyExpr;
     let data_url = this.dataUrl;
     let params_data = this.paramsData;
-    
+    let data_edit_functions = this.dataEditFunctions
+
     gridDataSource = new CustomStore({
       key: key_exp,
+      insert: data_edit_functions?.insert,
+      update: data_edit_functions?.update,
+      remove: data_edit_functions?.remove,
       load: async function (loadOptions) {
         let sorts = [];
         let filters = [];

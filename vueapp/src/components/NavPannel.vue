@@ -5,9 +5,8 @@
     <div>
       <router-link
         to="/"
-        class="mdi mdi-waveform text-info bi me-2 fs-3 badge-ref"
-        ><span class="navbar-brand mb-0 h1 text-secondary fw-medium"
-          >DSP interactive articles</span
+        class="mdi mdi-waveform text-indigo bi me-2 fs-3 badge-ref"
+        ><span class="navbar-brand mb-0 h1 text-secondary fw-medium">DSP interactive articles</span
         ></router-link
       >
     </div>

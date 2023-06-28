@@ -14,12 +14,15 @@ namespace lazarData.Repositories.Administration
         /// Репозиторий логирования
         /// </summary>
         EventLogRepository logRepo;
+        UserRepository usersRepo;
         /// <summary>
         /// Конструктор
         /// </summary>
         /// <param name="context">Контекст</param>
-        public RoleRepository(IContextRepository context) : base(context) {
+        public RoleRepository(IContextRepository context) : base(context)
+        {
             logRepo = new EventLogRepository(context);
+            usersRepo = new UserRepository(context);
         }
 
         public static void FilterData(ref IEnumerable<Role> source, IEnumerable<DataGridFilter> filters)
@@ -102,11 +105,9 @@ namespace lazarData.Repositories.Administration
                 IEnumerable<Role> query = null;
                 if (!string.IsNullOrWhiteSpace(userKey) && Guid.TryParse(userKey, out Guid userId))
                 {
-                    var user = Context.Users.Include(x => x.Roles).FirstOrDefault(x => x.Id == userId);
-                    if(user != null)
-                    {
-                        query = user.Roles ?? new List<Role>();
-                    }
+                    var user = usersRepo.GetAll<User>(true, x => x.Roles).FirstOrDefault(x => x.Id == userId);
+
+                    query = user != null && user?.Roles?.Count > 0 ? user.Roles : new List<Role>();
                 } else
                 {
                     query = GetAll<Role>(true);
@@ -123,11 +124,21 @@ namespace lazarData.Repositories.Administration
                 return new BaseResponse(exp);
             }
         }
-        public IHelperResult GetRoles(string name)
+        public IHelperResult GetRoles(string name, string userKey)
         {
             try
             {
-                var query = GetAll<Role>(true).Where(x => x.Name.ToLower().Trim().Contains(name.Trim().ToLower()));
+                var query = GetAll<Role>(true);
+                if (!string.IsNullOrWhiteSpace(userKey) && Guid.TryParse(userKey, out Guid userId))
+                {
+                    var user = usersRepo.GetAll<User>(true, x => x.Roles).FirstOrDefault(x => x.Id == userId);
+                    if (user != null && user?.Roles?.Count > 0)
+                    {
+                        query = query.Where(x => !user.Roles.Contains(x));
+                    }
+                }
+
+                query = query.Where(x => x.Name.ToLower().Trim().Contains(name.Trim().ToLower()));
                 return new BaseResponseEnumerable<RoleViewModel>(query.Select(ModelToViewModel()));
             } catch (Exception exp)
             {
@@ -161,7 +172,7 @@ namespace lazarData.Repositories.Administration
             try
             {
                 return new BaseResponse(GetViewById(id, ModelToViewModel(), true));
-            }catch(Exception ex) { return new BaseResponse(ex); }
+            } catch (Exception ex) { return new BaseResponse(ex); }
         }
         /// <summary>
         /// Общий метод редактирования и добавлние новой роли

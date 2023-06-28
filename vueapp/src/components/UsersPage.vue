@@ -3,10 +3,13 @@
     <div class="d-flex flex-row">
       <div>
         <DxGrid
+          :ref="usersGridRef"
           :data-url="urlGetUsers"
           :columns="userColumns"
           :events="userEvents"
           :height="usersTableHeight"
+          :editing="usersGridEditing"
+          :data-edit-functions="usersEditFunctions"
         />
       </div>
       <div class="row ml-5 pt-0 pl-0">
@@ -19,6 +22,7 @@
               class="text-secondary"
               size="small"
               rounded="lg"
+              :disabled="selectDisabled"
               @click="setRoleToUser"
             ></v-btn>
           </div>
@@ -28,6 +32,7 @@
               :data-url="urlGetRolesList"
               :params-data="paramsData"
               :height="38"
+              :disabled="selectDisabled"
             />
           </div>
         </div>
@@ -38,6 +43,8 @@
             :columns="roleColumns"
             :height="rolesTableHeight"
             :params-data="paramsData"
+            :editing="rolesGridEditing"
+            :data-edit-functions="rolesEditFunctions"
           />
         </div>
       </div>
@@ -74,11 +81,40 @@ export default {
       usersGridRef: "users_grid",
       rolesGridRef: "roles_grid",
       rolesSelectRef: "roles_select",
-      paramsData:{
-        selectedUserId: ''
+      selectDisabled: true,
+      paramsData: {
+        selectedUserId: "",
       },
       usersTableHeight: 600,
       rolesTableHeight: 544,
+      rolesGridEditing: {
+        allowAdding: true,
+        allowUpdating: false,
+        allowDeleting: true,
+        confirmDelete: true,
+        useIcons: true,
+        mode: "row",
+        refreshMode: "full",
+      },
+      usersGridEditing: {
+        allowAdding: false,
+        allowUpdating: false,
+        allowDeleting: true,
+        confirmDelete: true,
+        useIcons: true,
+        mode: "row",
+        refreshMode: "full",
+      },
+      usersEditFunctions: {
+        insert: null,
+          update: null,
+          remove: null
+      },
+      rolesEditFunctions: {
+        insert: null,
+          update: null,
+          remove: null
+      },
       userColumns: [
         {
           caption: "№ п/п",
@@ -128,6 +164,12 @@ export default {
 
           this.dxRolesGrid.refresh();
           this.dxSelect.getDataSource().load();
+          if (this.paramsData.selectedUserId === "") {
+            this.selectDisabled = true;
+            this.dxSelect.reset();
+          } else {
+            this.selectDisabled = false;
+          }
         }.bind(this),
       },
     };
@@ -135,12 +177,13 @@ export default {
   methods: {
     setRoleToUser: async function () {
       let role = this.dxSelect.option("value");
+      let dx_UsersGrid = this.dxUsersGrid;
+      let dx_RolesGrid = this.dxRolesGrid;
       if (role !== undefined && role !== null) {
         let args = {
           id: this.paramsData.selectedUserId,
           roleId: role.Id,
         };
-        let el = this;
         await fetch(this.urlSetRoleToUser, {
           method: "POST",
           headers: {
@@ -148,9 +191,9 @@ export default {
           },
           body: JSON.stringify(args),
         })
-          .then(async function () {
-            el.dxUsersGrid.refresh()
-            el.dxRolesGrid.refresh();
+          .then(function () {
+            dx_UsersGrid.refresh();
+            dx_RolesGrid.refresh();
           })
           .catch(() => {
             throw new Error("Data Loading Error");

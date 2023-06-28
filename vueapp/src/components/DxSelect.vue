@@ -11,6 +11,7 @@
     :search-timeout="searchTimeoutOption"
     :height="height"
     :value="value"
+    :disabled="disabled"
   />
 </template>
 
@@ -58,6 +59,10 @@ export default {
     searchEnabled: {
       type: Boolean,
       default: true,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
     },
     searchModeOption: {
       type: String,
