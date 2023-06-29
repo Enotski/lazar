@@ -21,6 +21,8 @@
 import { DxSelectBox } from "devextreme-vue/select-box";
 import CustomStore from "devextreme/data/custom_store";
 
+import sendRequest from '../../utils/requestUtils'
+
 let source = [];
 
 export default {
@@ -87,11 +89,7 @@ export default {
     showDataBeforeSearchOption: {
       type: Boolean,
       default: false,
-    },
-    // value: {
-    //   type: String,
-    //   default: ''
-    // },
+    }
   },
   computed: {
     dx_select: function () {
@@ -125,16 +123,9 @@ export default {
             }
           }
         }
-        return await fetch(data_url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(args),
-        })
-          .then((response) => response.json())
-          .then((data) => data.Result)
-          .catch(() => {
+        return await sendRequest(data_url, "POST", args)
+        .then((data) => data.Result)
+        .catch(() => {
             throw new Error("Data Loading Error");
           });
       },

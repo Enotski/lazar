@@ -9,6 +9,7 @@ namespace lazarData.Enums
     public enum SubSystemType
     {
         Users,
+        Roles,
         Dsp
     }
 }

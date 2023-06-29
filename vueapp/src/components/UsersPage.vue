@@ -89,7 +89,7 @@ export default {
       rolesTableHeight: 544,
       rolesGridEditing: {
         allowAdding: true,
-        allowUpdating: false,
+        allowUpdating: true,
         allowDeleting: true,
         confirmDelete: true,
         useIcons: true,
@@ -107,13 +107,13 @@ export default {
       },
       usersEditFunctions: {
         insert: null,
-          update: null,
-          remove: null
+        update: null,
+        remove: null,
       },
       rolesEditFunctions: {
         insert: null,
-          update: null,
-          remove: null
+        update: null,
+        remove: null,
       },
       userColumns: [
         {

@@ -28,13 +28,19 @@ namespace LazarWebApi.Controllers.Administration
             var data = roleRepository.GetRoles(args.searchValue ?? "", args.selectedUserId);
             return Json(data);
         }
-        [HttpPost(Name = "updateRole")]
-        public JsonResult UpdateRole([FromBody] RoleViewModel model) {
-            var data = roleRepository.UpdateRole(model.Id, model.Name, CurrentUser.Id);
+        [HttpPost(Name = "addRole")]
+        public JsonResult AddRole([FromBody] RoleViewModel model)
+        {
+            var data = roleRepository.AddRole(model, CurrentUser.Id);
             return Json(data);
         }
-        [HttpPost(Name = "removeRoles")]
-        public JsonResult DeleteRoles([FromBody] List<Guid> ListIdRoles) {
+        [HttpPost(Name = "updateRole")]
+        public JsonResult UpdateRole([FromBody] RoleViewModel model) {
+            var data = roleRepository.UpdateRole(model, CurrentUser.Id);
+            return Json(data);
+        }
+        [HttpPost(Name = "deleteRole")]
+        public JsonResult DeleteRole([FromBody] Guid id) {
             var data = roleRepository.DeleteRoles(ListIdRoles, CurrentUser.Id);
             return Json(data);
         }

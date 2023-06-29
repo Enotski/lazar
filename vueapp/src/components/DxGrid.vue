@@ -1,41 +1,41 @@
 <template>
-    <DxDataGrid
+  <DxDataGrid
     :ref="refKey"
-      :data-source="dataSource"
-      :columns="columns"
-      :remote-operations="remoteOperations"
-      :column-auto-width="columnAutoWidth"
-      :filter-row="filterRow"
-      :header-filter="headerFilter"
-      :pager="pager"
-      :selection="selection"
-      :height="height"
-      :paging="paging"
-      :key-expr="keyExpr"
-      :show-column-lines="showColumnLines"
-      :show-row-lines="showRowLines"
-      :row-alternation-enabled="rowAlternationEnabled"
-      :show-borders="showBorders"
-      :column-chooser="columnChooser"
-      :column-resizing-mode="columnResizingMode"
-      :column-width="columnWidth"
-      :no-data-mess="noDataMess"
-      :allow-column-reordering="allowColumnReordering"
-      :allow-column-resizing="allowColumnResizing"
-      :editing="editing"
-      v-on:initialized="onInitialized"
-      v-on:row-click="onRowClick"
-      v-on:row-dbl-click="onRowDblClick"
-      v-on:selection-changed="onSelectionChanged"
-      v-on:init-new-row="onInitNewRow"
-      v-on:row-prepared="onRowPrepared"
-      v-on:row-updated="onRowUpdated"
-      v-on:option-changed="onOptionChanged"
-      v-on:context-menu-preparing="onContextMenuPreparing"
-      v-on:cell-click="onCellClick"
-      v-on:content-ready="onContentReady"
-    >
-    </DxDataGrid>
+    :data-source="dataSource"
+    :columns="columns"
+    :remote-operations="remoteOperations"
+    :column-auto-width="columnAutoWidth"
+    :filter-row="filterRow"
+    :header-filter="headerFilter"
+    :pager="pager"
+    :selection="selection"
+    :height="height"
+    :paging="paging"
+    :key-expr="keyExpr"
+    :show-column-lines="showColumnLines"
+    :show-row-lines="showRowLines"
+    :row-alternation-enabled="rowAlternationEnabled"
+    :show-borders="showBorders"
+    :column-chooser="columnChooser"
+    :column-resizing-mode="columnResizingMode"
+    :column-width="columnWidth"
+    :no-data-mess="noDataMess"
+    :allow-column-reordering="allowColumnReordering"
+    :allow-column-resizing="allowColumnResizing"
+    :editing="editing"
+    v-on:initialized="onInitialized"
+    v-on:row-click="onRowClick"
+    v-on:row-dbl-click="onRowDblClick"
+    v-on:selection-changed="onSelectionChanged"
+    v-on:init-new-row="onInitNewRow"
+    v-on:row-prepared="onRowPrepared"
+    v-on:row-updated="onRowUpdated"
+    v-on:option-changed="onOptionChanged"
+    v-on:context-menu-preparing="onContextMenuPreparing"
+    v-on:cell-click="onCellClick"
+    v-on:content-ready="onContentReady"
+  >
+  </DxDataGrid>
 </template>
 
 <style scoped>
@@ -45,6 +45,8 @@
 <script>
 import DxDataGrid from "devextreme-vue/data-grid";
 import CustomStore from "devextreme/data/custom_store";
+
+import sendRequest from "../../utils/requestUtils";
 
 import moment from "moment";
 
@@ -198,14 +200,7 @@ export const DataGrid = {
     return {
       dataSource: new CustomStore({
         load: async function () {
-          return await fetch(url, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(params),
-          })
-            .then((response) => response.json())
+          return await sendRequest(url, "POST", params)
             .then(async function (data) {
               let options = [];
               data.forEach(function (item) {
@@ -231,11 +226,15 @@ export default {
   props: {
     events: {
       type: Object,
-      default: () => { return {}},
+      default: () => {
+        return {};
+      },
     },
-    paramsData:{
+    paramsData: {
       type: Object,
-      default: () => { return {}}
+      default: () => {
+        return {};
+      },
     },
     height: {
       type: Number,
@@ -374,8 +373,8 @@ export default {
           allowDeleting: false,
           confirmDelete: false,
           useIcons: true,
-          mode: 'row',
-          refreshMode: 'full'
+          mode: "row",
+          refreshMode: "full",
         };
       },
     },
@@ -385,16 +384,16 @@ export default {
         return {
           insert: null,
           update: null,
-          remove: null
+          remove: null,
         };
       },
     },
   },
   computed: {
-        dx_grid: function() {
-            return this.$refs[this.refKey].instance;
-        }
+    dx_grid: function () {
+      return this.$refs[this.refKey].instance;
     },
+  },
   data: function () {
     return {
       dataSource: gridDataSource,
@@ -404,7 +403,7 @@ export default {
     let key_exp = this.keyExpr;
     let data_url = this.dataUrl;
     let params_data = this.paramsData;
-    let data_edit_functions = this.dataEditFunctions
+    let data_edit_functions = this.dataEditFunctions;
 
     gridDataSource = new CustomStore({
       key: key_exp,
@@ -465,30 +464,21 @@ export default {
             }
           }
         }
-        return await fetch(data_url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(args),
-        })
-          .then((response) => response.json())
-          .then(async function (data) {
-            return {
-              data: data.data,
-              totalCount: data.totalCount,
-              summary: data.summary,
-              groupCount: data.groupCount,
-            };
-          })
-          .catch(() => {
-            throw new Error("Data Loading Error");
-          });
+        return await sendRequest(data_url, "POST", args).then(async function (
+          data
+        ) {
+          return {
+            data: data.data,
+            totalCount: data.totalCount,
+            summary: data.summary,
+            groupCount: data.groupCount,
+          };
+        });
       },
     });
   },
   methods: {
-    getDxGrid: function(){
+    getDxGrid: function () {
       return this.dx_grid;
     },
     onInitialized: function (e) {

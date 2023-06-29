@@ -174,6 +174,38 @@ namespace lazarData.Repositories.Administration
                 return new BaseResponse(GetViewById(id, ModelToViewModel(), true));
             } catch (Exception ex) { return new BaseResponse(ex); }
         }
+        public BaseResponse AddRole(RoleViewModel model, Guid userId)
+        {
+            try
+            {
+                Exception exc = new Exception();
+                if (string.IsNullOrWhiteSpace(model.Name))
+                {
+                    throw new Exception("Заполните все поля");
+                }
+
+                if (Context.Roles.FirstOrDefault(w => w.Name == model.Name) != null)
+                {
+                    throw new Exception("Такая роль уже существует");
+                }
+
+                var newData = new Role
+                {
+                    Id = Guid.NewGuid(),
+                    Name = model.Name,
+                    DateChange = DateTime.UtcNow
+                };
+
+                Context.Roles.Add(newData);
+                Context.SaveChanges();
+                logRepo.LogEvent(SubSystemType.Users, EventType.Create, userId);
+                return new BaseResponse(new BaseResponseModel());
+            } catch (Exception exc)
+            {
+                logRepo.LogEvent(SubSystemType.Roles, EventType.Error, userId, "Ошибка добавления");
+                return new BaseResponse(exc);
+            }
+        }
         /// <summary>
         /// Общий метод редактирования и добавлние новой роли
         /// </summary>
@@ -181,62 +213,33 @@ namespace lazarData.Repositories.Administration
         /// <param name="NameRole">Название роли</param>
         /// <param name="GroupAD">Группа Ад в которую должна входить данная роль</param>
         /// <returns></returns>
-        public BaseResponse UpdateRole(Guid? IdRole, string NameRole, Guid userId)
+        public BaseResponse UpdateRole(RoleViewModel model, Guid userId)
         {
-            Role oldData = new Role();
-            Role newData = new Role();
-            EventType logType;
             try
             {
+                var oldData = new Role();
+                var newData = new Role();
+
                 Exception exc = new Exception();
-                if (string.IsNullOrWhiteSpace(NameRole))
+                if (string.IsNullOrWhiteSpace(model.Name))
                 {
                     throw new Exception("Заполните все поля");
                 }
-                var CurrentUserId = userId;
-                if (IdRole == Guid.Empty || IdRole == null)
+
+                newData = GetAll<Role>(false).FirstOrDefault(w => w.Id == model.Id);
+                oldData = new Role
                 {
-                    if (Context.Roles.FirstOrDefault(w => w.Name == NameRole) != null)
-                    {
-                        throw new Exception("Такая роль уже существует");
-                    }
-
-                    newData = new Role
-                    {
-                        Id = Guid.NewGuid(),
-                        Name = NameRole,
-                        DateChange = DateTime.UtcNow
-                    };
-
-                    Context.Roles.Add(newData);
-                    logType = EventType.Create;
-                } else
-                {
-                    newData = GetAll<Role>(false).FirstOrDefault(w => w.Id == IdRole);
-                    oldData = new Role
-                    {
-                        Name = newData.Name,
-                    };
-                    newData.Name = NameRole;
-                    newData.DateChange = DateTime.UtcNow;
-
-                    logType = EventType.Create;
-                }
-
+                    Name = newData.Name,
+                };
+                newData.Name = model.Name;
+                newData.DateChange = DateTime.UtcNow;
                 Context.SaveChanges();
 
-                if (logType == EventType.Create)
-                {
-                    logRepo.LogEvent(SubSystemType.Users, EventType.Create, userId);
-                } else
-                {
-                    logRepo.LogEvent(SubSystemType.Users, EventType.Update, userId, $"Редактирование роли:\n до изменений - {oldData.Name};\n после изменений - {newData.Name}");
-                }
-
+                logRepo.LogEvent(SubSystemType.Users, EventType.Update, userId, $"Редактирование роли:\n до изменений - {oldData.Name};\n после изменений - {newData.Name}");
                 return new BaseResponse(new BaseResponseModel());
             } catch (Exception exc)
             {
-                logRepo.LogEvent(SubSystemType.Users, EventType.Error, userId, "Ошибка добавления/редактирования");
+                logRepo.LogEvent(SubSystemType.Users, EventType.Error, userId, "Ошибка редактирования");
                 return new BaseResponse(exc);
             }
         }

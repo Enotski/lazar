@@ -1,20 +1,7 @@
-export async function sendRequest(url, method = "GET", args = {}) {
-  const params = Object.keys(data)
-    .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(args[key])}`)
-    .join("&");
-
-  if (method === "GET") {
-    return fetch(url, {
-      method,
-      credentials: "include",
-    }).then((result) =>
-      result.json().then((json) => {
-        if (result.ok) return json.data;
-        throw json.Message;
-      })
-    );
-  }
-
+export default async function sendRequest(url, method = "GET", args = {}) {
+  // const params = Object.keys(data)
+  //   .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(args[key])}`)
+  //   .join("&");
   return await fetch(url, {
     method: method,
     headers: {
