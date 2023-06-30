@@ -6,7 +6,8 @@
       <router-link
         to="/"
         class="mdi mdi-waveform text-indigo bi me-2 fs-3 badge-ref"
-        ><span class="navbar-brand mb-0 h1 text-secondary fw-medium">DSP interactive articles</span
+        ><span class="navbar-brand mb-0 h1 text-secondary fw-medium"
+          >DSP interactive articles</span
         ></router-link
       >
     </div>
@@ -47,16 +48,28 @@
                 <v-container>
                   <v-row>
                     <v-col cols="12" class="px-0">
-                      <v-text-field label="Login*" required></v-text-field>
+                      <v-text-field
+                        label="Login*"
+                        required
+                        clearable
+                        variant="outlined"
+                      ></v-text-field>
                     </v-col>
                     <v-col v-if="register" cols="12" class="px-0">
-                      <v-text-field label="Email*" required></v-text-field>
+                      <v-text-field
+                        label="Email*"
+                        required
+                        clearable
+                        variant="outlined"
+                      ></v-text-field>
                     </v-col>
                     <v-col cols="12" class="px-0">
                       <v-text-field
                         label="Password*"
                         type="password"
                         required
+                        clearable
+                        variant="outlined"
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -86,12 +99,12 @@
       <div class="col-auto">
         <div class="pr-5">
           <DxSelect
-              :ref="rolesSelectRef"
-              :data-url="getPageArticles"
-              :width="width"
-            />
+            :ref="rolesSelectRef"
+            :data-url="getPageArticles"
+            :width="width"
+          />
         </div>
-        
+
         <!-- <v-text-field
           clearable
           density="compact"
@@ -118,12 +131,12 @@ export default defineComponent({
   },
   data() {
     return {
-      width:"400",
+      width: "400",
       loading: false,
       post: null,
       dialog: false,
       register: false,
-      getPageArticles: `${URL}/Roles/GetRoles`
+      getPageArticles: `${URL}/Roles/GetRoles`,
     };
   },
   created() {},
