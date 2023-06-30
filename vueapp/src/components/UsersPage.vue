@@ -56,6 +56,9 @@
 import DxGrid from "./DxGrid.vue";
 import DxSelect from "./DxSelect.vue";
 
+import sendRequest from "../../utils/requestUtils";
+
+const URL = "https://localhost:7188";
 export default {
   components: {
     DxGrid,
@@ -68,16 +71,16 @@ export default {
     dxUsersGrid: function () {
       return this.$refs[this.usersGridRef].getDxGrid();
     },
-    dxSelect: function () {
+    dxRolesSelect: function () {
       return this.$refs[this.rolesSelectRef].getDxSelect();
     },
   },
   data() {
     return {
-      urlGetUsers: "https://localhost:7188/Users/GetUsersDataGrid",
-      urlGetRoles: "https://localhost:7188/Roles/GetRolesDataGrid",
-      urlGetRolesList: "https://localhost:7188/Roles/GetRoles",
-      urlSetRoleToUser: "https://localhost:7188/UserProfile/SetRoleToUser",
+      urlGetUsers: `${URL}/Users/GetUsersDataGrid`,
+      urlGetRoles: `${URL}/Roles/GetRolesDataGrid`,
+      urlGetRolesList: `${URL}/Roles/GetRoles`,
+      urlSetRoleToUser: `${URL}/UserProfile/SetRoleToUser`,
       usersGridRef: "users_grid",
       rolesGridRef: "roles_grid",
       rolesSelectRef: "roles_select",
@@ -97,8 +100,8 @@ export default {
         refreshMode: "full",
       },
       usersGridEditing: {
-        allowAdding: false,
-        allowUpdating: false,
+        allowAdding: true,
+        allowUpdating: true,
         allowDeleting: true,
         confirmDelete: true,
         useIcons: true,
@@ -106,14 +109,49 @@ export default {
         refreshMode: "full",
       },
       usersEditFunctions: {
-        insert: null,
-        update: null,
-        remove: null,
+        insert: async (values) =>
+          await sendRequest(`${URL}/Users/AddUser`, "POST", values),
+        update: async (key, values) =>
+          await sendRequest(`${URL}/Users/UpdateUser`, "POST", {
+            id: key,
+            email: values.Email,
+            login: values.Login,
+          }),
+        remove: async (key) =>
+          await sendRequest(`${URL}/Users/DeleteUser`, "POST", {
+            id: key,
+          }),
       },
       rolesEditFunctions: {
-        insert: null,
-        update: null,
-        remove: null,
+        insert: async (values) =>
+          await sendRequest(`${URL}/Roles/AddRole`, "POST", values).then(() => {
+            this.updateRolesSelect();
+          }),
+        update: async (key, values) =>
+          await sendRequest(`${URL}/Roles/UpdateRole`, "POST", {
+            id: key,
+            name: values.Name,
+          }).then(() => {
+            this.dxUsersGrid.refresh();
+            this.updateRolesSelect();
+          }),
+        remove: async (key) => {
+          if (this.paramsData.selectedUserId === "")
+            await sendRequest(`${URL}/Roles/DeleteRole`, "POST", {
+              id: key,
+            }).then(() => {
+              this.dxUsersGrid.refresh();
+              this.updateRolesSelect();
+            });
+          else
+            await sendRequest(`${URL}/Users/RemoveRoleFromUser`, "POST", {
+              id: this.paramsData.selectedUserId,
+              roleId: key,
+            }).then(() => {
+              this.dxUsersGrid.refresh();
+              this.updateRolesSelect();
+            });
+        },
       },
       userColumns: [
         {
@@ -122,10 +160,6 @@ export default {
           allowSorting: false,
           allowFiltering: false,
           width: 60,
-        },
-        {
-          caption: "ФИО",
-          dataField: "FullName",
         },
         {
           caption: "Логин",
@@ -163,10 +197,10 @@ export default {
               : "";
 
           this.dxRolesGrid.refresh();
-          this.dxSelect.getDataSource().load();
+          this.dxRolesSelect.getDataSource().load();
           if (this.paramsData.selectedUserId === "") {
             this.selectDisabled = true;
-            this.dxSelect.reset();
+            this.dxRolesSelect.reset();
           } else {
             this.selectDisabled = false;
           }
@@ -175,10 +209,15 @@ export default {
     };
   },
   methods: {
+    updateRolesSelect() {
+      let select = this.dxRolesSelect;
+      select.getDataSource().load();
+      select.reset();
+    },
     setRoleToUser: async function () {
-      let role = this.dxSelect.option("value");
-      let dx_UsersGrid = this.dxUsersGrid;
-      let dx_RolesGrid = this.dxRolesGrid;
+      let el = this;
+      let role = this.dxRolesSelect.option("value");
+
       if (role !== undefined && role !== null) {
         let args = {
           id: this.paramsData.selectedUserId,
@@ -192,8 +231,9 @@ export default {
           body: JSON.stringify(args),
         })
           .then(function () {
-            dx_UsersGrid.refresh();
-            dx_RolesGrid.refresh();
+            el.dxUsersGrid.refresh();
+            el.dxRolesGrid.refresh();
+            el.updateRolesSelect();
           })
           .catch(() => {
             throw new Error("Data Loading Error");

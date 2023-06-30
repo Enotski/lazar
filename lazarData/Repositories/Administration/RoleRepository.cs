@@ -174,7 +174,7 @@ namespace lazarData.Repositories.Administration
                 return new BaseResponse(GetViewById(id, ModelToViewModel(), true));
             } catch (Exception ex) { return new BaseResponse(ex); }
         }
-        public BaseResponse AddRole(RoleViewModel model, Guid userId)
+        public BaseResponse AddRole(RoleViewModel model, Guid? userId = null)
         {
             try
             {
@@ -198,11 +198,11 @@ namespace lazarData.Repositories.Administration
 
                 Context.Roles.Add(newData);
                 Context.SaveChanges();
-                logRepo.LogEvent(SubSystemType.Users, EventType.Create, userId);
+                logRepo.LogEvent(SubSystemType.Users, EventType.Create, userId.GetValueOrDefault());
                 return new BaseResponse(new BaseResponseModel());
             } catch (Exception exc)
             {
-                logRepo.LogEvent(SubSystemType.Roles, EventType.Error, userId, "Ошибка добавления");
+                logRepo.LogEvent(SubSystemType.Roles, EventType.Error, userId.GetValueOrDefault(), "Ошибка добавления");
                 return new BaseResponse(exc);
             }
         }
@@ -213,7 +213,7 @@ namespace lazarData.Repositories.Administration
         /// <param name="NameRole">Название роли</param>
         /// <param name="GroupAD">Группа Ад в которую должна входить данная роль</param>
         /// <returns></returns>
-        public BaseResponse UpdateRole(RoleViewModel model, Guid userId)
+        public BaseResponse UpdateRole(RoleViewModel model, Guid? userId = null)
         {
             try
             {
@@ -235,28 +235,46 @@ namespace lazarData.Repositories.Administration
                 newData.DateChange = DateTime.UtcNow;
                 Context.SaveChanges();
 
-                logRepo.LogEvent(SubSystemType.Users, EventType.Update, userId, $"Редактирование роли:\n до изменений - {oldData.Name};\n после изменений - {newData.Name}");
+                logRepo.LogEvent(SubSystemType.Users, EventType.Update, userId.GetValueOrDefault(), $"Редактирование роли:\n до изменений - {oldData.Name};\n после изменений - {newData.Name}");
                 return new BaseResponse(new BaseResponseModel());
             } catch (Exception exc)
             {
-                logRepo.LogEvent(SubSystemType.Users, EventType.Error, userId, "Ошибка редактирования");
+                logRepo.LogEvent(SubSystemType.Users, EventType.Error, userId.GetValueOrDefault(), "Ошибка редактирования");
                 return new BaseResponse(exc);
             }
         }
         /// <summary>
-        /// Удаление выбранных ролей
+        /// Удаление выбранной роли
         /// </summary>
-        /// <param name="ListIdRoles">Список выбранных Ид ролей для удаления</param>
+        /// <param name="id">Список выбранных Ид ролей для удаления</param>
         /// <returns></returns>
-        public BaseResponse DeleteRoles(List<Guid> ListIdRoles, Guid userId)
+        public BaseResponse DeleteRole(Guid? id, Guid? userId = null)
         {
             try
             {
-                Role role = new Role();
-                List<Role> ListRols = new List<Role>();
-                foreach (var Id in ListIdRoles)
+                var roleModel = Context.Roles.FirstOrDefault(w => w.Id == id);
+                if(roleModel != null)
                 {
-                    var roleModel = Context.Roles.FirstOrDefault(w => w.Id == Id);
+                    Context.Roles.Remove(roleModel);
+                    Context.SaveChanges();
+
+                    logRepo.LogEvent(SubSystemType.Users, EventType.Delete, userId.GetValueOrDefault(), $"Удаление роли:\n ({roleModel.Name})");
+                }
+                return new BaseResponse(new RoleViewModel());
+            } catch (Exception exc)
+            {
+                logRepo.LogEvent(SubSystemType.Users, EventType.Error, userId.GetValueOrDefault(), $"Удаление ролей");
+                return new BaseResponse(exc);
+            }
+        }
+        public BaseResponse DeleteRoles(List<Guid> ids, Guid userId)
+        {
+            try
+            {
+                List<Role> ListRols = new List<Role>();
+                foreach (var id in ids)
+                {
+                    var roleModel = Context.Roles.FirstOrDefault(w => w.Id == id);
                     ListRols.Add(roleModel);
                 }
                 var rolesLog = string.Join(", ", ListRols.Select(x => x.Name));

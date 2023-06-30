@@ -84,7 +84,15 @@
         </v-row>
       </div>
       <div class="col-auto">
-        <v-text-field
+        <div class="pr-5">
+          <DxSelect
+              :ref="rolesSelectRef"
+              :data-url="getPageArticles"
+              :width="width"
+            />
+        </div>
+        
+        <!-- <v-text-field
           clearable
           density="compact"
           prepend-inner-icon="mdi-magnify"
@@ -92,7 +100,7 @@
           hide-details
           variant="outlined"
           class="search-field mr-5"
-        ></v-text-field>
+        ></v-text-field> -->
       </div>
     </div>
   </nav>
@@ -101,13 +109,21 @@
 <script>
 import { defineComponent } from "vue";
 
+import DxSelect from "./DxSelect.vue";
+const URL = "https://localhost:7188";
+
 export default defineComponent({
+  components: {
+    DxSelect,
+  },
   data() {
     return {
+      width:"400",
       loading: false,
       post: null,
       dialog: false,
       register: false,
+      getPageArticles: `${URL}/Roles/GetRoles`
     };
   },
   created() {},

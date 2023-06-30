@@ -10,6 +10,7 @@
     :show-data-before-search="showDataBeforeSearchOption"
     :search-timeout="searchTimeoutOption"
     :height="height"
+    :width="width"
     :value="value"
     :disabled="disabled"
   />
@@ -85,6 +86,10 @@ export default {
     height: {
       type: Number,
       default: 34,
+    },
+    width: {
+      type: String,
+      default: 'auto',
     },
     showDataBeforeSearchOption: {
       type: Boolean,

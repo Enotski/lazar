@@ -8,6 +8,6 @@ namespace lazarData.Models.Response.ViewModels {
     public class RoleViewModel : BaseResponseModel
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; } = "";
     }
 }

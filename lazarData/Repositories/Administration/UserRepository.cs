@@ -16,7 +16,7 @@ namespace lazarData.Repositories.Administration
         {
             logRepo = new EventLogRepository(context);
         }
-        public IHelperResult GetUsersDataGrid(int skip, int take, IEnumerable<DataGridSort>  sorts, IEnumerable<DataGridFilter> filters)
+        public IHelperResult GetUsersDataGrid(int skip, int take, IEnumerable<DataGridSort> sorts, IEnumerable<DataGridFilter> filters)
         {
             try
             {
@@ -32,7 +32,7 @@ namespace lazarData.Repositories.Administration
                 return model;
             } catch (Exception exp)
             {
-                return  new BaseResponse(exp);
+                return new BaseResponse(exp);
             }
         }
 
@@ -323,27 +323,133 @@ namespace lazarData.Repositories.Administration
                 return new BaseResponse<UserViewModel>(exp);
             }
         }
+        public BaseResponse AddUser(UserViewModel model, Guid? userId = null)
+        {
+            try
+            {
+                model.Password = new Random().Next(15000).ToString();
+                //if (string.IsNullOrWhiteSpace(model.Login) || string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
+                //{
+                //    throw new Exception("Заполните все поля");
+                //}
+
+                if (Context.Users.FirstOrDefault(w => w.Login == model.Login || w.Email == model.Email) != null)
+                {
+                    throw new Exception("Такой пользователь уже существует");
+                }
+
+                var newData = new User
+                {
+                    Id = Guid.NewGuid(),
+                    Login = model.Login,
+                    Email = model.Email,
+                    Password = model.Password,
+                    DateChange = DateTime.UtcNow
+                };
+
+                Context.Users.Add(newData);
+                Context.SaveChanges();
+                logRepo.LogEvent(SubSystemType.Users, EventType.Create, userId.GetValueOrDefault());
+                return new BaseResponse(new BaseResponseModel());
+            } catch (Exception exc)
+            {
+                logRepo.LogEvent(SubSystemType.Users, EventType.Error, userId.GetValueOrDefault(), "Ошибка добавления");
+                return new BaseResponse(exc);
+            }
+        }
+        /// <summary>
+        /// Общий метод редактирования и добавлние новой роли
+        /// </summary>
+        /// <param name="IdRole">Ид Роли выбранной</param>
+        /// <param name="NameRole">Название роли</param>
+        /// <param name="GroupAD">Группа Ад в которую должна входить данная роль</param>
+        /// <returns></returns>
+        public BaseResponse UpdateUser(UserViewModel model, Guid? userId = null)
+        {
+            try
+            {
+                var oldData = new User();
+                var newData = new User();
+                model.Password = new Random().Next(15000).ToString();
+                Exception exc = new Exception();
+                //if (string.IsNullOrWhiteSpace(model.Login) || string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
+                //{
+                //    throw new Exception("Заполните все поля");
+                //}
+
+                newData = GetAll<User>(false).FirstOrDefault(w => w.Id == model.Id);
+                oldData = new User
+                {
+                    Login = newData.Login,
+                    Email = newData.Email,
+                };
+
+                var user = Context.Users.FirstOrDefault(w => w.Id == model.Id);
+                if (user == null)
+                {
+                    return new BaseResponse(new Exception("Пользователь отсутствует"));
+                }
+
+                user.Password = model.Password;
+                user.Email = model.Email;
+                user.Login = model.Login;
+                user.DateChange = DateTime.UtcNow;
+                Context.SaveChanges();
+                logRepo.LogEvent(SubSystemType.Users, EventType.Update, userId.GetValueOrDefault(), $"Редактирование роли:\n до изменений - {oldData.Login} / {oldData.Email};\n после изменений - {newData.Login} / {newData.Email}");
+                return new BaseResponse(new BaseResponseModel());
+            } catch (Exception exc)
+            {
+                logRepo.LogEvent(SubSystemType.Users, EventType.Error, userId.GetValueOrDefault(), "Ошибка редактирования");
+                return new BaseResponse(exc);
+            }
+        }
         public BaseResponse<UserViewModel> SetRoleToUser(Guid? userId, Guid? roleId)
         {
             try
             {
-                EventType type;
                 if (userId.HasValue && roleId.HasValue)
                 {
-                    var user = Context.Users.Include(x => x.Roles).FirstOrDefault(w => w.Id == userId.Value);
+                    var user = GetAll<User>(false, x => x.Roles).FirstOrDefault(w => w.Id == userId.Value);
                     if (user == null)
                     {
                         return new BaseResponse<UserViewModel>(new Exception("Пользователь отсутствует"));
                     }
-                    if(user.Roles.Any(x => x.Id ==  roleId.Value)) { return new BaseResponse<UserViewModel>(new UserViewModel()); }
+                    if (user.Roles.Any(x => x.Id == roleId.Value)) { return new BaseResponse<UserViewModel>(new UserViewModel()); }
 
                     var role = Context.Roles.FirstOrDefault(x => x.Id == roleId.Value);
 
                     user.Roles.Add(role);
                     user.DateChange = DateTime.UtcNow;
-                    type = EventType.Update;
                     Context.SaveChanges();
-                    //logRepo.LogEvent(SubSystemType.Users, type, currentUserId);
+                    //logRepo.LogEvent(SubSystemType.Users, EventType.Update, currentUserId);
+                }
+                return new BaseResponse<UserViewModel>(new UserViewModel());
+            } catch (Exception exp)
+            {
+                //logRepo.LogEvent(SubSystemType.Users, EventType.Error, currentUserId);
+                return new BaseResponse<UserViewModel>(exp);
+            }
+        }
+        public BaseResponse<UserViewModel> RemoveRoleFromUser(Guid? userId, Guid? roleId)
+        {
+            try
+            {
+                if (userId.HasValue && roleId.HasValue)
+                {
+                    var user = GetAll<User>(false, x => x.Roles).FirstOrDefault(w => w.Id == userId.Value);
+                    if (user == null)
+                    {
+                        return new BaseResponse<UserViewModel>(new Exception("Пользователь отсутствует"));
+                    }
+
+                    if (user.Roles.Any(x => x.Id == roleId)) {
+                        var role = user.Roles.FirstOrDefault(x => x.Id == roleId.Value);
+
+                        user.Roles.Remove(role);
+                        user.DateChange = DateTime.UtcNow;
+                        Context.SaveChanges();
+                    }
+                    //logRepo.LogEvent(SubSystemType.Users, EventType.Update, currentUserId);
                 }
                 return new BaseResponse<UserViewModel>(new UserViewModel());
             } catch (Exception exp)
@@ -364,6 +470,30 @@ namespace lazarData.Repositories.Administration
             } catch (Exception exp)
             {
                 return new BaseResponseEnumerable(exp);
+            }
+        }
+        /// <summary>
+        /// Удаление выбранной роли
+        /// </summary>
+        /// <param name="id">Список выбранных Ид ролей для удаления</param>
+        /// <returns></returns>
+        public BaseResponse DeleteUser(Guid? id, Guid? userId = null)
+        {
+            try
+            {
+                var userModel = GetEntityById<User>(id.Value);
+                if (userModel != null)
+                {
+                    Context.Users.Remove(userModel);
+                    Context.SaveChanges();
+
+                    logRepo.LogEvent(SubSystemType.Users, EventType.Delete, userId.GetValueOrDefault(), $"Удаление роли:\n ({userModel.Login})");
+                }
+                return new BaseResponse(new RoleViewModel());
+            } catch (Exception exc)
+            {
+                logRepo.LogEvent(SubSystemType.Users, EventType.Error, userId.GetValueOrDefault(), $"Удаление ролей");
+                return new BaseResponse(exc);
             }
         }
     }

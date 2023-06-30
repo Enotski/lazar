@@ -1,7 +1,5 @@
 using lazarData.Interfaces;
-using lazarData.Models.Administration;
 using lazarData.Models.Response.ViewModels;
-using lazarData.Repositories;
 using lazarData.Repositories.Administration;
 using lazarData.Utils;
 using Microsoft.AspNetCore.Mvc;

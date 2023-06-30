@@ -31,17 +31,17 @@ namespace LazarWebApi.Controllers.Administration
         [HttpPost(Name = "addRole")]
         public JsonResult AddRole([FromBody] RoleViewModel model)
         {
-            var data = roleRepository.AddRole(model, CurrentUser.Id);
+            var data = roleRepository.AddRole(model);
             return Json(data);
         }
         [HttpPost(Name = "updateRole")]
         public JsonResult UpdateRole([FromBody] RoleViewModel model) {
-            var data = roleRepository.UpdateRole(model, CurrentUser.Id);
+            var data = roleRepository.UpdateRole(model);
             return Json(data);
         }
         [HttpPost(Name = "deleteRole")]
-        public JsonResult DeleteRole([FromBody] Guid id) {
-            var data = roleRepository.DeleteRoles(ListIdRoles, CurrentUser.Id);
+        public JsonResult DeleteRole([FromBody] RoleViewModel model) {
+            var data = roleRepository.DeleteRole(model.Id);
             return Json(data);
         }
         [HttpGet(Name = "getRoleModel")]
