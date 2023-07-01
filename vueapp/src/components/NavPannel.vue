@@ -98,22 +98,22 @@
       </div>
       <div class="col-auto">
         <div class="pr-5">
-          <DxSelect
-            :ref="rolesSelectRef"
-            :data-url="getPageArticles"
-            :width="width"
-          />
-        </div>
+          <v-menu transition="slide-x-transition">
+            <template v-slot:activator="{ props }">
+              <v-btn color="primary" v-bind="props"> Dropdown </v-btn>
+            </template>
 
-        <!-- <v-text-field
-          clearable
-          density="compact"
-          prepend-inner-icon="mdi-magnify"
-          single-line
-          hide-details
-          variant="outlined"
-          class="search-field mr-5"
-        ></v-text-field> -->
+            <v-list>
+              <v-list-item v-for="(item, index) in items" :key="index">
+                <router-link
+                  :to="item.ref"
+                  class="nav nav-link text-secondary"
+                  >{{ item.title }}</router-link
+                >
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </div>
       </div>
     </div>
   </nav>
@@ -122,13 +122,8 @@
 <script>
 import { defineComponent } from "vue";
 
-import DxSelect from "./DxSelect.vue";
-const URL = "https://localhost:7188";
-
 export default defineComponent({
-  components: {
-    DxSelect,
-  },
+  components: {},
   data() {
     return {
       width: "400",
@@ -136,7 +131,24 @@ export default defineComponent({
       post: null,
       dialog: false,
       register: false,
-      getPageArticles: `${URL}/Roles/GetRoles`,
+      items: [
+        { ref:"/dsp-page", title: "DSP" },
+        { ref:"/correlation-page", title: "Correlation" },
+        { ref:"/farrow-page", title: "Farrow" },
+        { ref:"/filter-banks-page", title: "FilterBanks" },
+        { ref:"/filters-page", title: "Filters" },
+        { ref:"/fourier-page", title: "Fourier" },
+        { ref:"/goertzel-page", title: "Goertzel" },
+        { ref:"/mel-spectrum-page", title: "MelSpectrum" },
+        { ref:"/mfcc-page", title: "Mfcc" },
+        { ref:"/modulation-page", title: "Modulation" },
+        { ref:"/noise-page", title: "Noise" },
+        { ref:"/resampling-page", title: "Resampling" },
+        { ref:"/signals-page", title: "Signals" },
+        { ref:"/spectrum-page", title: "Spectrum" },
+        { ref:"/wavelets-page", title: "Wavelets" },
+        { ref:"/windows-page", title: "Windows" },
+      ],
     };
   },
   created() {},

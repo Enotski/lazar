@@ -22,7 +22,7 @@
 import { DxSelectBox } from "devextreme-vue/select-box";
 import CustomStore from "devextreme/data/custom_store";
 
-import sendRequest from '../../utils/requestUtils'
+import sendRequest from "../../utils/requestUtils";
 
 let source = [];
 
@@ -35,6 +35,16 @@ export default {
       type: Object,
       default: () => {
         return {};
+      },
+    },
+    remoteSource: {
+      type: Boolean,
+      default: true,
+    },
+    localSource: {
+      type: Array,
+      default: () => {
+        return [];
       },
     },
     paramsData: {
@@ -89,12 +99,12 @@ export default {
     },
     width: {
       type: String,
-      default: 'auto',
+      default: "auto",
     },
     showDataBeforeSearchOption: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   computed: {
     dx_select: function () {
@@ -108,33 +118,38 @@ export default {
     };
   },
   beforeCreate: function () {
-    let key_exp = this.keyExpr;
-    let data_url = this.dataUrl;
-    let params_data = this.paramsData;
+    if (this.remoteSource) {
+      let key_exp = this.keyExpr;
+      let data_url = this.dataUrl;
+      let params_data = this.paramsData;
 
-    source = new CustomStore({
-      key: key_exp,
-      load: async function (loadOptions) {
-        let args = {
-          searchExpr: loadOptions.searchExpr,
-          searchOperation: loadOptions.searchOperation,
-          searchValue: loadOptions.searchValue,
-        };
-        if (params_data !== undefined && params_data !== null) {
-          switch (typeof params_data) {
-            case "object": {
-              args = Object.assign({}, args, params_data);
-              break;
+      source = new CustomStore({
+        key: key_exp,
+        load: async function (loadOptions) {
+          let args = {
+            searchExpr: loadOptions.searchExpr,
+            searchOperation: loadOptions.searchOperation,
+            searchValue: loadOptions.searchValue,
+          };
+          if (params_data !== undefined && params_data !== null) {
+            switch (typeof params_data) {
+              case "object": {
+                args = Object.assign({}, args, params_data);
+                break;
+              }
             }
           }
-        }
-        return await sendRequest(data_url, "POST", args)
-        .then((data) => data.Result)
-        .catch(() => {
-            throw new Error("Data Loading Error");
-          });
-      },
-    });
+          return await sendRequest(data_url, "POST", args)
+            .then((data) => data.Result)
+            .catch(() => {
+              throw new Error("Data Loading Error");
+            });
+        },
+      });
+    }
+    else{
+      source = this.localSource;
+    }
   },
   methods: {
     getDxSelect: function () {
