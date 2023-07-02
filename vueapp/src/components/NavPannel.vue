@@ -50,16 +50,25 @@
                     <v-col cols="12" class="px-0">
                       <v-text-field
                         label="Login*"
+                        v-model="login"
                         required
                         clearable
+                        :error-messages="errorMessages"
+                        :rules="[() => !!login || 'This field is required']"
                         variant="outlined"
                       ></v-text-field>
                     </v-col>
                     <v-col v-if="register" cols="12" class="px-0">
                       <v-text-field
                         label="Email*"
+                        v-model="email"
                         required
                         clearable
+                        :error-messages="errorMessages"
+                        :rules="[
+                          () =>
+                            (!!email && !register) || 'This field is required',
+                        ]"
                         variant="outlined"
                       ></v-text-field>
                     </v-col>
@@ -67,8 +76,11 @@
                       <v-text-field
                         label="Password*"
                         type="password"
+                        v-model="password"
                         required
                         clearable
+                        :error-messages="errorMessages"
+                        :rules="[() => !!password || 'This field is required']"
                         variant="outlined"
                       ></v-text-field>
                     </v-col>
@@ -88,7 +100,7 @@
                 <v-btn color="red" variant="text" @click="dialog = false">
                   Close
                 </v-btn>
-                <v-btn color="teal" variant="text" @click="dialog = false">
+                <v-btn color="teal" variant="text" @click="submit">
                   Save
                 </v-btn>
               </v-card-actions>
@@ -100,7 +112,9 @@
         <div class="pr-5">
           <v-menu transition="slide-x-transition">
             <template v-slot:activator="{ props }">
-              <v-btn color="primary" v-bind="props"> Dropdown </v-btn>
+              <v-btn color="secondary" variant="plain" v-bind="props"
+                >Navigation</v-btn
+              >
             </template>
 
             <v-list>
@@ -132,28 +146,64 @@ export default defineComponent({
       dialog: false,
       register: false,
       items: [
-        { ref:"/dsp-page", title: "DSP" },
-        { ref:"/correlation-page", title: "Correlation" },
-        { ref:"/farrow-page", title: "Farrow" },
-        { ref:"/filter-banks-page", title: "FilterBanks" },
-        { ref:"/filters-page", title: "Filters" },
-        { ref:"/fourier-page", title: "Fourier" },
-        { ref:"/goertzel-page", title: "Goertzel" },
-        { ref:"/mel-spectrum-page", title: "MelSpectrum" },
-        { ref:"/mfcc-page", title: "Mfcc" },
-        { ref:"/modulation-page", title: "Modulation" },
-        { ref:"/noise-page", title: "Noise" },
-        { ref:"/resampling-page", title: "Resampling" },
-        { ref:"/signals-page", title: "Signals" },
-        { ref:"/spectrum-page", title: "Spectrum" },
-        { ref:"/wavelets-page", title: "Wavelets" },
-        { ref:"/windows-page", title: "Windows" },
+        { ref: "/dsp-page", title: "DSP" },
+        { ref: "/correlation-page", title: "Correlation" },
+        { ref: "/farrow-page", title: "Farrow" },
+        { ref: "/filter-banks-page", title: "FilterBanks" },
+        { ref: "/filters-page", title: "Filters" },
+        { ref: "/fourier-page", title: "Fourier" },
+        { ref: "/goertzel-page", title: "Goertzel" },
+        { ref: "/mel-spectrum-page", title: "MelSpectrum" },
+        { ref: "/mfcc-page", title: "Mfcc" },
+        { ref: "/modulation-page", title: "Modulation" },
+        { ref: "/noise-page", title: "Noise" },
+        { ref: "/resampling-page", title: "Resampling" },
+        { ref: "/signals-page", title: "Signals" },
+        { ref: "/spectrum-page", title: "Spectrum" },
+        { ref: "/wavelets-page", title: "Wavelets" },
+        { ref: "/windows-page", title: "Windows" },
       ],
+      errorMessages: "",
+      login: null,
+      email: null,
+      password: null,
+      formHasErrors: false,
     };
+  },
+  computed: {
+    form() {
+      return {
+        name: this.name,
+        address: this.address,
+        city: this.city,
+        state: this.state,
+        zip: this.zip,
+        country: this.country,
+      };
+    },
   },
   created() {},
   watch: {},
-  methods: {},
+  methods: {
+    resetForm() {
+      this.errorMessages = [];
+      this.formHasErrors = false;
+
+      Object.keys(this.form).forEach((f) => {
+        this.$refs[f].reset();
+      });
+    },
+    submit() {
+      this.formHasErrors = false;
+      this.dialog = false
+
+      Object.keys(this.form).forEach((f) => {
+        if (!this.form[f]) this.formHasErrors = true;
+
+        this.$refs[f].validate(true);
+      });
+    },
+  },
 });
 </script>
 <style>
