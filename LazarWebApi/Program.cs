@@ -24,7 +24,7 @@ namespace LazarWebApi
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            string connection = builder.Configuration.GetConnectionString("wrk");
+            string connection = builder.Configuration.GetConnectionString("home");
             builder.Services.AddDbContext<lazarData.Context.LazarContext>(options => options.UseSqlServer(connection));
 
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();

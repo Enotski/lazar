@@ -22,6 +22,39 @@ namespace lazarData.Repositories.Administration
         {
             try
             {
+                Context.EventLogs.AddRange(new List<EventLog>
+                {
+                    new EventLog()
+                    {
+                         Id = Guid.NewGuid(),
+                          Description = "akopajkcakwjodjawdla,lkvmka wakc awko dmklawm m awkmdkmawkdmlkamwkfdmaw",
+                           SubSystem = SubSystemType.Roles,
+                            EventType = EventType.LogIn
+                    },
+                    new EventLog()
+                    {
+                         Id = Guid.NewGuid(),
+                          Description = "akopajkcakwjodjawdla,lkvmka wakc awko dmklawm m awkmdkmawkdmlkamwkfdmaw",
+                           SubSystem = SubSystemType.Dsp,
+                            EventType = EventType.Error
+                    },
+                    new EventLog()
+                    {
+                         Id = Guid.NewGuid(),
+                          Description = "akopajkcakwjodjawdla,lkvmka wakc awko dmklawm m awkmdkmawkdmlkamwkfdmaw",
+                           SubSystem = SubSystemType.Users,
+                            EventType = EventType.LogOut
+                    },
+                    new EventLog()
+                    {
+                         Id = Guid.NewGuid(),
+                          Description = "akopajkcakwjodjawdla,lkvmka wakc awko dmklawm m awkmdkmawkdmlkamwkfdmaw",
+                           SubSystem = SubSystemType.Roles,
+                            EventType = EventType.Delete
+                    }
+                });
+                Context.SaveChanges();
+
                 DataGridResponseModel<EventLogDataGrid> model = new DataGridResponseModel<EventLogDataGrid>();
                 var query = GetAll<EventLog>(true);
 
@@ -268,7 +301,7 @@ namespace lazarData.Repositories.Administration
             {
                 var currentUser = Context.Users.Include(x => x.Roles).FirstOrDefault(x => x.Id == userId);
                 if (currentUser != null || !currentUser.Roles.Any(r => r.Id == Guids.Roles.Administrator))
-                    return new BaseResponseEnumerable("Ошибка! Удалять записи в журнале может только Администратор ИА");
+                    return new BaseResponseEnumerable("Ошибка! Удалять записи в журнале может только Администратор");
 
                 var toDelete = GetAll<EventLog>(false).Where(q => ids.Contains(q.Id)).Select(q => q.Id);
                 RemoveByIds<EventLog>(toDelete);
