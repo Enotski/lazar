@@ -39,5 +39,15 @@ namespace LazarWebApi.Controllers.Administration
             var isAdmin = CurrentUser.Roles.Any(r => r.Id == Guids.Roles.Administrator);
             return Json(new BaseResponse(new BaseResponseModel(), new { UserIsAdmin = isAdmin }));
         }
+        [HttpPost]
+        public JsonResult LoginUser(UserViewModel model)
+        {
+            return Json(userRepository.LoginUser(model));
+        }
+        [HttpPost]
+        public JsonResult RegisterUser(UserViewModel model)
+        {
+            return Json(userRepository.AddUser(model));
+        }
     }
 }

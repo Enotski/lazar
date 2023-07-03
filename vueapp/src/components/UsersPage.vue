@@ -56,9 +56,8 @@
 import DxGrid from "./DxGrid.vue";
 import DxSelect from "./DxSelect.vue";
 
-import sendRequest from "../../utils/requestUtils";
+import {sendRequest, apiUrl} from "../../utils/requestUtils";
 
-const URL = "https://localhost:7188";
 export default {
   components: {
     DxGrid,
@@ -77,10 +76,10 @@ export default {
   },
   data() {
     return {
-      urlGetUsers: `${URL}/Users/GetUsersDataGrid`,
-      urlGetRoles: `${URL}/Roles/GetRolesDataGrid`,
-      urlGetRolesList: `${URL}/Roles/GetRoles`,
-      urlSetRoleToUser: `${URL}/UserProfile/SetRoleToUser`,
+      urlGetUsers: `${apiUrl}/Users/GetUsersDataGrid`,
+      urlGetRoles: `${apiUrl}/Roles/GetRolesDataGrid`,
+      urlGetRolesList: `${apiUrl}/Roles/GetRoles`,
+      urlSetRoleToUser: `${apiUrl}/UserProfile/SetRoleToUser`,
       usersGridRef: "users_grid",
       rolesGridRef: "roles_grid",
       rolesSelectRef: "roles_select",
@@ -110,25 +109,25 @@ export default {
       },
       usersEditFunctions: {
         insert: async (values) =>
-          await sendRequest(`${URL}/Users/AddUser`, "POST", values),
+          await sendRequest(`${apiUrl}/Users/AddUser`, "POST", values),
         update: async (key, values) =>
-          await sendRequest(`${URL}/Users/UpdateUser`, "POST", {
+          await sendRequest(`${apiUrl}/Users/UpdateUser`, "POST", {
             id: key,
             email: values.Email,
             login: values.Login,
           }),
         remove: async (key) =>
-          await sendRequest(`${URL}/Users/DeleteUser`, "POST", {
+          await sendRequest(`${apiUrl}/Users/DeleteUser`, "POST", {
             id: key,
           }),
       },
       rolesEditFunctions: {
         insert: async (values) =>
-          await sendRequest(`${URL}/Roles/AddRole`, "POST", values).then(() => {
+          await sendRequest(`${apiUrl}/Roles/AddRole`, "POST", values).then(() => {
             this.updateRolesSelect();
           }),
         update: async (key, values) =>
-          await sendRequest(`${URL}/Roles/UpdateRole`, "POST", {
+          await sendRequest(`${apiUrl}/Roles/UpdateRole`, "POST", {
             id: key,
             name: values.Name,
           }).then(() => {
@@ -137,14 +136,14 @@ export default {
           }),
         remove: async (key) => {
           if (this.paramsData.selectedUserId === "")
-            await sendRequest(`${URL}/Roles/DeleteRole`, "POST", {
+            await sendRequest(`${apiUrl}/Roles/DeleteRole`, "POST", {
               id: key,
             }).then(() => {
               this.dxUsersGrid.refresh();
               this.updateRolesSelect();
             });
           else
-            await sendRequest(`${URL}/Users/RemoveRoleFromUser`, "POST", {
+            await sendRequest(`${apiUrl}/Users/RemoveRoleFromUser`, "POST", {
               id: this.paramsData.selectedUserId,
               roleId: key,
             }).then(() => {

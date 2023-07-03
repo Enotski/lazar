@@ -15,7 +15,7 @@ namespace lazarData.Utils {
         /// <summary>
         /// Объект действия
         /// </summary>
-        public T Result { get; protected set; }
+        public T Result { get; set; }
         /// <summary>
         /// Результат выполнения
         /// </summary>

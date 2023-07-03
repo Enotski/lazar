@@ -2,6 +2,7 @@
 using lazarData.Enums;
 using lazarData.Interfaces;
 using lazarData.Models.Administration;
+using lazarData.Models.Response;
 using lazarData.Models.Response.DataGrid;
 using lazarData.Models.Response.ViewModels;
 using lazarData.Utils;
@@ -323,7 +324,27 @@ namespace lazarData.Repositories.Administration
                 return new BaseResponse<UserViewModel>(exp);
             }
         }
-        public BaseResponse AddUser(UserViewModel model, Guid? userId = null)
+        public ResponseModel<UserViewModel> LoginUser(UserViewModel model)
+        {
+            try
+            {
+                var user = GetAll<User>(true).FirstOrDefault(x => x.Login == model.Login/* && x.Password == model.Password*/);
+                if(user == null)
+                {
+                    return new ResponseModel<UserViewModel>("Не верный логин или пароль");
+                }
+                return new ResponseModel<UserViewModel>(new UserViewModel()
+                {
+                    Id = user.Id,
+                    Login = user.Login,
+                    Email = user.Email,
+                });
+            } catch(Exception ex)
+            {
+                return new ResponseModel<UserViewModel>(ex.Message);
+            }
+        }
+        public UserViewModel AddUser(UserViewModel model, Guid? userId = null)
         {
             try
             {
@@ -350,11 +371,11 @@ namespace lazarData.Repositories.Administration
                 Context.Users.Add(newData);
                 Context.SaveChanges();
                 logRepo.LogEvent(SubSystemType.Users, EventType.Create, userId.GetValueOrDefault());
-                return new BaseResponse(new BaseResponseModel());
+                return new UserViewModel() { Login = newData.Login, Email = newData.Email};
             } catch (Exception exc)
             {
                 logRepo.LogEvent(SubSystemType.Users, EventType.Error, userId.GetValueOrDefault(), "Ошибка добавления");
-                return new BaseResponse(exc);
+                return new UserViewModel(exc.Message);
             }
         }
         /// <summary>

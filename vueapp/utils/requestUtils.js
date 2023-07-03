@@ -1,4 +1,6 @@
-export default async function sendRequest(url, method = "GET", args = {}) {
+export const apiUrl = "https://localhost:7188";
+
+export async function sendRequest(url, method = "GET", args = {}) {
   // const params = Object.keys(data)
   //   .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(args[key])}`)
   //   .join("&");

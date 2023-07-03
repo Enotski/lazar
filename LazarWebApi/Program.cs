@@ -1,6 +1,8 @@
 using lazarData.Interfaces;
 using lazarData.Repositories;
 using lazarData.Repositories.Administration;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 
 namespace LazarWebApi
@@ -15,15 +17,20 @@ namespace LazarWebApi
 
             // Add services to the container.
 
-            builder.Services.AddControllers().AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null); ;
+            builder.Services.AddControllers().AddJsonOptions(opts =>
+            {
+                opts.JsonSerializerOptions.PropertyNamingPolicy = null;
+            });
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            string connection = builder.Configuration.GetConnectionString("home");
+            string connection = builder.Configuration.GetConnectionString("wrk");
             builder.Services.AddDbContext<lazarData.Context.LazarContext>(options => options.UseSqlServer(connection));
 
-            builder.Services.AddAuthentication();
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
             builder.Services.AddAuthorization();
+
+            builder.Services.AddHttpContextAccessor();
 
             builder.Services.AddTransient<IContextRepository, ContextRepository>();
             var app = builder.Build();
@@ -34,7 +41,7 @@ namespace LazarWebApi
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            //app.UseCookiePolicy(cookiePolicyOptions);
             app.UseHttpsRedirection();
             app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 

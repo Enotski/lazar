@@ -49,6 +49,7 @@
                   <v-row>
                     <v-col cols="12" class="px-0">
                       <v-text-field
+                        ref="login"
                         label="Login*"
                         v-model="login"
                         required
@@ -60,6 +61,7 @@
                     </v-col>
                     <v-col v-if="register" cols="12" class="px-0">
                       <v-text-field
+                        ref="email"
                         label="Email*"
                         v-model="email"
                         required
@@ -67,13 +69,14 @@
                         :error-messages="errorMessages"
                         :rules="[
                           () =>
-                            (!!email && !register) || 'This field is required',
+                            (!!email && register) || 'This field is required',
                         ]"
                         variant="outlined"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" class="px-0">
                       <v-text-field
+                        ref="password"
                         label="Password*"
                         type="password"
                         v-model="password"
@@ -92,7 +95,6 @@
                   v-model="register"
                   label="Register now"
                   color="teal"
-                  value="teal"
                   hide-details
                   class="pl-3"
                 ></v-switch>
@@ -136,11 +138,12 @@
 <script>
 import { defineComponent } from "vue";
 
+import { sendRequest, apiUrl } from "../../utils/requestUtils";
+
 export default defineComponent({
   components: {},
   data() {
     return {
-      width: "400",
       loading: false,
       post: null,
       dialog: false,
@@ -173,12 +176,9 @@ export default defineComponent({
   computed: {
     form() {
       return {
-        name: this.name,
-        address: this.address,
-        city: this.city,
-        state: this.state,
-        zip: this.zip,
-        country: this.country,
+        login: this.login,
+        email: this.email,
+        password: this.password,
       };
     },
   },
@@ -193,23 +193,37 @@ export default defineComponent({
         this.$refs[f].reset();
       });
     },
-    submit() {
+    submit: async function () {
       this.formHasErrors = false;
-      this.dialog = false
+      this.dialog = false;
+      let el = this;
+      Object.keys(this.form)
+        .forEach((f) => {
+          if (!el.form[f]) el.formHasErrors = true;
+          if (el.$refs[f] !== undefined) el.$refs[f].validate(true);
+        });
 
-      Object.keys(this.form).forEach((f) => {
-        if (!this.form[f]) this.formHasErrors = true;
-
-        this.$refs[f].validate(true);
-      });
+      if (this.register) {
+        await sendRequest(
+          `${apiUrl}/UserProfile/RegisterUser`,
+          "POST",
+          this.form
+        );
+      } else {
+        await sendRequest(
+          `${apiUrl}/UserProfile/LoginUser`,
+          "POST",
+          this.form
+        ).
+        then(async function (data) {
+          console.log(data.result);
+        });
+      }
     },
   },
 });
 </script>
 <style>
-.search-field {
-  width: 350px;
-}
 .badge-ref {
   text-decoration: none;
 }

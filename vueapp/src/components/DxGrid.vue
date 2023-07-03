@@ -46,7 +46,7 @@
 import DxDataGrid from "devextreme-vue/data-grid";
 import CustomStore from "devextreme/data/custom_store";
 
-import sendRequest from "../../utils/requestUtils";
+import {sendRequest} from "../../utils/requestUtils";
 
 import moment from "moment";
 
