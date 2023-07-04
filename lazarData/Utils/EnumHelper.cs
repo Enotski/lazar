@@ -9,7 +9,39 @@ namespace TMK.Utils.Utils {
 	/// Работа с enum
 	/// </summary>
 	public static class EnumHelper {
-		public static string GetEnumDescription(Enum value) {
+        /// <summary>
+        /// Представить enum в виде списка ключ-значение
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <returns></returns>
+        public static Dictionary<int, string> GetListParam<TEnum>(bool showAll = false)
+            where TEnum : struct, IConvertible
+        {
+            Dictionary<int, string> res = new Dictionary<int, string>();
+            foreach (Enum en in Enum.GetValues(typeof(TEnum)))
+            {
+                FieldInfo fi = en.GetType().GetField(en.ToString());
+
+                //if (!showAll)
+                //{
+                //    var attr = fi.GetCustomAttribute<IgnoreDescriptionAttribute>();
+                //    if (attr != null)
+                //    {
+                //        continue;
+                //    }
+                //}
+
+                var key = (int)Enum.Parse(typeof(TEnum), en + "", true);
+                if (key == -1)
+                {
+                    continue;
+                }
+                res.Add(key, en.GetDescription());
+            }
+
+            return res;
+        }
+        public static string GetEnumDescription(Enum value) {
 			FieldInfo fi = value.GetType().GetField(value.ToString());
 
 			DescriptionAttribute[] attributes =

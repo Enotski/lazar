@@ -20,9 +20,16 @@
         </div>
         <div class="col-auto">
           <router-link
-            to="/user-profile-page"
+            to="/user-profile"
             class="nav nav-link text-secondary"
             >Me</router-link
+          >
+        </div>
+        <div class="col-auto">
+          <router-link
+            to="/event-log"
+            class="nav nav-link text-secondary"
+            >logs</router-link
           >
         </div>
       </div>
@@ -138,7 +145,7 @@
 <script>
 import { defineComponent } from "vue";
 
-import { sendRequest, apiUrl } from "../../utils/requestUtils";
+import { sendRequest, apiUrl } from "../../../utils/requestUtils";
 
 export default defineComponent({
   components: {},
@@ -149,22 +156,22 @@ export default defineComponent({
       dialog: false,
       register: false,
       items: [
-        { ref: "/dsp-page", title: "DSP" },
-        { ref: "/correlation-page", title: "Correlation" },
-        { ref: "/farrow-page", title: "Farrow" },
-        { ref: "/filter-banks-page", title: "FilterBanks" },
-        { ref: "/filters-page", title: "Filters" },
-        { ref: "/fourier-page", title: "Fourier" },
-        { ref: "/goertzel-page", title: "Goertzel" },
-        { ref: "/mel-spectrum-page", title: "MelSpectrum" },
-        { ref: "/mfcc-page", title: "Mfcc" },
-        { ref: "/modulation-page", title: "Modulation" },
-        { ref: "/noise-page", title: "Noise" },
-        { ref: "/resampling-page", title: "Resampling" },
-        { ref: "/signals-page", title: "Signals" },
-        { ref: "/spectrum-page", title: "Spectrum" },
-        { ref: "/wavelets-page", title: "Wavelets" },
-        { ref: "/windows-page", title: "Windows" },
+        { ref: "/dsp", title: "DSP" },
+        { ref: "/correlation", title: "Correlation" },
+        { ref: "/farrow", title: "Farrow" },
+        { ref: "/filter-banks", title: "FilterBanks" },
+        { ref: "/filters", title: "Filters" },
+        { ref: "/fourier", title: "Fourier" },
+        { ref: "/goertzel", title: "Goertzel" },
+        { ref: "/mel-spectrum", title: "MelSpectrum" },
+        { ref: "/mfcc", title: "Mfcc" },
+        { ref: "/modulation", title: "Modulation" },
+        { ref: "/noise", title: "Noise" },
+        { ref: "/resampling", title: "Resampling" },
+        { ref: "/signals", title: "Signals" },
+        { ref: "/spectrum", title: "Spectrum" },
+        { ref: "/wavelets", title: "Wavelets" },
+        { ref: "/windows", title: "Windows" },
       ],
       errorMessages: "",
       login: null,
@@ -205,13 +212,13 @@ export default defineComponent({
 
       if (this.register) {
         await sendRequest(
-          `${apiUrl}/UserProfile/RegisterUser`,
+          `${apiUrl}user-profile/register-user`,
           "POST",
           this.form
         );
       } else {
         await sendRequest(
-          `${apiUrl}/UserProfile/LoginUser`,
+          `${apiUrl}/user-profile/login-user`,
           "POST",
           this.form
         ).

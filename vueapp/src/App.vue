@@ -7,8 +7,8 @@
 </template>
 
 <script>
-import NavPannel from './components/NavPannel.vue'
-import FooterPannel from './components/FooterPannel.vue'
+import NavPannel from './components/MainComponents/NavPannel.vue'
+import FooterPannel from './components/MainComponents/FooterPannel.vue'
 
 export default {
   name: 'App',

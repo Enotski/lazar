@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace lazarData.Models.Response
+﻿namespace lazarData.Models.Response
 {
-    public struct Period
+    public class Period
     {
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public string? startDate { get; set; }
+        public string? endDate { get; set; }
     }
 }

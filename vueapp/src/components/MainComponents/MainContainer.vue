@@ -265,7 +265,7 @@
 
 <style>
 .parallax {
-    background-image: url('../assets/bg-light.gif');
+    background-image: url('../../assets/bg-light.gif');
     background-attachment: fixed;
     display: flex;
     justify-content: center;

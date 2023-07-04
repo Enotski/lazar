@@ -1,14 +1,11 @@
 using lazarData.Models.Administration;
-using lazarData.Models.Response.ViewModels;
-using lazarData.Utils;
 using Microsoft.AspNetCore.Mvc;
-using System.Globalization;
-using System.Text;
-using TMK.Utils.Utils;
 
 namespace LazarWebApi.Controllers
 {
-    public class BaseController : Controller
+    [ApiController]
+    [Route("api/[controller]/[action]")]
+    public abstract class BaseApiController : Controller
     {
         /// <summary>
         /// Текущий пользователь

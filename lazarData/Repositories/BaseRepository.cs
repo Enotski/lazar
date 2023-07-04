@@ -1,7 +1,6 @@
-﻿using lazarData.Interfaces;
+﻿using lazarData.Context;
+using lazarData.Interfaces;
 using lazarData.Models.Response.ViewModels;
-using lazarData.Context;
-using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace lazarData.Repositories

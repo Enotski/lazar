@@ -1,5 +1,6 @@
 <template>
   <div class="container-fluid content-container">
+    profile
   </div>
 </template>
 

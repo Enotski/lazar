@@ -22,41 +22,8 @@ namespace lazarData.Repositories.Administration
         {
             try
             {
-                Context.EventLogs.AddRange(new List<EventLog>
-                {
-                    new EventLog()
-                    {
-                         Id = Guid.NewGuid(),
-                          Description = "akopajkcakwjodjawdla,lkvmka wakc awko dmklawm m awkmdkmawkdmlkamwkfdmaw",
-                           SubSystem = SubSystemType.Roles,
-                            EventType = EventType.LogIn
-                    },
-                    new EventLog()
-                    {
-                         Id = Guid.NewGuid(),
-                          Description = "akopajkcakwjodjawdla,lkvmka wakc awko dmklawm m awkmdkmawkdmlkamwkfdmaw",
-                           SubSystem = SubSystemType.Dsp,
-                            EventType = EventType.Error
-                    },
-                    new EventLog()
-                    {
-                         Id = Guid.NewGuid(),
-                          Description = "akopajkcakwjodjawdla,lkvmka wakc awko dmklawm m awkmdkmawkdmlkamwkfdmaw",
-                           SubSystem = SubSystemType.Users,
-                            EventType = EventType.LogOut
-                    },
-                    new EventLog()
-                    {
-                         Id = Guid.NewGuid(),
-                          Description = "akopajkcakwjodjawdla,lkvmka wakc awko dmklawm m awkmdkmawkdmlkamwkfdmaw",
-                           SubSystem = SubSystemType.Roles,
-                            EventType = EventType.Delete
-                    }
-                });
-                Context.SaveChanges();
-
                 DataGridResponseModel<EventLogDataGrid> model = new DataGridResponseModel<EventLogDataGrid>();
-                var query = GetAll<EventLog>(true);
+                var query = GetAll<EventLog>(true, x => x.ChangedUser);
 
                 FilterData(ref query, filters);
                 var orderedQuery = query.OrderBy(x => 0);
@@ -270,12 +237,12 @@ namespace lazarData.Repositories.Administration
             };
         }
 
-        public BaseResponseEnumerable RemoveLogsByPeriod(DateTime startDate, DateTime endDate, User user)
+        public BaseResponseEnumerable RemoveLogsByPeriod(DateTime? startDate, DateTime? endDate)
         {
             try
             {
-                if (!user.Roles.Any(x => x.Id == Guids.Roles.Administrator))
-                    return new BaseResponseEnumerable("Ошибка! Удалять записи в журнале может только Администратор ИА");
+                //if (!user.Roles.Any(x => x.Id == Guids.Roles.Administrator))
+                //    return new BaseResponseEnumerable("Ошибка! Удалять записи в журнале может только Администратор");
 
                 if (startDate > endDate)
                     return new BaseResponseEnumerable("Ошибка! Начальная дата должна быть меньше конечной");

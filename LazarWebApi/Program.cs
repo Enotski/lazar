@@ -1,8 +1,10 @@
 using lazarData.Interfaces;
 using lazarData.Repositories;
 using lazarData.Repositories.Administration;
+using LazarWebApi.Helpers;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace LazarWebApi
@@ -17,14 +19,18 @@ namespace LazarWebApi
 
             // Add services to the container.
 
-            builder.Services.AddControllers().AddJsonOptions(opts =>
+            builder.Services.AddControllers(options =>
+            {
+                options.Conventions.Add(
+                    new RouteTokenTransformerConvention(new PascalToCebabTransformer()));
+            }).AddJsonOptions(opts =>
             {
                 opts.JsonSerializerOptions.PropertyNamingPolicy = null;
             });
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            string connection = builder.Configuration.GetConnectionString("home");
+            string connection = builder.Configuration.GetConnectionString("wrk");
             builder.Services.AddDbContext<lazarData.Context.LazarContext>(options => options.UseSqlServer(connection));
 
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();

@@ -7,9 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LazarWebApi.Controllers.Administration
 {
-    [ApiController]
-    [Route("[controller]/[action]")]
-    public class RolesController : BaseController {
+    public class RolesController : BaseApiController {
 
         RoleRepository roleRepository;
         public RolesController(IContextRepository contextRepo)
@@ -17,34 +15,34 @@ namespace LazarWebApi.Controllers.Administration
             roleRepository = new RoleRepository(contextRepo);
         }
 
-        [HttpPost(Name = "getRolesGrid")]
+        [HttpPost]
         public JsonResult GetRolesDataGrid([FromBody] RoleDataGridRequest args) {
             var data = roleRepository.GetRolesDataGrid(args.skip, args.take, args.sorts, args.filters, args.selectedUserId);
-            return Json(data);
+            return Json(data);  
         }
-        [HttpPost(Name = "getRoles")]
+        [HttpPost]
         public JsonResult GetRoles([FromBody] DxSelectRoleRequest args)
         {
             var data = roleRepository.GetRoles(args.searchValue ?? "", args.selectedUserId);
             return Json(data);
         }
-        [HttpPost(Name = "addRole")]
+        [HttpPost]
         public JsonResult AddRole([FromBody] RoleViewModel model)
         {
             var data = roleRepository.AddRole(model);
             return Json(data);
         }
-        [HttpPost(Name = "updateRole")]
+        [HttpPost]
         public JsonResult UpdateRole([FromBody] RoleViewModel model) {
             var data = roleRepository.UpdateRole(model);
             return Json(data);
         }
-        [HttpPost(Name = "deleteRole")]
+        [HttpPost]
         public JsonResult DeleteRole([FromBody] RoleViewModel model) {
             var data = roleRepository.DeleteRole(model.Id);
             return Json(data);
         }
-        [HttpGet(Name = "getRoleModel")]
+        [HttpGet]
         public JsonResult GetRoleModel(Guid? id = null)
         {
             var res = roleRepository.GetView(id);

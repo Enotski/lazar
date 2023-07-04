@@ -1,4 +1,6 @@
 .content-container {
     margin-bottom: 6rem !important;
     margin-top: 6rem !important;
+    padding-left: 2rem;
+    padding-right: 2rem;
 }

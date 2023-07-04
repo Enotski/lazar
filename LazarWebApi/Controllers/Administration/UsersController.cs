@@ -6,9 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LazarWebApi.Controllers.Administration
 {
-    [ApiController]
-    [Route("[controller]/[action]")]
-    public class UsersController : BaseController {
+    public class UsersController : BaseApiController {
         UserRepository userRepository;
         public UsersController(IContextRepository contextRepo)
         {
