@@ -1,4 +1,5 @@
-﻿using lazarData.Models.Response.DataGrid;
+﻿using lazarData.Enums;
+using lazarData.Models.Response.DataGrid;
 using System;
 using System.Collections.Generic;
 using System.Linq;

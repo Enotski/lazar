@@ -30,14 +30,11 @@ import DxDateRangeBox from "devextreme-vue/date-range-box";
 
 import { DataGrid } from "../../../utils/DxGridHelpers";
 import { sendRequest, apiUrl } from "../../../utils/requestUtils";
-import CustomStore from "devextreme/data/custom_store";
 
 const msInDay = 1000 * 60 * 60 * 24;
 const now = new Date();
 const subSystemTypeUrl = `${apiUrl}/types/get-subsystem-type`;
 const eventTypeUrl = `${apiUrl}/types/get-event-types`;
-let eventTypeStore = [];
-let subSystemTypeStore = [];
 export default {
   components: {
     DxGrid,
@@ -75,26 +72,13 @@ export default {
           dataField: "SubSystemName",
           alignment: "center",
           filterOperations: ["=", "<>"],
-          // lookup: {
-          //   dataSource: subSystemTypeStore,
-          //   valueExpr: "Key",
-          //   displayExpr: "Text",
-          // },
+          lookup: DataGrid.getColumnLookup(subSystemTypeUrl, 'GET')
         },
         {
           caption: "Тип",
           dataField: "EventTypeName",
-          alignment: "center",
           filterOperations: ["=", "<>"],
-          lookup: new CustomStore({
-            load: async function () {
-              await sendRequest(`${apiUrl}/types/get-event-types`, "GET")
-                .then((data) => data)
-                .catch(() => {
-                  throw new Error("Data Loading Error");
-                });
-            },
-          }),
+          lookup: DataGrid.getColumnLookup(eventTypeUrl, 'GET')
         },
         {
           caption: "Пользователь",
@@ -110,9 +94,7 @@ export default {
       ],
     };
   },
-  mounted: async function () {
-    // await this.getEventType();
-    // await this.getSubSystemTypes();
+  mounted: function () {
   },
   methods: {
     clearEventLog: async function () {
@@ -127,24 +109,6 @@ export default {
           el.dxEventLogGrid.refresh();
         }
       );
-    },
-    getEventType: async function () {
-      if (eventTypeStore.length === 0) {
-        eventTypeStore = await sendRequest(eventTypeUrl, "GET")
-          .then((data) => data)
-          .catch(() => {
-            throw new Error("Data Loading Error");
-          });
-      }
-    },
-    getSubSystemTypes: async function () {
-      if (subSystemTypeStore.length === 0) {
-        subSystemTypeStore = await sendRequest(subSystemTypeUrl, "GET")
-          .then((data) => data)
-          .catch(() => {
-            throw new Error("Data Loading Error");
-          });
-      }
     },
   },
 };

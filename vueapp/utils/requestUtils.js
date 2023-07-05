@@ -1,6 +1,16 @@
 export const apiUrl = "https://localhost:7188/api";
 
 export async function sendRequest(url, method = "GET", args = {}) {
+
+  if(method === 'GET'){
+    return await fetch(url, {method: 'GET'})
+      .then((response) => response.json())
+      .catch((ex) => {
+        console.log(ex);
+        throw new Error("Data Loading Error");
+      });  
+  }
+
   return await fetch(url, {
     method: method,
     headers: {
@@ -9,7 +19,8 @@ export async function sendRequest(url, method = "GET", args = {}) {
     body: JSON.stringify(args),
   })
     .then((response) => response.json())
-    .catch(() => {
+    .catch((ex) => {
+      console.log(ex);
       throw new Error("Data Loading Error");
     });
 }
