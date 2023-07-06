@@ -33,7 +33,7 @@ namespace LazarWebApi
             string connection = builder.Configuration.GetConnectionString("wrk");
             builder.Services.AddDbContext<lazarData.Context.LazarContext>(options => options.UseSqlServer(connection));
 
-            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+            builder.Services.AddAuthentication().AddJwtBearer();
             builder.Services.AddAuthorization();
 
             builder.Services.AddHttpContextAccessor();

@@ -2,10 +2,13 @@ using lazarData.Interfaces;
 using lazarData.Models.Response.DataGrid.Base;
 using lazarData.Models.Response.ViewModels;
 using lazarData.Repositories.Administration;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LazarWebApi.Controllers.Administration
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class UsersController : BaseApiController {
         UserRepository userRepository;
         public UsersController(IContextRepository contextRepo)
