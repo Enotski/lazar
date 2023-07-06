@@ -3,10 +3,13 @@ using lazarData.Models.Response;
 using lazarData.Models.Response.DataGrid.Base;
 using lazarData.Models.Response.ViewModels;
 using lazarData.Repositories.Administration;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LazarWebApi.Controllers.Administration
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class EventLogsController : BaseApiController
     {
         EventLogRepository eventLogRepository;

@@ -1,11 +1,11 @@
 using lazarData.Interfaces;
+using lazarData.Models.Auth;
 using lazarData.Repositories;
-using lazarData.Repositories.Administration;
 using LazarWebApi.Helpers;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace LazarWebApi
 {
@@ -15,8 +15,8 @@ namespace LazarWebApi
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.Configure<AuthOptions>(options => builder.Configuration.GetSection("Jwt").Bind(options));
             builder.Services.AddCors();
-
             // Add services to the container.
 
             builder.Services.AddControllers(options =>
@@ -28,12 +28,59 @@ namespace LazarWebApi
                 opts.JsonSerializerOptions.PropertyNamingPolicy = null;
             });
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(option =>
+            {
+                option.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                    Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+                option.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+                {
+                    {
+                        new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                        {
+                            Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                            {
+                                Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            },
+                            Scheme = "oauth2",
+                            Name = "Bearer",
+                            In = Microsoft.OpenApi.Models.ParameterLocation.Header
+                        },
+                        new List<string>()
+                    }
+                });
+            });
 
-            string connection = builder.Configuration.GetConnectionString("wrk");
+            string connection = builder.Configuration.GetConnectionString("home");
             builder.Services.AddDbContext<lazarData.Context.LazarContext>(options => options.UseSqlServer(connection));
 
-            builder.Services.AddAuthentication().AddJwtBearer();
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    // указывает, будет ли валидироваться издатель при валидации токена
+                    ValidateIssuer = true,
+                    // строка, представляющая издателя
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                    // будет ли валидироваться потребитель токена
+                    ValidateAudience = true,
+                    // установка потребителя токена
+                    ValidAudience = builder.Configuration["Jwt:Audience"],
+                    // будет ли валидироваться время существования
+                    ValidateLifetime = true,
+                    // установка ключа безопасности
+                    IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(builder.Configuration["Jwt:Key"]),
+                    // валидация ключа безопасности
+                    ValidateIssuerSigningKey = true,
+                };
+            });
             builder.Services.AddAuthorization();
 
             builder.Services.AddHttpContextAccessor();
