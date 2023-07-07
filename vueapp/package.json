@@ -20,7 +20,8 @@
     "vee-validate": "^4.9.6",
     "vue": "^3.2.13",
     "vue-router": "^4.2.2",
-    "vuetify": "^3.3.3"
+    "vuetify": "^3.3.3",
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

@@ -30,9 +30,8 @@ namespace CookieAuthenticationWithAngular.Controllers
         [HttpPost("signin")]
         public IActionResult SignInAsync([FromBody] SignInRequest signInRequest)
         {
-            //var user = userRepository.GetAll<User>(true).FirstOrDefault(x => x.Login == signInRequest.Login
-            /*&& x.Password == signInRequest.Password);*/
-            var user = new User { Login = "Lazar" };
+            var user = userRepository.GetAll<User>(true).FirstOrDefault(x => x.Login == signInRequest.Login
+            && x.Password == signInRequest.Password);
             if (user is null)
             {
                 return BadRequest();
