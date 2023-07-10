@@ -1,24 +1,31 @@
-﻿using lazarData.Context;
-using lazarData.Enums;
+﻿using lazarData.Enums;
 using lazarData.Interfaces;
-using lazarData.Models.Administration;
 using lazarData.Models.EventLogs;
-using lazarData.Models.Response.DataGrid;
 using lazarData.Models.Response.ViewModels;
+using lazarData.ResponseModels.Dtos.Administration;
+using lazarData.ResponseModels.Dx;
+using lazarData.ResponseModels.Dx.Base;
 using lazarData.Utils;
 using System.Data.Entity;
 using TMK.Utils.Utils;
 
 namespace lazarData.Repositories.Administration
 {
-    public class EventLogRepository : BaseRepository<EventLogViewModel, EventLog>
+    /// <summary>
+    /// Repository of events logs in app
+    /// </summary>
+    public class EventLogRepository : BaseRepository<EventLogDto, EventLog>
     {
         public EventLogRepository(IContextRepository context) : base(context) { }
-
         /// <summary>
-        /// Возвращает список логирования событий
+        /// Get data for DxDataGrid
         /// </summary>
-        public IHelperResult GetEventLogsDataGrid(int skip, int take, IEnumerable<DataGridSort> sorts, IEnumerable<DataGridFilter> filters)
+        /// <param name="skip">skip items count</param>
+        /// <param name="take">take items count</param>
+        /// <param name="sorts">list of sorts creterias</param>
+        /// <param name="filters">list of filters criterias</param>
+        /// <returns></returns>
+        public async Task<IHelperResult> GetEventLogsDataGridAsync(int skip, int take, IEnumerable<DataGridSort> sorts, IEnumerable<DataGridFilter> filters)
         {
             try
             {
@@ -29,7 +36,7 @@ namespace lazarData.Repositories.Administration
                 var orderedQuery = query.OrderBy(x => 0);
                 SortData(ref orderedQuery, sorts);
                 model.totalCount = orderedQuery.Count();
-                model.data = orderedQuery.Skip(skip).Take(take).Select(ModelToDataGridViewModel());
+                model.data = orderedQuery.Skip(skip).Take(take).Select(ModelToDtoDataGrid());
 
                 return model;
             } catch (Exception exp)
@@ -37,8 +44,20 @@ namespace lazarData.Repositories.Administration
                 return new BaseResponse(exp.Message);
             }
         }
+        /// <summary>
+        /// Filter data
+        /// </summary>
+        /// <param name="source">raw data</param>
+        /// <param name="filters">list of criterias</param>
         public static void FilterData(ref IQueryable<EventLog> source, IEnumerable<DataGridFilter> filters)
         {
+            try
+            {
+
+            }catch(Exception ex)
+            {
+
+            }
             if (filters == null || !filters.Any()) return;
             foreach (var filter in filters)
             {
@@ -166,7 +185,11 @@ namespace lazarData.Repositories.Administration
                 }
             }
         }
-
+        /// <summary>
+        /// Sort data
+        /// </summary>
+        /// <param name="source">raw data</param>
+        /// <param name="sorts">list of criterias</param>
         public static void SortData(ref IOrderedQueryable<EventLog> source, IEnumerable<DataGridSort> sorts)
         {
             if (sorts == null || !sorts.Any()) return;
@@ -205,14 +228,13 @@ namespace lazarData.Repositories.Administration
                 }
             }
         }
-
         /// <summary>
-        /// Преобразовывает сущности показателя в модель представления показателя
+        /// Map data to dto
         /// </summary>
         /// <returns></returns>
-        public Func<EventLog, EventLogViewModel> ModelToViewModel()
+        public Func<EventLog, EventLogDto> ModelToDto()
         {
-            return model => new EventLogViewModel
+            return model => new EventLogDto
             {
                 Id = model.Id,
                 EventType = model.EventType,
@@ -221,10 +243,10 @@ namespace lazarData.Repositories.Administration
             };
         }
         /// <summary>
-        /// Преобразовывает сущности показателя в табличную модель
+        /// Map data to data grid dto
         /// </summary>
         /// <returns></returns>
-        public Func<EventLog, int, EventLogDataGrid> ModelToDataGridViewModel()
+        public Func<EventLog, int, EventLogDataGrid> ModelToDtoDataGrid()
         {
             return (model, index) => new EventLogDataGrid
             {
@@ -236,8 +258,13 @@ namespace lazarData.Repositories.Administration
                 Num = index + 1
             };
         }
-
-        public BaseResponseEnumerable RemoveLogsByPeriod(DateTime? startDate, DateTime? endDate)
+        /// <summary>
+        /// Remove event logs by period dates
+        /// </summary>
+        /// <param name="startDate">Start date of period</param>
+        /// <param name="endDate">End date of period</param>
+        /// <returns></returns>
+        public async Task<BaseResponseEnumerable> RemoveLogsByPeriodAsync(DateTime? startDate, DateTime? endDate)
         {
             try
             {
@@ -257,12 +284,12 @@ namespace lazarData.Repositories.Administration
             }
         }
         /// <summary>
-        /// Удаление выбранных записей
+        /// Remove logs 
         /// </summary>
-        /// <param name="ids"></param>
-        /// <param name="filialId"></param>
+        /// <param name="ids">List of keys</param>
+        /// <param name="userId">User key</param>
         /// <returns></returns>
-        public BaseResponseEnumerable RemoveLogs(IEnumerable<Guid> ids, Guid? userId)
+        public async Task<BaseResponseEnumerable> RemoveLogsAsync(IEnumerable<Guid> ids, Guid? userId)
         {
             try
             {
@@ -280,6 +307,14 @@ namespace lazarData.Repositories.Administration
                 return new BaseResponseEnumerable(ex);
             }
         }
+        /// <summary>
+        /// Add log asynchroniously
+        /// </summary>
+        /// <param name="subSys">SubSystem type</param>
+        /// <param name="type">Type of event</param>
+        /// <param name="userId">User</param>
+        /// <param name="descr">Text information</param>
+        /// <returns></returns>
         public async Task<bool> LogEventAsync(SubSystemType subSys, EventType type, Guid userId, string descr = "")
         {
             return await Task.Run(() =>
@@ -305,6 +340,11 @@ namespace lazarData.Repositories.Administration
                 };
             });
         }
+        /// <summary>
+        /// Add list of logs asynchroniously
+        /// </summary>
+        /// <param name="logs"></param>
+        /// <returns></returns>
         public async Task<bool> LogEventAsync(IEnumerable<EventLog> logs)
         {
             return await Task.Run(() =>
@@ -321,6 +361,14 @@ namespace lazarData.Repositories.Administration
                 };
             });
         }
+        /// <summary>
+        /// Add log
+        /// </summary>
+        /// <param name="subSys">SubSystem type</param>
+        /// <param name="type">Type of event</param>
+        /// <param name="userId">User</param>
+        /// <param name="descr">Text information</param>
+        /// <returns></returns>
         public bool LogEvent(SubSystemType subSys, EventType type, Guid userId, string descr = "")
         {
             Exception error;
@@ -343,6 +391,11 @@ namespace lazarData.Repositories.Administration
                 return false;
             };
         }
+        /// <summary>
+        /// Add list of logs
+        /// </summary>
+        /// <param name="logs"></param>
+        /// <returns></returns>
         public bool LogEvent(IEnumerable<EventLog> logs)
         {
             Exception error;

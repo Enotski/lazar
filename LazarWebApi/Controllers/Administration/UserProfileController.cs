@@ -1,6 +1,7 @@
 using lazarData.Interfaces;
 using lazarData.Models.Response.ViewModels;
 using lazarData.Repositories.Administration;
+using lazarData.ResponseModels.Dtos.Administration;
 using lazarData.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -23,13 +24,13 @@ namespace LazarWebApi.Controllers.Administration
             return Json(res);
         }
         [HttpPost]
-        public JsonResult AddEditUser([FromBody] UserViewModel model)
+        public JsonResult AddEditUser([FromBody] UserDto model)
         {
             var data = userRepository.AddEditUser(model, CurrentUser.Id);
             return Json(data);
         }
         [HttpPost]
-        public JsonResult SetRoleToUser([FromBody] UserViewModel model)
+        public JsonResult SetRoleToUser([FromBody] UserDto model)
         {
             var data = userRepository.SetRoleToUser(model.Id, model.RoleId/*, CurrentUser.Id*/);
             return Json(data);
@@ -41,12 +42,12 @@ namespace LazarWebApi.Controllers.Administration
             return Json(new BaseResponse(new BaseResponseModel(), new { UserIsAdmin = isAdmin }));
         }
         [HttpPost]
-        public JsonResult LoginUser(UserViewModel model)
+        public JsonResult LoginUser(UserDto model)
         {
             return Json(userRepository.LoginUser(model));
         }
         [HttpPost]
-        public JsonResult RegisterUser(UserViewModel model)
+        public JsonResult RegisterUser(UserDto model)
         {
             return Json(userRepository.AddUser(model));
         }

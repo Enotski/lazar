@@ -1,7 +1,7 @@
 using lazarData.Interfaces;
-using lazarData.Models.Response.DataGrid.Base;
-using lazarData.Models.Response.ViewModels;
 using lazarData.Repositories.Administration;
+using lazarData.ResponseModels.Dtos.Administration;
+using lazarData.ResponseModels.Dx.Base;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,25 +22,25 @@ namespace LazarWebApi.Controllers.Administration
             return Json(data);
         }
         [HttpPost]
-        public JsonResult AddUser([FromBody] UserViewModel model)
+        public JsonResult AddUser([FromBody] UserDto model)
         {
             var data = userRepository.AddUser(model);
             return Json(data);
         }
         [HttpPost]
-        public JsonResult UpdateUser([FromBody] UserViewModel model)
+        public JsonResult UpdateUser([FromBody] UserDto model)
         {
             var data = userRepository.UpdateUser(model);
             return Json(data);
         }
         [HttpPost]
-        public JsonResult RemoveRoleFromUser([FromBody] UserViewModel model)
+        public JsonResult RemoveRoleFromUser([FromBody] UserDto model)
         {
             var data = userRepository.RemoveRoleFromUser(model.Id, model.RoleId);
             return Json(data);
         }
         [HttpPost]
-        public JsonResult DeleteUser([FromBody] UserViewModel model)
+        public JsonResult DeleteUser([FromBody] UserDto model)
         {
             var data = userRepository.DeleteUser(model.Id);
             return Json(data);

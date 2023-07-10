@@ -1,8 +1,7 @@
-﻿using lazarData.Interfaces;
+﻿using lazarData.Auth;
+using lazarData.Interfaces;
 using lazarData.Models.Administration;
-using lazarData.Models.Auth;
 using lazarData.Repositories.Administration;
-using LazarWebApi;
 using LazarWebApi.Controllers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -11,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Runtime;
 using System.Security.Claims;
 
 namespace CookieAuthenticationWithAngular.Controllers

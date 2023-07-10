@@ -1,14 +1,16 @@
 using lazarData.Enums;
 using lazarData.Interfaces;
 using lazarData.Models.Administration;
-using lazarData.Models.Response.DataGrid;
 using lazarData.Models.Response.ViewModels;
+using lazarData.ResponseModels.Dtos.Administration;
+using lazarData.ResponseModels.Dx;
+using lazarData.ResponseModels.Dx.Base;
 using lazarData.Utils;
 using System.Data.Entity;
 
 namespace lazarData.Repositories.Administration
 {
-    public class RoleRepository : BaseRepository<RoleViewModel, Role>
+    public class RoleRepository : BaseRepository<RoleDto, Role>
     {
         /// <summary>
         /// Репозиторий логирования
@@ -139,7 +141,7 @@ namespace lazarData.Repositories.Administration
                 }
 
                 query = query.Where(x => x.Name.ToLower().Trim().Contains(name.Trim().ToLower()));
-                return new BaseResponseEnumerable<RoleViewModel>(query.Select(ModelToViewModel()));
+                return new BaseResponseEnumerable<RoleDto>(query.Select(ModelToViewModel()));
             } catch (Exception exp)
             {
                 return new BaseResponse(exp);
@@ -159,9 +161,9 @@ namespace lazarData.Repositories.Administration
         /// Преобразовывает сущности роли в модель представления роли
         /// </summary>
         /// <returns></returns>
-        public Func<Role, RoleViewModel> ModelToViewModel()
+        public Func<Role, RoleDto> ModelToViewModel()
         {
-            return model => new RoleViewModel
+            return model => new RoleDto
             {
                 Id = model.Id,
                 Name = model.Name,
@@ -174,7 +176,7 @@ namespace lazarData.Repositories.Administration
                 return new BaseResponse(GetViewById(id, ModelToViewModel(), true));
             } catch (Exception ex) { return new BaseResponse(ex); }
         }
-        public BaseResponse AddRole(RoleViewModel model, Guid? userId = null)
+        public BaseResponse AddRole(RoleDto model, Guid? userId = null)
         {
             try
             {
@@ -213,7 +215,7 @@ namespace lazarData.Repositories.Administration
         /// <param name="NameRole">Название роли</param>
         /// <param name="GroupAD">Группа Ад в которую должна входить данная роль</param>
         /// <returns></returns>
-        public BaseResponse UpdateRole(RoleViewModel model, Guid? userId = null)
+        public BaseResponse UpdateRole(RoleDto model, Guid? userId = null)
         {
             try
             {
@@ -260,7 +262,7 @@ namespace lazarData.Repositories.Administration
 
                     logRepo.LogEvent(SubSystemType.Users, EventType.Delete, userId.GetValueOrDefault(), $"Удаление роли:\n ({roleModel.Name})");
                 }
-                return new BaseResponse(new RoleViewModel());
+                return new BaseResponse(new RoleDto());
             } catch (Exception exc)
             {
                 logRepo.LogEvent(SubSystemType.Users, EventType.Error, userId.GetValueOrDefault(), $"Удаление ролей");
@@ -282,7 +284,7 @@ namespace lazarData.Repositories.Administration
                 Context.SaveChanges();
 
                 logRepo.LogEvent(SubSystemType.Users, EventType.Delete, userId, $"Удаление ролей:\n ({rolesLog})");
-                return new BaseResponse(new RoleViewModel());
+                return new BaseResponse(new RoleDto());
             } catch (Exception exc)
             {
                 logRepo.LogEvent(SubSystemType.Users, EventType.Error, userId, $"Удаление ролей");

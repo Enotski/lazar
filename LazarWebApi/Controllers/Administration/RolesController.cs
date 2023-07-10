@@ -1,14 +1,16 @@
 using lazarData.Interfaces;
-using lazarData.Models.Response.DataGrid;
-using lazarData.Models.Response.Dx;
-using lazarData.Models.Response.ViewModels;
 using lazarData.Repositories.Administration;
+using lazarData.ResponseModels.Dtos.Administration;
+using lazarData.ResponseModels.Dx;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LazarWebApi.Controllers.Administration
 {
+    /// <summary>
+    /// Controller of roles
+    /// </summary>
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class RolesController : BaseApiController {
 
@@ -17,9 +19,13 @@ namespace LazarWebApi.Controllers.Administration
         {
             roleRepository = new RoleRepository(contextRepo);
         }
-
+        /// <summary>
+        /// Get data grid
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
         [HttpPost]
-        public JsonResult GetRolesDataGrid([FromBody] RoleDataGridRequest args) {
+        public JsonResult GetDataGrid([FromBody] RoleDataGridRequest args) {
             var data = roleRepository.GetRolesDataGrid(args.skip, args.take, args.sorts, args.filters, args.selectedUserId);
             return Json(data);  
         }
@@ -30,18 +36,18 @@ namespace LazarWebApi.Controllers.Administration
             return Json(data);
         }
         [HttpPost]
-        public JsonResult AddRole([FromBody] RoleViewModel model)
+        public JsonResult AddRole([FromBody] RoleDto model)
         {
             var data = roleRepository.AddRole(model);
             return Json(data);
         }
         [HttpPost]
-        public JsonResult UpdateRole([FromBody] RoleViewModel model) {
+        public JsonResult UpdateRole([FromBody] RoleDto model) {
             var data = roleRepository.UpdateRole(model);
             return Json(data);
         }
         [HttpPost]
-        public JsonResult DeleteRole([FromBody] RoleViewModel model) {
+        public JsonResult DeleteRole([FromBody] RoleDto model) {
             var data = roleRepository.DeleteRole(model.Id);
             return Json(data);
         }

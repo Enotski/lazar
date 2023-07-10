@@ -1,5 +1,5 @@
+using lazarData.Auth;
 using lazarData.Interfaces;
-using lazarData.Models.Auth;
 using lazarData.Repositories;
 using LazarWebApi.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

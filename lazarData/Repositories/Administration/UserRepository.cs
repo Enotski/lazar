@@ -3,14 +3,16 @@ using lazarData.Enums;
 using lazarData.Interfaces;
 using lazarData.Models.Administration;
 using lazarData.Models.Response;
-using lazarData.Models.Response.DataGrid;
 using lazarData.Models.Response.ViewModels;
+using lazarData.ResponseModels.Dtos.Administration;
+using lazarData.ResponseModels.Dx;
+using lazarData.ResponseModels.Dx.Base;
 using lazarData.Utils;
 using System.Data.Entity;
 
 namespace lazarData.Repositories.Administration
 {
-    public class UserRepository : BaseRepository<UserViewModel, User>
+    public class UserRepository : BaseRepository<UserDto, User>
     {
         EventLogRepository logRepo;
         public UserRepository(IContextRepository context) : base(context)
@@ -265,9 +267,9 @@ namespace lazarData.Repositories.Administration
             }
         }
 
-        public Func<User, UserViewModel> ModelToViewModel()
+        public Func<User, UserDto> ModelToViewModel()
         {
-            return model => new UserViewModel
+            return model => new UserDto
             {
                 Id = model.Id,
                 Email = model.Email,
@@ -282,7 +284,7 @@ namespace lazarData.Repositories.Administration
                 return new BaseResponse(GetViewById(id, ModelToViewModel(), true));
             } catch (Exception ex) { return new BaseResponse(ex); }
         }
-        public BaseResponse<UserViewModel> AddEditUser(UserViewModel model, Guid currentUserId)
+        public BaseResponse<UserDto> AddEditUser(UserDto model, Guid currentUserId)
         {
             try
             {
@@ -305,7 +307,7 @@ namespace lazarData.Repositories.Administration
                     user = Context.Users.FirstOrDefault(w => w.Id == model.Id);
                     if (user == null)
                     {
-                        return new BaseResponse<UserViewModel>(new Exception("Пользователь отсутствует"));
+                        return new BaseResponse<UserDto>(new Exception("Пользователь отсутствует"));
                     }
 
                     user.Password = model.Password;
@@ -317,23 +319,23 @@ namespace lazarData.Repositories.Administration
 
                 Context.SaveChanges();
                 logRepo.LogEvent(SubSystemType.Users, type, currentUserId);
-                return new BaseResponse<UserViewModel>(ModelToViewModel().Invoke(user));
+                return new BaseResponse<UserDto>(ModelToViewModel().Invoke(user));
             } catch (Exception exp)
             {
                 logRepo.LogEvent(SubSystemType.Users, EventType.Error, currentUserId);
-                return new BaseResponse<UserViewModel>(exp);
+                return new BaseResponse<UserDto>(exp);
             }
         }
-        public ResponseModel<UserViewModel> LoginUser(UserViewModel model)
+        public ResponseModel<UserDto> LoginUser(UserDto model)
         {
             try
             {
                 var user = GetAll<User>(true).FirstOrDefault(x => x.Login == model.Login/* && x.Password == model.Password*/);
                 if(user == null)
                 {
-                    return new ResponseModel<UserViewModel>("Не верный логин или пароль");
+                    return new ResponseModel<UserDto>("Не верный логин или пароль");
                 }
-                return new ResponseModel<UserViewModel>(new UserViewModel()
+                return new ResponseModel<UserDto>(new UserDto()
                 {
                     Id = user.Id,
                     Login = user.Login,
@@ -341,10 +343,10 @@ namespace lazarData.Repositories.Administration
                 });
             } catch(Exception ex)
             {
-                return new ResponseModel<UserViewModel>(ex.Message);
+                return new ResponseModel<UserDto>(ex.Message);
             }
         }
-        public UserViewModel AddUser(UserViewModel model, Guid? userId = null)
+        public UserDto AddUser(UserDto model, Guid? userId = null)
         {
             try
             {
@@ -371,11 +373,11 @@ namespace lazarData.Repositories.Administration
                 Context.Users.Add(newData);
                 Context.SaveChanges();
                 logRepo.LogEvent(SubSystemType.Users, EventType.Create, userId.GetValueOrDefault());
-                return new UserViewModel() { Login = newData.Login, Email = newData.Email};
+                return new UserDto() { Login = newData.Login, Email = newData.Email};
             } catch (Exception exc)
             {
                 logRepo.LogEvent(SubSystemType.Users, EventType.Error, userId.GetValueOrDefault(), "Ошибка добавления");
-                return new UserViewModel(exc.Message);
+                return new UserDto(exc.Message);
             }
         }
         /// <summary>
@@ -385,7 +387,7 @@ namespace lazarData.Repositories.Administration
         /// <param name="NameRole">Название роли</param>
         /// <param name="GroupAD">Группа Ад в которую должна входить данная роль</param>
         /// <returns></returns>
-        public BaseResponse UpdateUser(UserViewModel model, Guid? userId = null)
+        public BaseResponse UpdateUser(UserDto model, Guid? userId = null)
         {
             try
             {
@@ -424,7 +426,7 @@ namespace lazarData.Repositories.Administration
                 return new BaseResponse(exc);
             }
         }
-        public BaseResponse<UserViewModel> SetRoleToUser(Guid? userId, Guid? roleId)
+        public BaseResponse<UserDto> SetRoleToUser(Guid? userId, Guid? roleId)
         {
             try
             {
@@ -433,9 +435,9 @@ namespace lazarData.Repositories.Administration
                     var user = GetAll<User>(false, x => x.Roles).FirstOrDefault(w => w.Id == userId.Value);
                     if (user == null)
                     {
-                        return new BaseResponse<UserViewModel>(new Exception("Пользователь отсутствует"));
+                        return new BaseResponse<UserDto>(new Exception("Пользователь отсутствует"));
                     }
-                    if (user.Roles.Any(x => x.Id == roleId.Value)) { return new BaseResponse<UserViewModel>(new UserViewModel()); }
+                    if (user.Roles.Any(x => x.Id == roleId.Value)) { return new BaseResponse<UserDto>(new UserDto()); }
 
                     var role = Context.Roles.FirstOrDefault(x => x.Id == roleId.Value);
 
@@ -444,14 +446,14 @@ namespace lazarData.Repositories.Administration
                     Context.SaveChanges();
                     //logRepo.LogEvent(SubSystemType.Users, EventType.Update, currentUserId);
                 }
-                return new BaseResponse<UserViewModel>(new UserViewModel());
+                return new BaseResponse<UserDto>(new UserDto());
             } catch (Exception exp)
             {
                 //logRepo.LogEvent(SubSystemType.Users, EventType.Error, currentUserId);
-                return new BaseResponse<UserViewModel>(exp);
+                return new BaseResponse<UserDto>(exp);
             }
         }
-        public BaseResponse<UserViewModel> RemoveRoleFromUser(Guid? userId, Guid? roleId)
+        public BaseResponse<UserDto> RemoveRoleFromUser(Guid? userId, Guid? roleId)
         {
             try
             {
@@ -460,7 +462,7 @@ namespace lazarData.Repositories.Administration
                     var user = GetAll<User>(false, x => x.Roles).FirstOrDefault(w => w.Id == userId.Value);
                     if (user == null)
                     {
-                        return new BaseResponse<UserViewModel>(new Exception("Пользователь отсутствует"));
+                        return new BaseResponse<UserDto>(new Exception("Пользователь отсутствует"));
                     }
 
                     if (user.Roles.Any(x => x.Id == roleId)) {
@@ -472,11 +474,11 @@ namespace lazarData.Repositories.Administration
                     }
                     //logRepo.LogEvent(SubSystemType.Users, EventType.Update, currentUserId);
                 }
-                return new BaseResponse<UserViewModel>(new UserViewModel());
+                return new BaseResponse<UserDto>(new UserDto());
             } catch (Exception exp)
             {
                 //logRepo.LogEvent(SubSystemType.Users, EventType.Error, currentUserId);
-                return new BaseResponse<UserViewModel>(exp);
+                return new BaseResponse<UserDto>(exp);
             }
         }
         public BaseResponseEnumerable DeleteUsers(IEnumerable<Guid> userIds)
@@ -510,7 +512,7 @@ namespace lazarData.Repositories.Administration
 
                     logRepo.LogEvent(SubSystemType.Users, EventType.Delete, userId.GetValueOrDefault(), $"Удаление роли:\n ({userModel.Login})");
                 }
-                return new BaseResponse(new RoleViewModel());
+                return new BaseResponse(new RoleDto());
             } catch (Exception exc)
             {
                 logRepo.LogEvent(SubSystemType.Users, EventType.Error, userId.GetValueOrDefault(), $"Удаление ролей");
