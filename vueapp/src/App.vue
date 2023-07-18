@@ -1,9 +1,9 @@
 <template>
-  <v-app class="d-flex flex-column min-vh-100">
+  <div class="d-flex flex-column min-vh-100">
     <NavPannel />
     <router-view></router-view>
     <FooterPannel />
-  </v-app>
+  </div>
 </template>
 
 <script>

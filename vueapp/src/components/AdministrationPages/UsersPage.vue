@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid content-container">
-    <div class="d-flex flex-row">
-      <div>
+    <div class="row">
+      <div class="col">
         <DxGrid
           :ref="usersGridRef"
           :data-url="urlGetUsers"
@@ -12,40 +12,37 @@
           :data-edit-functions="usersEditFunctions"
         />
       </div>
-      <div class="row ml-5 pt-0 pl-0">
-        <div class="row mb-3">
-          <div class="col-auto p-0">
-            <v-btn
-              icon="mdi-plus-circle-outline"
-              variant="text"
-              title="Set Role"
-              class="text-secondary"
-              size="small"
-              rounded="lg"
-              :disabled="selectDisabled"
-              @click="setRoleToUser"
-            ></v-btn>
+      <div class="col">
+        <div class="row ml-5 pt-0">
+          <div class="row mb-3">
+            <div class="col-auto">
+              <n-button @click="setRoleToUser = true" type="success" ghost  icon-placement="left">
+                <template #icon>
+                  <n-icon><add-icon /></n-icon>
+                </template>
+                Set Role
+              </n-button>
+            </div>
+            <div class="col">
+              <DxSelect
+                :ref="rolesSelectRef"
+                :data-url="urlGetRolesList"
+                :params-data="paramsData"
+                :disabled="selectDisabled"
+              />
+            </div>
           </div>
-          <div class="col pr-0">
-            <DxSelect
-              :ref="rolesSelectRef"
-              :data-url="urlGetRolesList"
+          <div class="row">
+            <DxGrid
+              :ref="rolesGridRef"
+              :data-url="urlGetRoles"
+              :columns="roleColumns"
+              :height="rolesTableHeight"
               :params-data="paramsData"
-              :height="38"
-              :disabled="selectDisabled"
+              :editing="rolesGridEditing"
+              :data-edit-functions="rolesEditFunctions"
             />
           </div>
-        </div>
-        <div class="row">
-          <DxGrid
-            :ref="rolesGridRef"
-            :data-url="urlGetRoles"
-            :columns="roleColumns"
-            :height="rolesTableHeight"
-            :params-data="paramsData"
-            :editing="rolesGridEditing"
-            :data-edit-functions="rolesEditFunctions"
-          />
         </div>
       </div>
     </div>
@@ -55,13 +52,17 @@
 <script>
 import DxGrid from "../DxComponents/DxGrid.vue";
 import DxSelect from "../DxComponents/DxSelect.vue";
-
+import { NButton, NIcon } from "naive-ui";
+import { AddAlt as AddIcon } from "@vicons/carbon";
 import { sendRequest, apiUrl } from "../../../utils/requestUtils";
 
 export default {
   components: {
     DxGrid,
     DxSelect,
+    NButton,
+    NIcon,
+    AddIcon,
   },
   computed: {
     dxRolesGrid: function () {
@@ -77,7 +78,7 @@ export default {
   data() {
     return {
       urlGetUsers: `${apiUrl}/users/get-users-data-grid`,
-      urlGetRoles: `${apiUrl}/roles/get-roles-data-grid`,
+      urlGetRoles: `${apiUrl}/roles/get-data-grid`,
       urlGetRolesList: `${apiUrl}/roles/get-roles`,
       urlSetRoleToUser: `${apiUrl}/user-profile/set-role-to-user`,
       usersGridRef: "users_grid",

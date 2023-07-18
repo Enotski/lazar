@@ -2,21 +2,11 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
-// Vuetify
-import 'vuetify/styles'
 import 'bootstrap/dist/css/bootstrap.css'
-import '@mdi/font/css/materialdesignicons.min.css'
 import 'devextreme/dist/css/dx.light.css'
 import './css/site.css'
 
-import { createVuetify } from 'vuetify'
-import * as components from 'vuetify/components'
-import * as directives from 'vuetify/directives'
-
-const vuetify = createVuetify({
-    components,
-    directives,
-})
+import store from "./store";
 
 import UsersPage from './components/AdministrationPages/UsersPage.vue'
 import UserProfilePage from './components/AdministrationPages/UserProfilePage.vue'
@@ -67,4 +57,4 @@ const router = createRouter({
     history: createWebHistory()
 })
 
-createApp(App).use(vuetify).use(router).mount('#app')
+createApp(App).use(router).use(store).mount('#app')

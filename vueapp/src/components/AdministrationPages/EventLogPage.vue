@@ -7,10 +7,8 @@
         :value="initialValue"
         display-format="dd.MM.yyyy"
       />
-      <div class="pt-2">
-        <v-btn color="danger" variant="text" @click="clearEventLog"
-          >Remove logs</v-btn
-        >
+      <div class="ms-5 pt-2">
+        <n-button @click="clearEventLog" type="error" ghost >Remove logs</n-button>
       </div>
     </div>
     <div class="d-flex flex-row">
@@ -27,6 +25,7 @@
 <script>
 import DxGrid from "../DxComponents/DxGrid.vue";
 import DxDateRangeBox from "devextreme-vue/date-range-box";
+import { NButton } from "naive-ui";
 
 import { DataGrid } from "../../../utils/DxGridHelpers";
 import { sendRequest, apiUrl } from "../../../utils/requestUtils";
@@ -35,10 +34,12 @@ const msInDay = 1000 * 60 * 60 * 24;
 const now = new Date();
 const subSystemTypeUrl = `${apiUrl}/types/get-subsystem-type`;
 const eventTypeUrl = `${apiUrl}/types/get-event-types`;
+
 export default {
   components: {
     DxGrid,
     DxDateRangeBox,
+    NButton,
   },
   computed: {
     dxDateRange: function () {
@@ -51,11 +52,11 @@ export default {
   data() {
     return {
       initialValue: [
-        new Date(now.getTime() - msInDay * 3).toLocaleDateString(),
-        new Date(now.getTime() + msInDay * 3).toLocaleDateString(),
+        new Date(now.getTime() - msInDay * 3),
+        new Date(now.getTime() + msInDay * 3),
       ],
-      getEventLogUrl: `${apiUrl}/event-logs/get-event-logs-data-grid`,
-      removeEventLogByPeriodUrl: `${apiUrl}/event-logs/remove-logs-by-period`,
+      getEventLogUrl: `${apiUrl}/event-logs/get-data-grid`,
+      removeEventLogByPeriodUrl: `${apiUrl}/event-logs/remove-by-period`,
       eventLogGridRef: "event_log_grid",
       dateRangeRef: "log_period",
       eventLogGridHeight: 500,
@@ -72,13 +73,13 @@ export default {
           dataField: "SubSystemName",
           alignment: "center",
           filterOperations: ["=", "<>"],
-          lookup: DataGrid.getColumnLookup(subSystemTypeUrl, 'GET')
+          lookup: DataGrid.getColumnLookup(subSystemTypeUrl, "GET"),
         },
         {
           caption: "Тип",
           dataField: "EventTypeName",
           filterOperations: ["=", "<>"],
-          lookup: DataGrid.getColumnLookup(eventTypeUrl, 'GET')
+          lookup: DataGrid.getColumnLookup(eventTypeUrl, "GET"),
         },
         {
           caption: "Пользователь",
@@ -94,8 +95,7 @@ export default {
       ],
     };
   },
-  mounted: function () {
-  },
+  mounted: function () {},
   methods: {
     clearEventLog: async function () {
       let el = this;

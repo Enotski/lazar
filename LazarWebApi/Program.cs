@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Runtime.InteropServices;
 
 namespace LazarWebApi
 {
@@ -56,7 +57,7 @@ namespace LazarWebApi
                 });
             });
 
-            string connection = builder.Configuration.GetConnectionString("wrk");
+            string connection = builder.Configuration.GetConnectionString("home");
             builder.Services.AddDbContext<lazarData.Context.LazarContext>(options => options.UseSqlServer(connection));
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

@@ -11,7 +11,7 @@
         ></router-link
       >
     </div>
-    <div>
+    <div v-if="loggedIn">
       <div class="row">
         <div class="col-auto">
           <router-link to="/users" class="nav nav-link text-secondary"
@@ -19,124 +19,85 @@
           >
         </div>
         <div class="col-auto">
-          <router-link
-            to="/user-profile"
-            class="nav nav-link text-secondary"
+          <router-link to="/user-profile" class="nav nav-link text-secondary"
             >Me</router-link
           >
         </div>
         <div class="col-auto">
-          <router-link
-            to="/event-log"
-            class="nav nav-link text-secondary"
+          <router-link to="/event-log" class="nav nav-link text-secondary"
             >logs</router-link
           >
         </div>
       </div>
     </div>
-    <div class="d-flex flex-row-reverse">
-      <div class="col-auto btn-login">
-        <v-row justify="center">
-          <v-dialog v-model="dialog" persistent width="800">
-            <template v-slot:activator="{ props }">
-              <v-btn
-                icon="mdi-account-circle-outline"
-                v-bind="props"
-                variant="text"
-                title="Sign Up / Log In"
-                class="text-secondary"
-              ></v-btn>
-            </template>
-            <v-card class="p-3">
-              <v-card-title>
-                <span class="text-h5 text-secondary">User Profile</span>
-              </v-card-title>
-              <v-card-text>
-                <v-container>
-                  <v-row>
-                    <v-col cols="12" class="px-0">
-                      <v-text-field
-                        ref="login"
-                        label="Login*"
-                        v-model="login"
-                        required
-                        clearable
-                        :error-messages="errorMessages"
-                        :rules="[() => !!login || 'This field is required']"
-                        variant="outlined"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col v-if="register" cols="12" class="px-0">
-                      <v-text-field
-                        ref="email"
-                        label="Email*"
-                        v-model="email"
-                        required
-                        clearable
-                        :error-messages="errorMessages"
-                        :rules="[
-                          () =>
-                            (!!email && register) || 'This field is required',
-                        ]"
-                        variant="outlined"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" class="px-0">
-                      <v-text-field
-                        ref="password"
-                        label="Password*"
-                        type="password"
-                        v-model="password"
-                        required
-                        clearable
-                        :error-messages="errorMessages"
-                        :rules="[() => !!password || 'This field is required']"
-                        variant="outlined"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
-              <v-card-actions class="px-3">
-                <v-switch
-                  v-model="register"
-                  label="Register now"
-                  color="teal"
-                  hide-details
-                  class="pl-3"
-                ></v-switch>
-                <v-spacer></v-spacer>
-                <v-btn color="red" variant="text" @click="dialog = false">
-                  Close
-                </v-btn>
-                <v-btn color="teal" variant="text" @click="submit">
-                  Save
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-row>
+    <div class="d-flex">
+      <div class="col me-5">
+        <n-dropdown trigger="hover" :options="items" @select="handleNavSelec">
+          <n-button>Navigation</n-button>
+        </n-dropdown>
       </div>
-      <div class="col-auto">
-        <div class="pr-5">
-          <v-menu transition="slide-x-transition">
-            <template v-slot:activator="{ props }">
-              <v-btn color="secondary" variant="plain" v-bind="props"
-                >Navigation</v-btn
-              >
+      <div class="col me-3">
+        <n-button @click="showModal = true" ghost circle type="info">
+          <template #icon>
+            <n-icon><account-icon /></n-icon>
+          </template>
+        </n-button>
+        <n-modal v-model:show="showModal">
+          <n-card
+            style="width: 800px"
+            title="Login / Register"
+            :bordered="false"
+            size="huge"
+            role="dialog"
+            aria-modal="true"
+          >
+            <template #header-extra></template>
+            <n-form
+              ref="formRef"
+              inline
+              :label-width="80"
+              :model="formValue"
+              :rules="rules"
+              size="medium"
+            >
+              <n-form-item label="Login" path="login">
+                <n-input
+                  v-model:value="formValue.login"
+                  placeholder="Input login"
+                />
+              </n-form-item>
+              <div class="me-3" v-if="isRegisterForm">
+                <n-form-item label="Email" path="email">
+                  <n-input
+                    v-model:value="formValue.email"
+                    type="email"
+                    placeholder="Input email"
+                  />
+                </n-form-item>
+              </div>
+              <n-form-item label="Password" path="password">
+                <n-input
+                  v-model:value="formValue.password"
+                  type="password"
+                  placeholder="Input Password"
+                />
+              </n-form-item>
+              <n-form-item>
+                <n-button @click="submit">Log in</n-button>
+              </n-form-item>
+            </n-form>
+            <template #footer>
+              <n-radio-group v-model:value="registerRadio">
+                <n-radio-button
+                  v-for="item in registerFormRadioGroup"
+                  :key="item.key"
+                  :value="item.key"
+                  :label="item.label"
+                />
+              </n-radio-group>
             </template>
-
-            <v-list>
-              <v-list-item v-for="(item, index) in items" :key="index">
-                <router-link
-                  :to="item.ref"
-                  class="nav nav-link text-secondary"
-                  >{{ item.title }}</router-link
-                >
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </div>
+          </n-card>
+        </n-modal>
       </div>
     </div>
   </nav>
@@ -144,54 +105,145 @@
 
 <script>
 import { defineComponent } from "vue";
-
-import { sendRequest, apiUrl } from "../../../utils/requestUtils";
+import { AccountCircleOutlined as AccountIcon } from "@vicons/material";
+import {
+  NButton,
+  NDropdown,
+  NModal,
+  NCard,
+  NForm,
+  NFormItem,
+  NInput,
+  NIcon,
+  NRadioGroup,
+  NRadioButton,
+} from "naive-ui";
 
 export default defineComponent({
-  components: {},
+  components: {
+    NButton,
+    NDropdown,
+    NModal,
+    NCard,
+    NForm,
+    NFormItem,
+    NInput,
+    NIcon,
+    NRadioGroup,
+    NRadioButton,
+    AccountIcon,
+  },
   data() {
     return {
       loading: false,
       post: null,
       dialog: false,
-      register: false,
+      registerRadio: 0,
+      showModal: false,
+      options: [],
+      registerFormRadioGroup: [
+        { key: 0, label: "Log in" },
+        { key: 1, label: "Register" },
+      ],
       items: [
-        { ref: "/dsp", title: "DSP" },
-        { ref: "/correlation", title: "Correlation" },
-        { ref: "/farrow", title: "Farrow" },
-        { ref: "/filter-banks", title: "FilterBanks" },
-        { ref: "/filters", title: "Filters" },
-        { ref: "/fourier", title: "Fourier" },
-        { ref: "/goertzel", title: "Goertzel" },
-        { ref: "/mel-spectrum", title: "MelSpectrum" },
-        { ref: "/mfcc", title: "Mfcc" },
-        { ref: "/modulation", title: "Modulation" },
-        { ref: "/noise", title: "Noise" },
-        { ref: "/resampling", title: "Resampling" },
-        { ref: "/signals", title: "Signals" },
-        { ref: "/spectrum", title: "Spectrum" },
-        { ref: "/wavelets", title: "Wavelets" },
-        { ref: "/windows", title: "Windows" },
+        { key: "dsp", label: "DSP" },
+        { key: "correlation", label: "Correlation" },
+        { key: "farrow", label: "Farrow" },
+        { key: "filter-banks", label: "FilterBanks" },
+        { key: "filters", label: "Filters" },
+        { key: "fourier", label: "Fourier" },
+        { key: "goertzel", label: "Goertzel" },
+        { key: "mel-spectrum", label: "MelSpectrum" },
+        { key: "mfcc", label: "Mfcc" },
+        { key: "modulation", label: "Modulation" },
+        { key: "noise", label: "Noise" },
+        { key: "resampling", label: "Resampling" },
+        { key: "signals", label: "Signals" },
+        { key: "spectrum", label: "Spectrum" },
+        { key: "wavelets", label: "Wavelets" },
+        { key: "windows", label: "Windows" },
       ],
       errorMessages: "",
       login: null,
       email: null,
       password: null,
       formHasErrors: false,
-    };
-  },
-  computed: {
-    form() {
-      return {
+      formValue: {
         login: this.login,
         email: this.email,
         password: this.password,
+      },
+      rules: {
+        login: {
+          required: true,
+          message: "Please input your login",
+          trigger: "blur",
+        },
+        email: {
+          required: true,
+          message: "Please input your email",
+          trigger: ["input", "blur"],
+        },
+        password: {
+          required: true,
+          message: "Please input your password",
+          trigger: ["input", "blur"],
+        },
+      },
+    };
+  },
+  computed: {
+    isRegisterForm() {
+      return this.registerRadio === 1;
+    },
+    loggedIn() {
+      return this.$store.state.auth.status.loggedIn;
+    },
+    currentUser() {
+      return this.$store.state.auth.user;
+    },
+    showAdminBoard() {
+      if (this.currentUser && this.currentUser["roles"]) {
+        return this.currentUser["roles"].includes("admin");
+      }
+
+      return false;
+    },
+    showModeratorBoard() {
+      if (this.currentUser && this.currentUser["roles"]) {
+        return this.currentUser["roles"].includes("moderator");
+      }
+
+      return false;
+    },
+    form() {
+      return {
+        login: this.formValue.login,
+        email: this.formValue.email,
+        password: this.formValue.password,
       };
     },
   },
-  created() {},
+  created() {
+    if (this.loggedIn) {
+      this.$router.push("/user-profile");
+    }
+  },
   watch: {},
   methods: {
+    handleValidateClick(e) {
+      e.preventDefault();
+      this.formRef.value?.validate((errors) => {
+        console.log(errors);
+      });
+    },
+    handleNavSelec(key) {
+      this.$router.push("/" + key);
+    },
+    logOut() {
+      this.$store.dispatch("auth/logout");
+      this.$router.push("/login");
+    },
     resetForm() {
       this.errorMessages = [];
       this.formHasErrors = false;
@@ -204,28 +256,60 @@ export default defineComponent({
       this.formHasErrors = false;
       this.dialog = false;
       let el = this;
-      Object.keys(this.form)
-        .forEach((f) => {
-          if (!el.form[f]) el.formHasErrors = true;
-          if (el.$refs[f] !== undefined) el.$refs[f].validate(true);
-        });
+      Object.keys(this.form).forEach((f) => {
+        if (!el.form[f]) el.formHasErrors = true;
+        if (el.$refs[f] !== undefined) el.$refs[f].validate(true);
+      });
 
-      if (this.register) {
-        await sendRequest(
-          `${apiUrl}user-profile/register-user`,
-          "POST",
-          this.form
-        );
-      } else {
-        await sendRequest(
-          `${apiUrl}/user-profile/login-user`,
-          "POST",
-          this.form
-        ).
-        then(async function (data) {
-          console.log(data.result);
-        });
-      }
+      this.$store.dispatch("auth/login", this.form).then(
+        () => {
+          this.$router.push("/user-profile");
+        },
+        (error) => {
+          this.loading = false;
+          this.message =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+        }
+      );
+      // if (this.register) {
+      //   this.loading = true;
+
+      // this.$store.dispatch("auth/sign-in", user).then(
+      //   () => {
+      //     this.$router.push("/user-profile");
+      //   },
+      //   (error) => {
+      //     this.loading = false;
+      //     this.message =
+      //       (error.response &&
+      //         error.response.data &&
+      //         error.response.data.message) ||
+      //       error.message ||
+      //       error.toString();
+      //   }
+      // );
+
+      //   await sendRequest(
+      //     `${apiUrl}/auth/sign-in`,
+      //     "POST",
+      //     this.form
+      //   ).then(async function (data) {
+      //     console.log(data.result);
+      //   });
+      // } else {
+      //   await sendRequest(
+      //     `${apiUrl}/auth/register`,
+      //     "POST",
+      //     {login: this.form.login, password: this.form.password}
+      //   ).
+      //   then(async function (data) {
+      //     console.log(data.result);
+      //   });
+      //}
     },
   },
 });
@@ -233,8 +317,5 @@ export default defineComponent({
 <style>
 .badge-ref {
   text-decoration: none;
-}
-.btn-login {
-  align-self: center;
 }
 </style>

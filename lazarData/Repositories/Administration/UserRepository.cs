@@ -9,6 +9,8 @@ using lazarData.ResponseModels.Dx;
 using lazarData.ResponseModels.Dx.Base;
 using lazarData.Utils;
 using System.Data.Entity;
+using System.Runtime.InteropServices;
+using System.Text;
 
 namespace lazarData.Repositories.Administration
 {
@@ -19,6 +21,7 @@ namespace lazarData.Repositories.Administration
         {
             logRepo = new EventLogRepository(context);
         }
+
         public IHelperResult GetUsersDataGrid(int skip, int take, IEnumerable<DataGridSort> sorts, IEnumerable<DataGridFilter> filters)
         {
             try
