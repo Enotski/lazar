@@ -10,6 +10,7 @@
     :pager="pager"
     :selection="selection"
     :height="height"
+    :width="width"
     :paging="paging"
     :key-expr="keyExpr"
     :show-column-lines="showColumnLines"
@@ -71,6 +72,10 @@ export default {
     height: {
       type: Number,
       default: 700,
+    },
+    width: {
+      type: Number,
+      default: null,
     },
     refKey: {
       type: String,

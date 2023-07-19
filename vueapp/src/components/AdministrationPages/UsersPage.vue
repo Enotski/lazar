@@ -2,21 +2,27 @@
   <div class="container-fluid content-container">
     <div class="row">
       <div class="col">
-        <DxGrid
-          :ref="usersGridRef"
-          :data-url="urlGetUsers"
-          :columns="userColumns"
-          :events="userEvents"
-          :height="usersTableHeight"
-          :editing="usersGridEditing"
-          :data-edit-functions="usersEditFunctions"
-        />
+          <DxGrid
+            :ref="usersGridRef"
+            :data-url="urlGetUsers"
+            :columns="userColumns"
+            :events="userEvents"
+            :height="usersTableHeight"
+            :editing="usersGridEditing"
+            :width="1000"
+            :data-edit-functions="usersEditFunctions"
+          />
       </div>
       <div class="col">
         <div class="row ml-5 pt-0">
           <div class="row mb-3">
             <div class="col-auto">
-              <n-button @click="setRoleToUser = true" type="success" ghost  icon-placement="left">
+              <n-button
+                @click="setRoleToUser = true"
+                type="success"
+                ghost
+                icon-placement="left"
+              >
                 <template #icon>
                   <n-icon><add-icon /></n-icon>
                 </template>

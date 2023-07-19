@@ -37,67 +37,75 @@
         </n-dropdown>
       </div>
       <div class="col me-3">
-        <n-button @click="showModal = true" ghost circle type="info">
-          <template #icon>
-            <n-icon><account-icon /></n-icon>
-          </template>
-        </n-button>
-        <n-modal v-model:show="showModal">
-          <n-card
-            style="width: 800px"
-            title="Login / Register"
-            :bordered="false"
-            size="huge"
-            role="dialog"
-            aria-modal="true"
-          >
-            <template #header-extra></template>
-            <n-form
-              ref="formRef"
-              inline
-              :label-width="80"
-              :model="formValue"
-              :rules="rules"
-              size="medium"
+        <div v-if="!loggedIn">
+          <n-button @click="showLoginModal = true" ghost circle type="info">
+            <template #icon>
+              <n-icon><account-icon /></n-icon>
+            </template>
+          </n-button>
+          <n-modal v-model:show="showLoginModal">
+            <n-card
+              style="width: 800px"
+              title="Login / Register"
+              :bordered="false"
+              size="huge"
+              role="dialog"
+              aria-modal="true"
             >
-              <n-form-item label="Login" path="login">
-                <n-input
-                  v-model:value="formValue.login"
-                  placeholder="Input login"
-                />
-              </n-form-item>
-              <div class="me-3" v-if="isRegisterForm">
-                <n-form-item label="Email" path="email">
+              <n-form
+                ref="formRef"
+                inline
+                :label-width="80"
+                :model="formValue"
+                :rules="rules"
+                size="medium"
+              >
+                <n-form-item label="Login" path="login">
                   <n-input
-                    v-model:value="formValue.email"
-                    type="email"
-                    placeholder="Input email"
+                    v-model:value="formValue.login"
+                    placeholder="Input login"
                   />
                 </n-form-item>
-              </div>
-              <n-form-item label="Password" path="password">
-                <n-input
-                  v-model:value="formValue.password"
-                  type="password"
-                  placeholder="Input Password"
-                />
-              </n-form-item>
-              <n-form-item>
-                <n-button @click="submit">Log in</n-button>
-              </n-form-item>
-            </n-form>
-            <template #footer>
-              <n-radio-group v-model:value="registerRadio">
-                <n-radio-button
-                  v-for="item in registerFormRadioGroup"
-                  :key="item.key"
-                  :value="item.key"
-                  :label="item.label"
-                />
-              </n-radio-group>
+                <div class="me-3" v-if="isRegisterForm">
+                  <n-form-item label="Email" path="email">
+                    <n-input
+                      v-model:value="formValue.email"
+                      type="email"
+                      placeholder="Input email"
+                    />
+                  </n-form-item>
+                </div>
+                <n-form-item label="Password" path="password">
+                  <n-input
+                    v-model:value="formValue.password"
+                    type="password"
+                    placeholder="Input Password"
+                  />
+                </n-form-item>
+                <n-form-item>
+                  <n-button @click="submit">Submit</n-button>
+                </n-form-item>
+              </n-form>
+              <template #footer>
+                <n-radio-group v-model:value="registerRadio">
+                  <n-radio-button
+                    v-for="item in registerFormRadioGroup"
+                    :key="item.key"
+                    :value="item.key"
+                    :label="item.label"
+                  />
+                </n-radio-group>
+              </template>
+            </n-card>
+          </n-modal>
+        </div>
+        <div v-if="loggedIn">
+          <n-button @click="handleLogOutConfirm" ghost circle type="error">
+            <template #icon>
+              <n-icon><no-account-icon /></n-icon>
             </template>
-          </n-card>
-        </n-modal>
+          </n-button>
+        </div>
       </div>
     </div>
   </nav>
@@ -105,7 +113,7 @@
 
 <script>
 import { defineComponent } from "vue";
-import { AccountCircleOutlined as AccountIcon } from "@vicons/material";
+import { AccountCircleOutlined as AccountIcon, NoAccountsOutlined as NoAccountIcon } from "@vicons/material";
 import {
   NButton,
   NDropdown,
@@ -117,6 +125,8 @@ import {
   NIcon,
   NRadioGroup,
   NRadioButton,
+  useDialog,
+  useMessage
 } from "naive-ui";
 
 export default defineComponent({
@@ -132,15 +142,15 @@ export default defineComponent({
     NRadioGroup,
     NRadioButton,
     AccountIcon,
+    NoAccountIcon,
   },
   data() {
     return {
-      loading: false,
-      post: null,
-      dialog: false,
       registerRadio: 0,
-      showModal: false,
+      showLoginModal: false,
       options: [],
+      notify: null,
+      dialog: null,
       registerFormRadioGroup: [
         { key: 0, label: "Log in" },
         { key: 1, label: "Register" },
@@ -163,11 +173,6 @@ export default defineComponent({
         { key: "wavelets", label: "Wavelets" },
         { key: "windows", label: "Windows" },
       ],
-      errorMessages: "",
-      login: null,
-      email: null,
-      password: null,
-      formHasErrors: false,
       formValue: {
         login: this.login,
         email: this.email,
@@ -177,7 +182,7 @@ export default defineComponent({
         login: {
           required: true,
           message: "Please input your login",
-          trigger: "blur",
+          trigger: ["input", "blur"],
         },
         email: {
           required: true,
@@ -217,99 +222,52 @@ export default defineComponent({
       return false;
     },
     form() {
-      return {
-        login: this.formValue.login,
-        email: this.formValue.email,
-        password: this.formValue.password,
-      };
+      return this.formValue;
     },
   },
   created() {
+    this.dialog = useDialog();
+    this.notify = useMessage();
     if (this.loggedIn) {
       this.$router.push("/user-profile");
     }
   },
-  watch: {},
   methods: {
-    handleValidateClick(e) {
-      e.preventDefault();
-      this.formRef.value?.validate((errors) => {
-        console.log(errors);
-      });
-    },
     handleNavSelec(key) {
       this.$router.push("/" + key);
     },
+    handleLogOutConfirm() {
+      this.dialog.warning({
+        title: "LogOut",
+        content: "Are you sure?",
+        positiveText: "Ok",
+        negativeText: "Colse",
+        onPositiveClick: () => {
+          this.logOut();
+        },
+        onNegativeClick: () => {
+        },
+      });
+    },
     logOut() {
       this.$store.dispatch("auth/logout");
-      this.$router.push("/login");
-    },
-    resetForm() {
-      this.errorMessages = [];
-      this.formHasErrors = false;
-
-      Object.keys(this.form).forEach((f) => {
-        this.$refs[f].reset();
-      });
+      this.$router.push("/");
     },
     submit: async function () {
-      this.formHasErrors = false;
-      this.dialog = false;
-      let el = this;
-      Object.keys(this.form).forEach((f) => {
-        if (!el.form[f]) el.formHasErrors = true;
-        if (el.$refs[f] !== undefined) el.$refs[f].validate(true);
-      });
-
+      this.showLoginModal = false;
       this.$store.dispatch("auth/login", this.form).then(
         () => {
-          this.$router.push("/user-profile");
+          this.notify.success(`Hello ${this.form.login}`);
         },
         (error) => {
-          this.loading = false;
           this.message =
             (error.response &&
               error.response.data &&
               error.response.data.message) ||
             error.message ||
-            error.toString();
+            this.notify.error(error.toString());
         }
       );
-      // if (this.register) {
-      //   this.loading = true;
-
-      // this.$store.dispatch("auth/sign-in", user).then(
-      //   () => {
-      //     this.$router.push("/user-profile");
-      //   },
-      //   (error) => {
-      //     this.loading = false;
-      //     this.message =
-      //       (error.response &&
-      //         error.response.data &&
-      //         error.response.data.message) ||
-      //       error.message ||
-      //       error.toString();
-      //   }
-      // );
-
-      //   await sendRequest(
-      //     `${apiUrl}/auth/sign-in`,
-      //     "POST",
-      //     this.form
-      //   ).then(async function (data) {
-      //     console.log(data.result);
-      //   });
-      // } else {
-      //   await sendRequest(
-      //     `${apiUrl}/auth/register`,
-      //     "POST",
-      //     {login: this.form.login, password: this.form.password}
-      //   ).
-      //   then(async function (data) {
-      //     console.log(data.result);
-      //   });
-      //}
     },
   },
 });
