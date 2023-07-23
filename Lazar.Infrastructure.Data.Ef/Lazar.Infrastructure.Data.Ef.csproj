@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Lazar.Domain.Interfaces\Lazar.Domain.Interfaces.csproj" />
+    <ProjectReference Include="..\lazarData\Lazar.Domain.Core.csproj" />
+  </ItemGroup>
+
 </Project>

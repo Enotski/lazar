@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Lazar.Domain.Interfaces.Repositories.Administration
 {
-    internal interface IUsersRepository
+    public interface IUsersRepository
     {
     }
 }

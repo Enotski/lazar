@@ -1,16 +1,14 @@
+using Lazar.Domain.Interfaces.Repositories.Administration;
+using Lazar.Infrastructure.Data.Ef.Context;
+using Lazar.Infrastructure.Data.Ef.Repositories.Base;
 using lazarData.Enums;
 using lazarData.Interfaces;
 using lazarData.Models.Administration;
-using lazarData.Models.Response.ViewModels;
-using lazarData.ResponseModels.Dtos.Administration;
-using lazarData.ResponseModels.Dx;
-using lazarData.ResponseModels.Dx.Base;
-using lazarData.Utils;
 using System.Data.Entity;
 
-namespace lazarData.Repositories.Administration
+namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration
 {
-    public class RoleRepository : BaseRepository<RoleDto, Role>
+    public class RoleRepository : BaseRepository<Role>, IRoleRepository
     {
         /// <summary>
         /// Репозиторий логирования
@@ -21,7 +19,7 @@ namespace lazarData.Repositories.Administration
         /// Конструктор
         /// </summary>
         /// <param name="context">Контекст</param>
-        public RoleRepository(IContextRepository context) : base(context)
+        public RoleRepository(LazarContext context) : base(context)
         {
             logRepo = new EventLogRepository(context);
             usersRepo = new UserRepository(context);

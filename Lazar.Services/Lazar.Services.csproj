@@ -10,4 +10,10 @@
     <Folder Include="Dsp\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Lazar.Domain.Interfaces\Lazar.Domain.Interfaces.csproj" />
+    <ProjectReference Include="..\Lazar.Services.Contracts\Lazar.Services.Contracts.csproj" />
+    <ProjectReference Include="..\Lazar.Srevices.Iterfaces\Lazar.Srevices.Iterfaces.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Lazar.Domain.Interfaces.Repositories.Administration;
+using Lazar.Domain.Interfaces.Repositories.Auth;
+using Lazar.Domain.Interfaces.Repositories.EventLog;
 
 namespace Lazar.Domain.Interfaces.Repositories.Common
 {
-    internal interface IRepositoryManager
+    public interface IRepositoryManager
     {
+        IRoleRepository RoleRepository { get; }
+        IUserProfileRepository UserProfileRepository { get; }
+        IUsersRepository UsersRepository { get; }
+        IAuthRepository AuthRepository { get; }
+        IEventLogRepository EventLogRepository { get; }
     }
 }

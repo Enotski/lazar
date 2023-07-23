@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Lazar.Domain.Interfaces.Repositories.Auth
 {
-    internal class IAuthRepository
+    public interface IAuthRepository
     {
     }
 }

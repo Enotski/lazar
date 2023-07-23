@@ -10,4 +10,9 @@
     <PackageReference Include="AutoMapper" Version="12.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Lazar.Domain.Interfaces\Lazar.Domain.Interfaces.csproj" />
+    <ProjectReference Include="..\lazarData\Lazar.Domain.Core.csproj" />
+  </ItemGroup>
+
 </Project>

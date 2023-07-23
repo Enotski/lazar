@@ -1,22 +1,19 @@
-﻿using lazarData.Enums;
+﻿using Lazar.Domain.Interfaces.Repositories.EventLog;
+using Lazar.Infrastructure.Data.Ef.Context;
+using Lazar.Infrastructure.Data.Ef.Repositories.Base;
+using lazarData.Enums;
 using lazarData.Interfaces;
 using lazarData.Models.EventLogs;
-using lazarData.Models.Response.ViewModels;
-using lazarData.ResponseModels.Dtos.Administration;
-using lazarData.ResponseModels.Dx;
-using lazarData.ResponseModels.Dx.Base;
-using lazarData.Utils;
 using System.Data.Entity;
-using TMK.Utils.Utils;
 
 namespace lazarData.Repositories.Administration
 {
     /// <summary>
     /// Repository of events logs in app
     /// </summary>
-    public class EventLogRepository : BaseRepository<EventLogDto, EventLog>
+    public class EventLogRepository : BaseRepository<EventLog>, IEventLogRepository
     {
-        public EventLogRepository(IContextRepository context) : base(context) { }
+        public EventLogRepository(LazarContext context) : base(context) { }
         /// <summary>
         /// Get data for DxDataGrid
         /// </summary>

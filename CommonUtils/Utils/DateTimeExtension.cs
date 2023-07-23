@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace lazarData.Utils
+namespace CommonUtils.Utils
 {
     /// <summary>
     /// Расширения для дат

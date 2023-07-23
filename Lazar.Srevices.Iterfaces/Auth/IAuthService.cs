@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Lazar.Srevices.Iterfaces.Auth
 {
-    internal interface IAuthService
+    public interface IAuthService
     {
     }
 }

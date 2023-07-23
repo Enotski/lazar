@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Lazar.Domain.Interfaces.Repositories.Base
 {
-    internal interface IBaseRepository
+    public interface IBaseRepository
     {
     }
 }

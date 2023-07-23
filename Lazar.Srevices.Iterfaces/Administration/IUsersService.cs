@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Lazar.Srevices.Iterfaces.Administration
 {
-    internal interface IUsersService
+    public interface IUsersService
     {
     }
 }

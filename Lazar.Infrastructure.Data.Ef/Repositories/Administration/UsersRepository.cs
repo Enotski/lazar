@@ -1,25 +1,19 @@
-﻿using lazarData.Context;
+﻿using Lazar.Domain.Interfaces.Repositories.Administration;
+using Lazar.Domain.Interfaces.Repositories.EventLog;
+using Lazar.Infrastructure.Data.Ef.Context;
+using Lazar.Infrastructure.Data.Ef.Repositories.Base;
 using lazarData.Enums;
 using lazarData.Interfaces;
 using lazarData.Models.Administration;
-using lazarData.Models.Response;
-using lazarData.Models.Response.ViewModels;
-using lazarData.ResponseModels.Dtos.Administration;
-using lazarData.ResponseModels.Dx;
-using lazarData.ResponseModels.Dx.Base;
-using lazarData.Utils;
 using System.Data.Entity;
-using System.Runtime.InteropServices;
-using System.Text;
 
-namespace lazarData.Repositories.Administration
+namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration
 {
-    public class UserRepository : BaseRepository<UserDto, User>
+    public class UsersRepository : BaseRepository<User>, IUsersRepository
     {
-        EventLogRepository logRepo;
-        public UserRepository(IContextRepository context) : base(context)
+        IEventLogRepository logRepo;
+        public UsersRepository(LazarContext context) : base(context)
         {
-            logRepo = new EventLogRepository(context);
         }
 
         public IHelperResult GetUsersDataGrid(int skip, int take, IEnumerable<DataGridSort> sorts, IEnumerable<DataGridFilter> filters)

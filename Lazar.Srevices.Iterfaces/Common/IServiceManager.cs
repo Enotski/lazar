@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Lazar.Srevices.Iterfaces.Administration;
+using Lazar.Srevices.Iterfaces.Auth;
+using Lazar.Srevices.Iterfaces.EventLog;
 
 namespace Lazar.Srevices.Iterfaces.Common
 {
-    internal interface IServiceManager
+    public interface IServiceManager
     {
+        IRoleService RoleService { get; }
+        IUserProfileService UserProfileService { get; }
+        IUsersService UsersService { get; }
+        IAuthService AuthService { get; }
+        IEventLogService EventLogService { get; }
     }
 }

@@ -1,14 +1,12 @@
-using lazarData.Auth;
+using Lazar.Presentation.WebApi.Helpers;
 using lazarData.Interfaces;
-using lazarData.Repositories;
 using LazarWebApi.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Runtime.InteropServices;
 
-namespace LazarWebApi
+namespace Lazar.Presentation.WebApi
 {
     public class Program
     {
@@ -16,15 +14,11 @@ namespace LazarWebApi
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.Configure<AuthOptions>(options => builder.Configuration.GetSection("Jwt").Bind(options));
+            //builder.Services.Configure<AuthOptions>(options => builder.Configuration.GetSection("Jwt").Bind(options));
             builder.Services.AddCors();
             // Add services to the container.
 
-            builder.Services.AddControllers(options =>
-            {
-                options.Conventions.Add(
-                    new RouteTokenTransformerConvention(new PascalToCebabTransformer()));
-            }).AddJsonOptions(opts =>
+            builder.Services.AddControllers().AddJsonOptions(opts =>
             {
                 opts.JsonSerializerOptions.PropertyNamingPolicy = null;
             });

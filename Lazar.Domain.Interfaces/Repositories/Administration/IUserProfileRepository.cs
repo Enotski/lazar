@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lazar.Domain.Interfaces.Repositories.EventLog
+namespace Lazar.Domain.Interfaces.Repositories.Administration
 {
-    internal interface IEventLog
+    public interface IUserProfileRepository
     {
     }
 }

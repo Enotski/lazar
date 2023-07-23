@@ -4,7 +4,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
-namespace TMK.Utils.Utils {
+namespace CommonUtils.Utils
+{
 	/// <summary>
 	/// Работа с enum
 	/// </summary>
@@ -21,15 +22,6 @@ namespace TMK.Utils.Utils {
             foreach (Enum en in Enum.GetValues(typeof(TEnum)))
             {
                 FieldInfo fi = en.GetType().GetField(en.ToString());
-
-                //if (!showAll)
-                //{
-                //    var attr = fi.GetCustomAttribute<IgnoreDescriptionAttribute>();
-                //    if (attr != null)
-                //    {
-                //        continue;
-                //    }
-                //}
 
                 var key = (int)Enum.Parse(typeof(TEnum), en + "", true);
                 if (key == -1)

@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Lazar.Domain.Interfaces.Repositories.Auth;
+using Lazar.Infrastructure.Data.Ef.Context;
+using Lazar.Infrastructure.Data.Ef.Repositories.Base;
+using lazarData.Models.EventLogs;
 
 namespace Lazar.Infrastructure.Data.Ef.Repositories.Auth
 {
-    internal class AuthRepository
+    public class AuthRepository : BaseRepository<EventLog>, IAuthRepository
     {
+        public AuthRepository(LazarContext context) : base(context) { }
     }
 }

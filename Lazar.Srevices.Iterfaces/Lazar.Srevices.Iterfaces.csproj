@@ -10,4 +10,8 @@
     <Folder Include="Dsp\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Lazar.Services.Contracts\Lazar.Services.Contracts.csproj" />
+  </ItemGroup>
+
 </Project>

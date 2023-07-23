@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Lazar.Domain.Interfaces.Repositories.Administration;
+using Lazar.Infrastructure.Data.Ef.Context;
+using Lazar.Infrastructure.Data.Ef.Repositories.Base;
+using lazarData.Models.EventLogs;
 
-namespace lazarData.Repositories.Administration
+namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration
 {
-    internal class UserProfileRepository
+    public class UserProfileRepository : BaseRepository<EventLog>, IUserProfileRepository
     {
+        public UserProfileRepository(LazarContext context) : base(context) { }
     }
 }

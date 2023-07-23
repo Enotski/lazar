@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace LazarWebApi.Helpers
+namespace Lazar.Presentation.WebApi.Helpers
 {
     public class PascalToCebabTransformer : IOutboundParameterTransformer
     {

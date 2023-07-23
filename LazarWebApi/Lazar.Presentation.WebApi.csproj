@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Lazar.Srevices.Iterfaces\Lazar.Srevices.Iterfaces.csproj" />
     <ProjectReference Include="..\lazarData\Lazar.Domain.Core.csproj" />
   </ItemGroup>
 

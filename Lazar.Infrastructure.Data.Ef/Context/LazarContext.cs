@@ -1,16 +1,8 @@
 ﻿using lazarData.Models.Administration;
 using lazarData.Models.EventLogs;
-using lazarData.Utils;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity.Migrations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace lazarData.Context
+namespace Lazar.Infrastructure.Data.Ef.Context
 {
     public class LazarContext : DbContext
     {

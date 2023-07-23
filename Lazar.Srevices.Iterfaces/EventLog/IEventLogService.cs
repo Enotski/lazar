@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Lazar.Srevices.Iterfaces.EventLog
 {
-    internal interface IEventLogService
+    public interface IEventLogService
     {
     }
 }
