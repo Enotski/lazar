@@ -2,16 +2,16 @@
 using Lazar.Domain.Interfaces.Repositories.EventLog;
 using Lazar.Infrastructure.Data.Ef.Context;
 using Lazar.Infrastructure.Data.Ef.Repositories.Base;
-using lazarData.Enums;
-using lazarData.Interfaces;
-using lazarData.Models.Administration;
+using Lazar.Domain.Core.Enums;
+using Lazar.Domain.Core.Interfaces;
+using Lazar.Domain.Core.Models.Administration;
 using System.Data.Entity;
 
 namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration
 {
     public class UsersRepository : BaseRepository<User>, IUsersRepository
     {
-        IEventLogRepository logRepo;
+        ISystemLogRepository logRepo;
         public UsersRepository(LazarContext context) : base(context)
         {
         }
@@ -61,36 +61,36 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration
                         {
                             switch (filter.Type)
                             {
-                                case DataGridFilterType.Contains:
+                                case FilterType.Contains:
                                     {
                                         source = source.Where(x => x.Login.ToLower().Contains(filter.Value));
                                         break;
                                     }
 
-                                case DataGridFilterType.NotContains:
+                                case FilterType.NotContains:
                                     {
                                         source = source.Where(x => !x.Login.ToLower().Contains(filter.Value));
                                         break;
                                     }
 
-                                case DataGridFilterType.StartsWith:
+                                case FilterType.StartsWith:
                                     {
                                         source = source.Where(x => x.Login.ToLower().StartsWith(filter.Value));
                                         break;
                                     }
 
-                                case DataGridFilterType.EndsWith:
+                                case FilterType.EndsWith:
                                     {
                                         source = source.Where(x => x.Login.ToLower().EndsWith(filter.Value));
                                         break;
                                     }
 
-                                case DataGridFilterType.Equals:
+                                case FilterType.Equals:
                                     {
                                         source = source.Where(x => x.Login.ToLower() == filter.Value);
                                         break;
                                     }
-                                case DataGridFilterType.NotEquals:
+                                case FilterType.NotEquals:
                                     {
                                         source = source.Where(x => x.Login.ToLower() != filter.Value);
                                         break;
@@ -102,36 +102,36 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration
                         {
                             switch (filter.Type)
                             {
-                                case DataGridFilterType.Contains:
+                                case FilterType.Contains:
                                     {
                                         source = source.Where(x => x.Email.ToLower().Contains(filter.Value));
                                         break;
                                     }
 
-                                case DataGridFilterType.NotContains:
+                                case FilterType.NotContains:
                                     {
                                         source = source.Where(x => !x.Email.ToLower().Contains(filter.Value));
                                         break;
                                     }
 
-                                case DataGridFilterType.StartsWith:
+                                case FilterType.StartsWith:
                                     {
                                         source = source.Where(x => x.Email.ToLower().StartsWith(filter.Value));
                                         break;
                                     }
 
-                                case DataGridFilterType.EndsWith:
+                                case FilterType.EndsWith:
                                     {
                                         source = source.Where(x => x.Email.ToLower().EndsWith(filter.Value));
                                         break;
                                     }
 
-                                case DataGridFilterType.Equals:
+                                case FilterType.Equals:
                                     {
                                         source = source.Where(x => x.Email.ToLower() == filter.Value);
                                         break;
                                     }
-                                case DataGridFilterType.NotEquals:
+                                case FilterType.NotEquals:
                                     {
                                         source = source.Where(x => x.Email.ToLower() != filter.Value);
                                         break;
@@ -143,32 +143,32 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration
                         {
                             switch (filter.Type)
                             {
-                                case DataGridFilterType.Contains:
+                                case FilterType.Contains:
                                     {
                                         source = source.AsEnumerable().Where(x => x.Roles.Any(r => r.Name.ToLower().Contains(filter.Value))).AsQueryable();
                                         break;
                                     }
-                                case DataGridFilterType.NotContains:
+                                case FilterType.NotContains:
                                     {
                                         source = source.AsEnumerable().Where(x => x.Roles.All(r => !r.Name.ToLower().Contains(filter.Value))).AsQueryable();
                                         break;
                                     }
-                                case DataGridFilterType.StartsWith:
+                                case FilterType.StartsWith:
                                     {
                                         source = source.AsEnumerable().Where(x => x.Roles.Any(r => r.Name.ToLower().StartsWith(filter.Value))).AsQueryable();
                                         break;
                                     }
-                                case DataGridFilterType.EndsWith:
+                                case FilterType.EndsWith:
                                     {
                                         source = source.AsEnumerable().Where(x => x.Roles.Any(r => r.Name.ToLower().EndsWith(filter.Value))).AsQueryable();
                                         break;
                                     }
-                                case DataGridFilterType.Equals:
+                                case FilterType.Equals:
                                     {
                                         source = source.AsEnumerable().Where(x => x.Roles.Any(r => r.Name.ToLower() == filter.Value)).AsQueryable();
                                         break;
                                     }
-                                case DataGridFilterType.NotEquals:
+                                case FilterType.NotEquals:
                                     {
                                         source = source.AsEnumerable().Where(x => x.Roles.Any(r => r.Name.ToLower() != filter.Value)).AsQueryable();
                                         break;
@@ -182,37 +182,37 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration
                             DateTime date1 = dates[0];
                             switch (filter.Type)
                             {
-                                case DataGridFilterType.Less:
+                                case FilterType.Less:
                                     {
                                         source = source.Where(x => DbFunctions.TruncateTime(x.DateChange) < date1);
                                         break;
                                     }
-                                case DataGridFilterType.Greater:
+                                case FilterType.Greater:
                                     {
                                         source = source.Where(x => DbFunctions.TruncateTime(x.DateChange) > date1);
                                         break;
                                     }
-                                case DataGridFilterType.LessOrEqual:
+                                case FilterType.LessOrEqual:
                                     {
                                         source = source.Where(x => DbFunctions.TruncateTime(x.DateChange) <= date1);
                                         break;
                                     }
-                                case DataGridFilterType.GreaterOrEqual:
+                                case FilterType.GreaterOrEqual:
                                     {
                                         source = source.Where(x => DbFunctions.TruncateTime(x.DateChange) >= date1);
                                         break;
                                     }
-                                case DataGridFilterType.Equals:
+                                case FilterType.Equals:
                                     {
                                         source = source.Where(x => DbFunctions.TruncateTime(x.DateChange) == date1);
                                         break;
                                     }
-                                case DataGridFilterType.NotEquals:
+                                case FilterType.NotEquals:
                                     {
                                         source = source.Where(x => DbFunctions.TruncateTime(x.DateChange) != date1);
                                         break;
                                     }
-                                case DataGridFilterType.Between:
+                                case FilterType.Between:
                                     {
                                         DateTime date2 = dates[1];
                                         source = source.Where(x => date1 <= DbFunctions.TruncateTime(x.DateChange) && DbFunctions.TruncateTime(x.DateChange) <= date2);
@@ -234,28 +234,28 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration
                 {
                     case "Login":
                         {
-                            source = sort.Type == DataGridSortType.Descending
+                            source = sort.Type == SortType.Descending
                                 ? source.ThenByDescending(x => x.Login)
                                 : source.ThenBy(x => x.Login);
                             break;
                         }
                     case "Email":
                         {
-                            source = sort.Type == DataGridSortType.Descending
+                            source = sort.Type == SortType.Descending
                                 ? source.ThenByDescending(x => x.Email)
                                 : source.ThenBy(x => x.Email);
                             break;
                         }
                     case "Roles":
                         {
-                            source = sort.Type == DataGridSortType.Descending
+                            source = sort.Type == SortType.Descending
                                 ? source.ThenByDescending(x => x.Roles.Count())
                                 : source.ThenBy(x => x.Roles.Count());
                             break;
                         }
                     case "DateChange":
                         {
-                            source = sort.Type == DataGridSortType.Descending
+                            source = sort.Type == SortType.Descending
                                 ? source.ThenByDescending(x => x.DateChange)
                                 : source.ThenBy(x => x.DateChange);
                             break;

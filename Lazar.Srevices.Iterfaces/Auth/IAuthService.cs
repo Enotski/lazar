@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Lazar.Srevices.Iterfaces.Base;
 
-namespace Lazar.Srevices.Iterfaces.Auth
-{
-    public interface IAuthService
-    {
+namespace Lazar.Srevices.Iterfaces.Auth {
+    public interface IAuthService : IBaseService {
     }
 }

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
-namespace Lazar.Services.Contracts.Auth
-{
+namespace Lazar.Services.Contracts.Auth {
     internal class AuthDto
     {
         public string Key { get; set; }

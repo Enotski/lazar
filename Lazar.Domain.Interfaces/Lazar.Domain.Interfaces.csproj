@@ -10,4 +10,8 @@
     <Folder Include="Repositories\Dsp\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Lazar.Domain.Core\Lazar.Domain.Core.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace lazarData.Repositories.Dsp
+namespace Lazar.Domain.Core.Repositories.Dsp
 {
     public class DspBaseRepository
     {

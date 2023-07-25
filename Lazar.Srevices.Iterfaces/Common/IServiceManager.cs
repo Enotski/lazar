@@ -2,12 +2,9 @@
 using Lazar.Srevices.Iterfaces.Auth;
 using Lazar.Srevices.Iterfaces.EventLog;
 
-namespace Lazar.Srevices.Iterfaces.Common
-{
-    public interface IServiceManager
-    {
+namespace Lazar.Srevices.Iterfaces.Common {
+    public interface IServiceManager {
         IRoleService RoleService { get; }
-        IUserProfileService UserProfileService { get; }
         IUsersService UsersService { get; }
         IAuthService AuthService { get; }
         IEventLogService EventLogService { get; }

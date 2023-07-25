@@ -14,9 +14,6 @@ namespace Lazar.Services.Common
         private Lazy<IRoleService> _lazyRoleService;
         public IRoleService RoleService => _lazyRoleService.Value;
 
-        private Lazy<IUserProfileService> _lazyUserProfileService;
-        public IUserProfileService UserProfileService => _lazyUserProfileService.Value;
-
         private Lazy<IUsersService> _lazyUsersService;
         public IUsersService UsersService => _lazyUsersService.Value;
 
@@ -29,7 +26,6 @@ namespace Lazar.Services.Common
         public ServiceManager(IRepositoryManager repositoryManager)
         {
             _lazyRoleService = new Lazy<IRoleService>(() => new RoleService(repositoryManager));
-            _lazyUserProfileService = new Lazy<IUserProfileService>(() => new UserProfileService(repositoryManager));
             _lazyUsersService = new Lazy<IUsersService>(() => new UsersService(repositoryManager));
             _lazyAuthService = new Lazy<IAuthService>(() => new AuthService(repositoryManager));
             _lazyEventLogService = new Lazy<IEventLogService>(() => new EventLogService(repositoryManager));

@@ -1,17 +1,17 @@
 ﻿using Lazar.Domain.Interfaces.Repositories.EventLog;
 using Lazar.Infrastructure.Data.Ef.Context;
 using Lazar.Infrastructure.Data.Ef.Repositories.Base;
-using lazarData.Enums;
-using lazarData.Interfaces;
-using lazarData.Models.EventLogs;
+using Lazar.Domain.Core.Enums;
+using Lazar.Domain.Core.Interfaces;
+using Lazar.Domain.Core.Models.EventLogs;
 using System.Data.Entity;
 
-namespace lazarData.Repositories.Administration
+namespace Lazar.Domain.Core.Repositories.Administration
 {
     /// <summary>
     /// Repository of events logs in app
     /// </summary>
-    public class EventLogRepository : BaseRepository<EventLog>, IEventLogRepository
+    public class EventLogRepository : BaseRepository<EventLog>, ISystemLogRepository
     {
         public EventLogRepository(LazarContext context) : base(context) { }
         /// <summary>
@@ -66,12 +66,12 @@ namespace lazarData.Repositories.Administration
                             var subSystemType = filter.Value.GetEnumByDescription<SubSystemType>();
                             switch (filter.Type)
                             {
-                                case DataGridFilterType.Equals:
+                                case FilterType.Equals:
                                     {
                                         source = source.Where(x => x.SubSystem == subSystemType);
                                         break;
                                     }
-                                case DataGridFilterType.NotEquals:
+                                case FilterType.NotEquals:
                                     {
                                         source = source.Where(x => x.SubSystem != subSystemType);
                                         break;
@@ -84,12 +84,12 @@ namespace lazarData.Repositories.Administration
                             var systemEventType = filter.Value.GetEnumByDescription<EventType>();
                             switch (filter.Type)
                             {
-                                case DataGridFilterType.Equals:
+                                case FilterType.Equals:
                                     {
                                         source = source.Where(x => x.EventType == systemEventType);
                                         break;
                                     }
-                                case DataGridFilterType.NotEquals:
+                                case FilterType.NotEquals:
                                     {
                                         source = source.Where(x => x.EventType != systemEventType);
                                         break;
@@ -101,32 +101,32 @@ namespace lazarData.Repositories.Administration
                         {
                             switch (filter.Type)
                             {
-                                case DataGridFilterType.Contains:
+                                case FilterType.Contains:
                                     {
                                         source = source.AsEnumerable().Where(x => x.ChangedUser.Login.ToLower().Contains(filter.Value)).AsQueryable();
                                         break;
                                     }
-                                case DataGridFilterType.NotContains:
+                                case FilterType.NotContains:
                                     {
                                         source = source.AsEnumerable().Where(x => !x.ChangedUser.Login.ToLower().Contains(filter.Value)).AsQueryable();
                                         break;
                                     }
-                                case DataGridFilterType.StartsWith:
+                                case FilterType.StartsWith:
                                     {
                                         source = source.AsEnumerable().Where(x => x.ChangedUser.Login.ToLower().StartsWith(filter.Value)).AsQueryable();
                                         break;
                                     }
-                                case DataGridFilterType.EndsWith:
+                                case FilterType.EndsWith:
                                     {
                                         source = source.AsEnumerable().Where(x => x.ChangedUser.Login.ToLower().EndsWith(filter.Value)).AsQueryable();
                                         break;
                                     }
-                                case DataGridFilterType.Equals:
+                                case FilterType.Equals:
                                     {
                                         source = source.AsEnumerable().Where(x => x.ChangedUser.Login.ToLower() == filter.Value).AsQueryable();
                                         break;
                                     }
-                                case DataGridFilterType.NotEquals:
+                                case FilterType.NotEquals:
                                     {
                                         source = source.AsEnumerable().Where(x => x.ChangedUser.Login.ToLower() != filter.Value).AsQueryable();
                                         break;
@@ -140,37 +140,37 @@ namespace lazarData.Repositories.Administration
                             DateTime date1 = dates[0];
                             switch (filter.Type)
                             {
-                                case DataGridFilterType.Less:
+                                case FilterType.Less:
                                     {
                                         source = source.Where(x => DbFunctions.TruncateTime(x.DateChange) < date1);
                                         break;
                                     }
-                                case DataGridFilterType.Greater:
+                                case FilterType.Greater:
                                     {
                                         source = source.Where(x => DbFunctions.TruncateTime(x.DateChange) > date1);
                                         break;
                                     }
-                                case DataGridFilterType.LessOrEqual:
+                                case FilterType.LessOrEqual:
                                     {
                                         source = source.Where(x => DbFunctions.TruncateTime(x.DateChange) <= date1);
                                         break;
                                     }
-                                case DataGridFilterType.GreaterOrEqual:
+                                case FilterType.GreaterOrEqual:
                                     {
                                         source = source.Where(x => DbFunctions.TruncateTime(x.DateChange) >= date1);
                                         break;
                                     }
-                                case DataGridFilterType.Equals:
+                                case FilterType.Equals:
                                     {
                                         source = source.Where(x => DbFunctions.TruncateTime(x.DateChange) == date1);
                                         break;
                                     }
-                                case DataGridFilterType.NotEquals:
+                                case FilterType.NotEquals:
                                     {
                                         source = source.Where(x => DbFunctions.TruncateTime(x.DateChange) != date1);
                                         break;
                                     }
-                                case DataGridFilterType.Between:
+                                case FilterType.Between:
                                     {
                                         DateTime date2 = dates[1];
                                         source = source.Where(x => date1 <= DbFunctions.TruncateTime(x.DateChange) && DbFunctions.TruncateTime(x.DateChange) <= date2);
@@ -196,28 +196,28 @@ namespace lazarData.Repositories.Administration
                 {
                     case "SubSystemName":
                         {
-                            source = sort.Type == DataGridSortType.Descending
+                            source = sort.Type == SortType.Descending
                                 ? source.ThenByDescending(x => x.SubSystem)
                                 : source.ThenBy(x => x.SubSystem);
                             break;
                         }
                     case "EventTypeName":
                         {
-                            source = sort.Type == DataGridSortType.Descending
+                            source = sort.Type == SortType.Descending
                                 ? source.ThenByDescending(x => x.EventType)
                                 : source.ThenBy(x => x.EventType);
                             break;
                         }
                     case "UserName":
                         {
-                            source = sort.Type == DataGridSortType.Descending
+                            source = sort.Type == SortType.Descending
                                 ? source.ThenByDescending(x => x.ChangedUser.Login)
                                 : source.ThenBy(x => x.ChangedUser.Login);
                             break;
                         }
                     case "DateChange":
                         {
-                            source = sort.Type == DataGridSortType.Descending
+                            source = sort.Type == SortType.Descending
                                 ? source.ThenByDescending(x => x.DateChange)
                                 : source.ThenBy(x => x.DateChange);
                             break;

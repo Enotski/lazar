@@ -1,7 +1,7 @@
 ﻿using Lazar.Domain.Interfaces.Repositories.Auth;
 using Lazar.Infrastructure.Data.Ef.Context;
 using Lazar.Infrastructure.Data.Ef.Repositories.Base;
-using lazarData.Models.EventLogs;
+using Lazar.Domain.Core.Models.EventLogs;
 
 namespace Lazar.Infrastructure.Data.Ef.Repositories.Auth
 {

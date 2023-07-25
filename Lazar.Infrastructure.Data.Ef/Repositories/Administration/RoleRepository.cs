@@ -1,9 +1,9 @@
 using Lazar.Domain.Interfaces.Repositories.Administration;
 using Lazar.Infrastructure.Data.Ef.Context;
 using Lazar.Infrastructure.Data.Ef.Repositories.Base;
-using lazarData.Enums;
-using lazarData.Interfaces;
-using lazarData.Models.Administration;
+using Lazar.Domain.Core.Enums;
+using Lazar.Domain.Core.Interfaces;
+using Lazar.Domain.Core.Models.Administration;
 using System.Data.Entity;
 
 namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration
@@ -37,36 +37,36 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration
                         {
                             switch (filter.Type)
                             {
-                                case DataGridFilterType.Contains:
+                                case FilterType.Contains:
                                     {
                                         source = source.Where(x => x.Name.ToLower().Contains(filter.Value));
                                         break;
                                     }
 
-                                case DataGridFilterType.NotContains:
+                                case FilterType.NotContains:
                                     {
                                         source = source.Where(x => !x.Name.ToLower().Contains(filter.Value));
                                         break;
                                     }
 
-                                case DataGridFilterType.StartsWith:
+                                case FilterType.StartsWith:
                                     {
                                         source = source.Where(x => x.Name.ToLower().StartsWith(filter.Value));
                                         break;
                                     }
 
-                                case DataGridFilterType.EndsWith:
+                                case FilterType.EndsWith:
                                     {
                                         source = source.Where(x => x.Name.ToLower().EndsWith(filter.Value));
                                         break;
                                     }
 
-                                case DataGridFilterType.Equals:
+                                case FilterType.Equals:
                                     {
                                         source = source.Where(x => x.Name.ToLower() == filter.Value);
                                         break;
                                     }
-                                case DataGridFilterType.NotEquals:
+                                case FilterType.NotEquals:
                                     {
                                         source = source.Where(x => x.Name.ToLower() != filter.Value);
                                         break;
@@ -87,7 +87,7 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration
                 {
                     case "Name":
                         {
-                            source = sort.Type == DataGridSortType.Descending
+                            source = sort.Type == SortType.Descending
                                 ? source.ThenByDescending(x => x.Name)
                                 : source.ThenBy(x => x.Name);
                             break;

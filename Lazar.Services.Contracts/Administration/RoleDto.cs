@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Lazar.Services.Contracts.Base;
 
-namespace Lazar.Services.Contracts.Administration
-{
-    internal class RoleDto
-    {
-        public Guid Id { get; set; }
-        public string? Name { get; set; } = "";
+namespace Lazar.Services.Contracts.Administration {
+    public class RoleDto : NameDto {
     }
 }

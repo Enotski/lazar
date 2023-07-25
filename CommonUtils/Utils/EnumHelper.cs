@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Reflection;
 
-namespace CommonUtils.Utils
-{
-	/// <summary>
-	/// Работа с enum
-	/// </summary>
-	public static class EnumHelper {
+namespace CommonUtils.Utils {
+    /// <summary>
+    /// Работа с enum
+    /// </summary>
+    public static class EnumHelper {
         /// <summary>
         /// Представить enum в виде списка ключ-значение
         /// </summary>
