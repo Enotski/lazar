@@ -2,7 +2,7 @@
 {
     public class PeriodDto
     {
-        public string? startDate { get; set; }
-        public string? endDate { get; set; }
+        public string? StartDate { get; set; }
+        public string? EndDate { get; set; }
     }
 }

@@ -3,6 +3,8 @@
 namespace Lazar.Domain.Core.Enums {
     public enum EventType
     {
+        [Description("Read")]
+        Read,
         [Description("Create")]
         Create,
         [Description("Update")]
@@ -17,7 +19,5 @@ namespace Lazar.Domain.Core.Enums {
         LogOut,
         [Description("Registration")]
         Registration,
-        [Description("DeleteUser")]
-        DeleteUser
     }
 }

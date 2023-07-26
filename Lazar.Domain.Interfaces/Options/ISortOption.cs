@@ -15,6 +15,6 @@ namespace Lazar.Domain.Interfaces.Options {
         /// <summary>
         /// Порядок сортировки
         /// </summary>
-        SortType Order { get; set; }
+        SortType Type { get; set; }
     }
 }

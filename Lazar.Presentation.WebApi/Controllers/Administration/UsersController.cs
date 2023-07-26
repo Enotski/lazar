@@ -18,7 +18,7 @@ namespace LazarWebApi.Controllers.Administration
         [HttpPost]
         public JsonResult GetUsersDataGrid([FromBody] DataGridRequestDto args)
         {
-            var data = userRepository.GetUsersDataGrid(args.skip, args.take, args.sorts, args.filters);
+            var data = userRepository.GetUsersDataGrid(args.skip, args.take, args.Sorts, args.Filters);
             return Json(data);
         }
         [HttpPost]

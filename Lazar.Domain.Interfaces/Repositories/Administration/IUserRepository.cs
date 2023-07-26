@@ -3,13 +3,13 @@ using Lazar.Domain.Interfaces.Options;
 using Lazar.Domain.Interfaces.Repositories.Base;
 
 namespace Lazar.Domain.Interfaces.Repositories.Administration {
-    public interface IUsersRepository : INameRepository<User> {
+    public interface IUserRepository : INameRepository<User> {
         /// <summary>
         /// Разрешения на выполнение операции
         /// </summary>
         /// <param name="login"></param>
         /// <returns></returns>
-        Task<bool> PermissionToPerformOperation(Guid rightId, string login);
+        Task<bool> PermissionToPerformOperation(string login);
         /// <summary>
         /// Возвращает количество записей в соответствии с параметрами поиска
         /// </summary>

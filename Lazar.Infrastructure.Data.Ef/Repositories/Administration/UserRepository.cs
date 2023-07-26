@@ -1,18 +1,15 @@
-﻿using Lazar.Domain.Interfaces.Repositories.Administration;
-using Lazar.Domain.Interfaces.Repositories.EventLog;
+﻿using Lazar.Domain.Core.Enums;
+using Lazar.Domain.Core.Models.Administration;
+using Lazar.Domain.Interfaces.Repositories.Administration;
+using Lazar.Domain.Interfaces.Repositories.EventLogs;
 using Lazar.Infrastructure.Data.Ef.Context;
 using Lazar.Infrastructure.Data.Ef.Repositories.Base;
-using Lazar.Domain.Core.Enums;
-using Lazar.Domain.Core.Interfaces;
-using Lazar.Domain.Core.Models.Administration;
-using System.Data.Entity;
 
-namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration
-{
-    public class UsersRepository : BaseRepository<User>, IUsersRepository
+namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
+    public class UserRepository : BaseRepository<User>, IUserRepository
     {
         ISystemLogRepository logRepo;
-        public UsersRepository(LazarContext context) : base(context)
+        public UserRepository(LazarContext context) : base(context)
         {
         }
 
@@ -343,86 +340,6 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration
                 return new ResponseModel<UserDto>(ex.Message);
             }
         }
-        public UserDto AddUser(UserDto model, Guid? userId = null)
-        {
-            try
-            {
-                model.Password = new Random().Next(15000).ToString();
-                //if (string.IsNullOrWhiteSpace(model.Login) || string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
-                //{
-                //    throw new Exception("Заполните все поля");
-                //}
-
-                if (Context.Users.FirstOrDefault(w => w.Login == model.Login || w.Email == model.Email) != null)
-                {
-                    throw new Exception("Такой пользователь уже существует");
-                }
-
-                var newData = new User
-                {
-                    Id = Guid.NewGuid(),
-                    Login = model.Login,
-                    Email = model.Email,
-                    Password = model.Password,
-                    DateChange = DateTime.UtcNow
-                };
-
-                Context.Users.Add(newData);
-                Context.SaveChanges();
-                logRepo.LogEvent(SubSystemType.Users, EventType.Create, userId.GetValueOrDefault());
-                return new UserDto() { Login = newData.Login, Email = newData.Email};
-            } catch (Exception exc)
-            {
-                logRepo.LogEvent(SubSystemType.Users, EventType.Error, userId.GetValueOrDefault(), "Ошибка добавления");
-                return new UserDto(exc.Message);
-            }
-        }
-        /// <summary>
-        /// Общий метод редактирования и добавлние новой роли
-        /// </summary>
-        /// <param name="IdRole">Ид Роли выбранной</param>
-        /// <param name="NameRole">Название роли</param>
-        /// <param name="GroupAD">Группа Ад в которую должна входить данная роль</param>
-        /// <returns></returns>
-        public BaseResponse UpdateUser(UserDto model, Guid? userId = null)
-        {
-            try
-            {
-                var oldData = new User();
-                var newData = new User();
-                model.Password = new Random().Next(15000).ToString();
-                Exception exc = new Exception();
-                //if (string.IsNullOrWhiteSpace(model.Login) || string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
-                //{
-                //    throw new Exception("Заполните все поля");
-                //}
-
-                newData = GetAll<User>(false).FirstOrDefault(w => w.Id == model.Id);
-                oldData = new User
-                {
-                    Login = newData.Login,
-                    Email = newData.Email,
-                };
-
-                var user = Context.Users.FirstOrDefault(w => w.Id == model.Id);
-                if (user == null)
-                {
-                    return new BaseResponse(new Exception("Пользователь отсутствует"));
-                }
-
-                user.Password = model.Password;
-                user.Email = model.Email;
-                user.Login = model.Login;
-                user.DateChange = DateTime.UtcNow;
-                Context.SaveChanges();
-                logRepo.LogEvent(SubSystemType.Users, EventType.Update, userId.GetValueOrDefault(), $"Редактирование роли:\n до изменений - {oldData.Login} / {oldData.Email};\n после изменений - {newData.Login} / {newData.Email}");
-                return new BaseResponse(new BaseResponseModel());
-            } catch (Exception exc)
-            {
-                logRepo.LogEvent(SubSystemType.Users, EventType.Error, userId.GetValueOrDefault(), "Ошибка редактирования");
-                return new BaseResponse(exc);
-            }
-        }
         public BaseResponse<UserDto> SetRoleToUser(Guid? userId, Guid? roleId)
         {
             try
@@ -476,44 +393,6 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration
             {
                 //logRepo.LogEvent(SubSystemType.Users, EventType.Error, currentUserId);
                 return new BaseResponse<UserDto>(exp);
-            }
-        }
-        public BaseResponseEnumerable DeleteUsers(IEnumerable<Guid> userIds)
-        {
-            try
-            {
-                BaseResponseEnumerable model = new BaseResponseEnumerable(new Exception());
-                var delUsers = Context.Users.Where(x => userIds.Contains(x.Id));
-                Context.Users.RemoveRange(delUsers);
-                Context.SaveChanges();
-                return model;
-            } catch (Exception exp)
-            {
-                return new BaseResponseEnumerable(exp);
-            }
-        }
-        /// <summary>
-        /// Удаление выбранной роли
-        /// </summary>
-        /// <param name="id">Список выбранных Ид ролей для удаления</param>
-        /// <returns></returns>
-        public BaseResponse DeleteUser(Guid? id, Guid? userId = null)
-        {
-            try
-            {
-                var userModel = GetEntityById<User>(id.Value);
-                if (userModel != null)
-                {
-                    Context.Users.Remove(userModel);
-                    Context.SaveChanges();
-
-                    logRepo.LogEvent(SubSystemType.Users, EventType.Delete, userId.GetValueOrDefault(), $"Удаление роли:\n ({userModel.Login})");
-                }
-                return new BaseResponse(new RoleDto());
-            } catch (Exception exc)
-            {
-                logRepo.LogEvent(SubSystemType.Users, EventType.Error, userId.GetValueOrDefault(), $"Удаление ролей");
-                return new BaseResponse(exc);
             }
         }
     }

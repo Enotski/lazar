@@ -31,6 +31,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonUtils", "..\CommonUti
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lazar.Domain.Core", "..\Lazar.Domain.Core\Lazar.Domain.Core.csproj", "{6F253B2F-74AC-47A9-AAB9-FFB437117FD3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lazar.Infrastructure.Mapper", "..\Lazar.Infrastructure.Mapper\Lazar.Infrastructure.Mapper.csproj", "{EBF30EE1-D9FD-4FBC-978D-9B773F0D8EAC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,10 @@ Global
 		{6F253B2F-74AC-47A9-AAB9-FFB437117FD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F253B2F-74AC-47A9-AAB9-FFB437117FD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6F253B2F-74AC-47A9-AAB9-FFB437117FD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBF30EE1-D9FD-4FBC-978D-9B773F0D8EAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBF30EE1-D9FD-4FBC-978D-9B773F0D8EAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBF30EE1-D9FD-4FBC-978D-9B773F0D8EAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBF30EE1-D9FD-4FBC-978D-9B773F0D8EAC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -82,6 +88,7 @@ Global
 		{2F4334DE-44A1-4072-B770-8855998600E5} = {4882AD6D-6A97-4F7F-9D5B-43F4D399E9A8}
 		{EE4E4BF9-EF7E-476C-8C49-CF79D5576D0E} = {3E58EA24-8453-49D8-8E7A-377BA40D5704}
 		{6F253B2F-74AC-47A9-AAB9-FFB437117FD3} = {1DBE1998-2AEF-493A-B385-B8524DD5AEA9}
+		{EBF30EE1-D9FD-4FBC-978D-9B773F0D8EAC} = {AECC19CE-40F1-4A14-8C60-C049363AEF38}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {21D888A8-2E35-4A43-B4AF-70DB7944605C}

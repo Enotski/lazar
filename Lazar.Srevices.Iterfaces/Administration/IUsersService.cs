@@ -1,5 +1,5 @@
 ﻿using Lazar.Services.Contracts.Administration;
-using Lazar.Services.Contracts.Request.DataGrid.Base;
+using Lazar.Services.Contracts.Request.DataTable.Base;
 using Lazar.Services.Contracts.Response.Models;
 using Lazar.Srevices.Iterfaces.Base;
 
@@ -10,7 +10,7 @@ namespace Lazar.Srevices.Iterfaces.Administration {
         /// </summary>
         /// <param name="options">Параметры фильтрации и поиска</param>
         /// <returns></returns>
-        Task<DataTableDto<UserDto>> GetRecordsAsync(DataGridRequestDto options);
+        Task<DataTableDto<UserDto>> GetRecordsAsync(DataTableRequestDto options);
         /// <summary>
         /// Возвращает запись
         /// </summary>

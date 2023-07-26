@@ -8,6 +8,8 @@ namespace Lazar.Domain.Core.Enums
         Users,
         [Description("Roles")]
         Roles,
+        [Description("Logging")]
+        Logging,
         [Description("Dsp")]
         Dsp
     }

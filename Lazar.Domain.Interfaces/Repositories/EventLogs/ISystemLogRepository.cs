@@ -1,9 +1,20 @@
 ﻿using Lazar.Domain.Core.EntityModels.EventLogs;
+using Lazar.Domain.Core.Enums;
 using Lazar.Domain.Interfaces.Options;
 using Lazar.Domain.Interfaces.Repositories.Base;
 
-namespace Lazar.Domain.Interfaces.Repositories.EventLog {
+namespace Lazar.Domain.Interfaces.Repositories.EventLogs {
     public interface ISystemLogRepository : ILogRepository<SystemLog> {
+        /// <summary>
+        /// Добавляет запись в журнал событий
+        /// </summary>
+        /// <param name="subSystem"></param>
+        /// <param name="eventType"></param>
+        /// <param name="description"></param>
+        /// <param name="message"></param>
+        /// <param name="changedBy"></param>
+        /// <returns></returns>
+        Task AddAsync(SubSystemType subSystem, EventType eventType, string message, string description, string changedBy = null);
         /// <summary>
         /// Возвращает количество записей в соответствии с параметрами поиска
         /// </summary>

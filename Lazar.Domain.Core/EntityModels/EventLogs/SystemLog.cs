@@ -1,18 +1,23 @@
-﻿using Lazar.Domain.Core.EntityModels.Base;
+﻿using CommonUtils.Utils;
+using Lazar.Domain.Core.EntityModels.Base;
 using Lazar.Domain.Core.Enums;
 
 namespace Lazar.Domain.Core.EntityModels.EventLogs {
-    public class SystemLog : ChangedByEntity {
+    public class SystemLog : NameEntity {
         public string Description { get; set; }
-        public SubSystemType SubSystem { get; set; }
-        public EventType EventType { get; set; }
+        public string Message { get; set; }
+        public string SubSystem { get; set; }
+        public string EventType { get; set; }
 
         public SystemLog() : base() { }
-        public SystemLog(Guid id, string description, SubSystemType subSystem, EventType eventType, string changedBy, DateTime dateChange)
-            : base(id, changedBy, dateChange) {
+        public SystemLog(Guid id, string message, string description, SubSystemType subSystem, EventType eventType, string changedBy, DateTime dateChange)
+    : base(id, message, changedBy, dateChange) {
             Description = description;
-            SubSystem = subSystem;
-            EventType = eventType;
+            SubSystem = subSystem.GetDescription();
+            EventType = eventType.GetDescription();
+        }
+        public SystemLog(string message, string description, SubSystemType subSystem, EventType eventType, string changedBy)
+            : this(Guid.NewGuid(), message, description, subSystem, eventType, changedBy, DateTime.UtcNow) {
         }
     }
 }

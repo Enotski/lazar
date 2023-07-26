@@ -7,7 +7,7 @@ using Lazar.Infrastructure.Data.Ef.Context;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lazar.Infrastructure.Data.Ef.Repositories.Base {
-    internal abstract class NameRepository<TEntity> : BaseRepository<TEntity>, INameRepository<TEntity> where TEntity: class, IKey, IName {
+    public abstract class NameRepository<TEntity> : BaseRepository<TEntity>, INameRepository<TEntity> where TEntity : class, IKey, IName {
         public NameRepository(LazarContext dbContext) : base(dbContext) { }
         /// <summary>
         /// Возвращает наименование сущности
@@ -56,6 +56,30 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Base {
                 return await BuildQuery(predicate, m => m.OrderBy(m => m.Name), paginationOption)
                     .Select(m => new KeyNameSelectorModel(m.Id, m.Name)).ToListAsync();
             } catch { throw; }
+        }
+
+        /// <summary>
+        /// Проверка существования записи по наименованию
+        /// </summary>
+        /// <param name="name">Наименование</param>
+        /// <param name="id">Код записи, которая будет исключена из проверки</param>
+        /// <returns></returns>
+        public async Task<bool> NameExistsAsync(string name, Guid? id) {
+            try {
+                if (string.IsNullOrWhiteSpace(name)) {
+                    return true;
+                }
+                name = name.TrimToUpper();
+                var predicate = PredicateBuilder.True<TEntity>();
+                predicate = predicate.And(m => !string.IsNullOrEmpty(m.Name) && m.Name.Trim().ToUpper().Contains(name));
+                if (id.HasValue) {
+                    predicate = predicate.And(m => m.Id != id);
+                }
+                var entityId = await BuildQuery(predicate).Select(x => x.Id).FirstOrDefaultAsync();
+                return entityId != Guid.Empty;
+            } catch {
+                throw;
+            }
         }
     }
 }

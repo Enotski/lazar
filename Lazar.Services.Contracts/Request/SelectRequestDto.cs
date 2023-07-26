@@ -2,8 +2,8 @@
 {
     public class SelectRequestDto
     {
-        public string? searchExpr { get; set; }
-        public string? searchOperation { get; set; }
-        public string? searchValue { get; set; }
+        public string? SearchExpr { get; set; }
+        public string? SearchOperation { get; set; }
+        public string? SearchValue { get; set; }
     }
 }

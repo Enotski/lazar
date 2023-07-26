@@ -34,7 +34,7 @@ namespace Lazar.Presentation.WebApi.Controllers.EventLog
         [HttpPost]
         public async Task<IActionResult> GetDataGridAsync([FromBody] DataGridRequestDto args)
         {
-            var data = await eventLogRepository.GetEventLogsDataGridAsync(args.skip, args.take, args.sorts, args.filters);
+            var data = await eventLogRepository.GetEventLogsDataGridAsync(args.skip, args.take, args.Sorts, args.Filters);
             return Json(data);
         }
         /// <summary>

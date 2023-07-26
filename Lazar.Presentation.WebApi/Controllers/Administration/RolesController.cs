@@ -30,15 +30,15 @@ namespace LazarWebApi.Controllers.Administration
         /// <returns></returns>
         [HttpPost]
         [Route("get-grid")]
-        public JsonResult GetDataGrid([FromBody] RoleDataGridRequestDto args) {
-            var data = roleRepository.GetRolesDataGrid(args.skip, args.take, args.sorts, args.filters, args.selectedUserId);
+        public JsonResult GetDataGrid([FromBody] RoleDataTableRequestDto args) {
+            var data = roleRepository.GetRolesDataGrid(args.skip, args.take, args.Sorts, args.Filters, args.selectedUserId);
             return Json(data);  
         }
         [HttpPost]
         [Route("get-list")]
         public JsonResult GetRoles([FromBody] SelectRoleRequestDto args)
         {
-            var data = roleRepository.GetRoles(args.searchValue ?? "", args.selectedUserId);
+            var data = roleRepository.GetRoles(args.SearchValue ?? "", args.SelectedUserId);
             return Json(data);
         }
         [HttpPost]

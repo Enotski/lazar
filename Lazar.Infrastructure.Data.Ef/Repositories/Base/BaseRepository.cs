@@ -2,12 +2,12 @@
 using Lazar.Domain.Interfaces.Options;
 using Lazar.Domain.Interfaces.Repositories.Base;
 using Lazar.Infrastructure.Data.Ef.Context;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using Z.EntityFramework.Plus;
 
 namespace Lazar.Infrastructure.Data.Ef.Repositories.Base {
-    internal abstract class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class, IKey {
+    public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class, IKey {
         protected readonly LazarContext _dbContext;
         public BaseRepository(LazarContext dbContext) {
             _dbContext = dbContext;
@@ -109,24 +109,6 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Base {
                         .Where(x => query.Contains(x.Id)).DeleteAsync(x => x.BatchSize = rows);
                 } while (query.Any());
             } catch { throw; }
-        }
-
-        public async Task<bool> ExistNameAsync<FEntity>(string name, Guid? id) where FEntity : class, TEntity, IName {
-            try {
-                if (string.IsNullOrWhiteSpace(name))
-                    return false;
-                name = name.Trim().ToLower();
-
-                FEntity entity = null;
-                if (id.HasValue)
-                    entity = await _dbContext.Set<FEntity>().FirstOrDefaultAsync(x => x.Id != id && x.Name.Trim().ToLower() == name);
-                else
-                    entity = await _dbContext.Set<FEntity>().FirstOrDefaultAsync(x => x.Name.Trim().ToLower() == name);
-
-                return entity != null;
-            } catch {
-                throw;
-            }
         }
     }
 }

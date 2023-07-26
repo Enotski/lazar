@@ -1,4 +1,5 @@
 ﻿using Lazar.Domain.Interfaces.Repositories.Common;
+using Lazar.Infrastructure.Mapper;
 using Lazar.Services.Administration;
 using Lazar.Services.Auth;
 using Lazar.Services.EventLog;
@@ -23,12 +24,12 @@ namespace Lazar.Services.Common
         private Lazy<IEventLogService> _lazyEventLogService;
         public IEventLogService EventLogService => _lazyEventLogService.Value;
 
-        public ServiceManager(IRepositoryManager repositoryManager)
+        public ServiceManager(IRepositoryManager repositoryManager, IModelMapper mapper)
         {
-            _lazyRoleService = new Lazy<IRoleService>(() => new RoleService(repositoryManager));
-            _lazyUsersService = new Lazy<IUsersService>(() => new UsersService(repositoryManager));
-            _lazyAuthService = new Lazy<IAuthService>(() => new AuthService(repositoryManager));
-            _lazyEventLogService = new Lazy<IEventLogService>(() => new EventLogService(repositoryManager));
+            _lazyRoleService = new Lazy<IRoleService>(() => new RoleService(repositoryManager, mapper));
+            _lazyUsersService = new Lazy<IUsersService>(() => new UsersService(repositoryManager, mapper));
+            _lazyAuthService = new Lazy<IAuthService>(() => new AuthService(repositoryManager, mapper));
+            _lazyEventLogService = new Lazy<IEventLogService>(() => new EventLogService(repositoryManager, mapper));
         }
     }
 }

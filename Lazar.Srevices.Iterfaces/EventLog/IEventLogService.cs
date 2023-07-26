@@ -1,5 +1,5 @@
 ﻿using Lazar.Services.Contracts.EventLogs;
-using Lazar.Services.Contracts.Request.DataGrid.Base;
+using Lazar.Services.Contracts.Request.DataTable.Base;
 using Lazar.Services.Contracts.Response.Models;
 using Lazar.Srevices.Iterfaces.Base;
 
@@ -10,6 +10,6 @@ namespace Lazar.Srevices.Iterfaces.EventLog {
         /// </summary>
         /// <param name="options">Параметры фильтрации и поиска</param>
         /// <returns></returns>
-        Task<DataTableDto<SystemLogDto>> GetRecordsAsync(DataGridRequestDto options);
+        Task<DataTableDto<SystemLogDto>> GetRecordsAsync(DataTableRequestDto options);
     }
 }
