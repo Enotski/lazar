@@ -1,4 +1,5 @@
 ﻿using Lazar.Domain.Core.Models.Administration;
+using Lazar.Domain.Core.SelectorModels.Administration;
 using Lazar.Domain.Interfaces.Options;
 using Lazar.Domain.Interfaces.Repositories.Base;
 
@@ -23,13 +24,13 @@ namespace Lazar.Domain.Interfaces.Repositories.Administration {
         /// <param name="sortOptions">Сортировка</param> 
         /// <param name="paginationOption">Пагинация</param> 
         /// <returns></returns>
-        Task<IReadOnlyList<User>> GetRecordsAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption);
+        Task<IReadOnlyList<UserSelectorModel>> GetRecordsAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption);
         /// <summary>
         /// Возвращает список записей
         /// </summary>
         /// <param name="ids">список ключей</param>
         /// <returns></returns>
-        Task<IReadOnlyList<User>> GetRecordsAsync(IEnumerable<Guid> ids);
+        Task<IReadOnlyList<UserSelectorModel>> GetRecordsAsync(IEnumerable<Guid> ids);
         /// <summary>
         /// Возвращает список уникальных значений в определенной колонке
         /// </summary>

@@ -1,10 +1,10 @@
-﻿using Lazar.Services.Contracts.EventLogs;
+﻿using Lazar.Services.Contracts.Logging;
 using Lazar.Services.Contracts.Request.DataTable.Base;
 using Lazar.Services.Contracts.Response.Models;
 using Lazar.Srevices.Iterfaces.Base;
 
-namespace Lazar.Srevices.Iterfaces.EventLog {
-    public interface IEventLogService : ILogService {
+namespace Lazar.Srevices.Iterfaces.Logging {
+    public interface ILoggingervice : ILogService {
         /// <summary>
         /// Возвращает список записей журнала событий
         /// </summary>

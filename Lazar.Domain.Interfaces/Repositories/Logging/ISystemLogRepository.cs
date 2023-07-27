@@ -1,9 +1,9 @@
-﻿using Lazar.Domain.Core.EntityModels.EventLogs;
+﻿using Lazar.Domain.Core.EntityModels.Logging;
 using Lazar.Domain.Core.Enums;
 using Lazar.Domain.Interfaces.Options;
 using Lazar.Domain.Interfaces.Repositories.Base;
 
-namespace Lazar.Domain.Interfaces.Repositories.EventLogs {
+namespace Lazar.Domain.Interfaces.Repositories.Logging {
     public interface ISystemLogRepository : ILogRepository<SystemLog> {
         /// <summary>
         /// Добавляет запись в журнал событий

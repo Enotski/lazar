@@ -2,7 +2,7 @@
 using Lazar.Domain.Core.EntityModels.Base;
 using Lazar.Domain.Core.Enums;
 
-namespace Lazar.Domain.Core.EntityModels.EventLogs {
+namespace Lazar.Domain.Core.EntityModels.Logging {
     public class SystemLog : NameEntity {
         public string Description { get; set; }
         public string Message { get; set; }

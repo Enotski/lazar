@@ -2,18 +2,18 @@
 using Lazar.Domain.Core.Enums;
 using Lazar.Domain.Interfaces.Repositories.Common;
 using Lazar.Infrastructure.Mapper;
-using Lazar.Services.Contracts.EventLogs;
+using Lazar.Services.Contracts.Logging;
 using Lazar.Services.Contracts.Request.DataTable.Base;
 using Lazar.Services.Contracts.Response.Models;
-using Lazar.Srevices.Iterfaces.EventLog;
+using Lazar.Srevices.Iterfaces.Logging;
 
-namespace Lazar.Services.EventLog {
-    public class EventLogService : IEventLogService
+namespace Lazar.Services.Logging {
+    public class Loggingervice : ILoggingervice
     {
         private readonly IRepositoryManager _repositoryManager;
         private readonly IModelMapper _mapper;
 
-        public EventLogService(IRepositoryManager repositoryManager, IModelMapper mapper) {
+        public Loggingervice(IRepositoryManager repositoryManager, IModelMapper mapper) {
             _repositoryManager = repositoryManager ?? throw new ArgumentNullException(nameof(repositoryManager));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }

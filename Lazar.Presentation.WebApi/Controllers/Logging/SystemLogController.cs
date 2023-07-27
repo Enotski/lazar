@@ -9,32 +9,32 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Lazar.Presentation.WebApi.Controllers.EventLog
+namespace Lazar.Presentation.WebApi.Controllers.Logging
 {
     /// <summary>
     /// Controller of events records in app
     /// </summary>
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class EventLogsController : BaseApiController
+    public class LoggingController : BaseApiController
     {
-        EventLogRepository eventLogRepository;
+        LoggingRepository LoggingRepository;
         /// <summary>
         /// Main constructor
         /// </summary>
         /// <param name="contextRepo">IContextRepository instance</param>
-        public EventLogsController(IContextRepository contextRepo)
+        public LoggingController(IContextRepository contextRepo)
         {
-            eventLogRepository = new EventLogRepository(contextRepo);
+            LoggingRepository = new LoggingRepository(contextRepo);
         }
         /// <summary>
-        /// Get eventLogs list for dataGrid representation
+        /// Get Logging list for dataGrid representation
         /// </summary>
         /// <param name="args">arguments from DxDataGrid (skip, take, sorts, filters)</param>
         /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> GetDataGridAsync([FromBody] DataGridRequestDto args)
         {
-            var data = await eventLogRepository.GetEventLogsDataGridAsync(args.skip, args.take, args.Sorts, args.Filters);
+            var data = await LoggingRepository.GetLoggingDataGridAsync(args.skip, args.take, args.Sorts, args.Filters);
             return Json(data);
         }
         /// <summary>
@@ -47,10 +47,10 @@ namespace Lazar.Presentation.WebApi.Controllers.EventLog
         {
             if (DateTime.TryParse(period.startDate, out DateTime StartDate) && DateTime.TryParse(period.endDate, out DateTime EndDate))
             {
-                var res = await eventLogRepository.RemoveLogsByPeriodAsync(StartDate, EndDate);
+                var res = await LoggingRepository.RemoveLogsByPeriodAsync(StartDate, EndDate);
                 return Json(res);
             }
-            else { return Json(new EventLogDto()); }
+            else { return Json(new LoggingDto()); }
         }
         /// <summary>
         /// Remove range of logs by keys
@@ -60,7 +60,7 @@ namespace Lazar.Presentation.WebApi.Controllers.EventLog
         [HttpPost]
         public async Task<JsonResult> RemoveAsync([FromBody] Guid[] ids)
         {
-            var res = await eventLogRepository.RemoveLogsAsync(ids, CurrentUser.Id);
+            var res = await LoggingRepository.RemoveLogsAsync(ids, CurrentUser.Id);
             return Json(res);
         }
     }

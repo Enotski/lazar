@@ -1,38 +1,31 @@
-using Lazar.Srevices.Iterfaces.Administration;
-using Lazar.Domain.Core.Interfaces;
-using Lazar.Domain.Core.Repositories.Administration;
-using Lazar.Domain.Core.ResponseModels.Dtos.Administration;
+using Lazar.Presentation.WebApi.Controllers.Base;
+using Lazar.Services.Contracts.Request;
+using Lazar.Services.Contracts.Request.DataTable.Base;
+using Lazar.Services.Contracts.Response.Models;
+using Lazar.Srevices.Iterfaces.Common;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Lazar.Services.Contracts.Request.DataGrid;
-using Lazar.Services.Contracts.Request;
 
-namespace LazarWebApi.Controllers.Administration
-{
+namespace LazarWebApi.Controllers.Administration {
     /// <summary>
     /// Controller of roles
     /// </summary>
     [ApiController]
     [Route("api/roles")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class RolesController {
-
-        IRoleService _roleService;
-        public RolesController(IRoleService service)
-        {
-            _roleService = service;
+    public class RolesController : BaseController {
+        public RolesController(IServiceManager serviceManager)
+            : base(serviceManager) {
         }
-        /// <summary>
-        /// Get data grid
-        /// </summary>
-        /// <param name="args"></param>
-        /// <returns></returns>
         [HttpPost]
-        [Route("get-grid")]
-        public JsonResult GetDataGrid([FromBody] RoleDataTableRequestDto args) {
-            var data = roleRepository.GetRolesDataGrid(args.skip, args.take, args.Sorts, args.Filters, args.selectedUserId);
-            return Json(data);  
+        [Route("get-all")]
+        public async Task<IActionResult> GetAll([FromBody] DataTableRequestDto search) {
+            try {
+                return Ok(await _serviceManager.RoleService.GetAsync(search));
+            } catch (Exception exp) {
+                return Ok(new ErrorResponseDto(exp));
+            }
         }
         [HttpPost]
         [Route("get-list")]

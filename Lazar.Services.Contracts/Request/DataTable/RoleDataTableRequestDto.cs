@@ -3,6 +3,6 @@
 namespace Lazar.Services.Contracts.Request.DataTable {
     public class RoleDataTableRequestDto : DataTableRequestDto
     {
-        public string? SelectedUserId { get; set; } = "";
+        public Guid? SelectedUserId { get; set; }
     }
 }

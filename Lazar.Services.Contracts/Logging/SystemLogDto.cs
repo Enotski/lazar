@@ -2,7 +2,7 @@
 using Lazar.Services.Contracts.Base;
 using CommonUtils.Utils;
 
-namespace Lazar.Services.Contracts.EventLogs {
+namespace Lazar.Services.Contracts.Logging {
     public class SystemLogDto : ChangedByDto {
         public string Description { get; set; }
         public SubSystemType SubSystem { get; set; }

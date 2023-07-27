@@ -1,10 +1,11 @@
 ﻿using Lazar.Domain.Interfaces.Repositories.Administration;
 using Lazar.Domain.Interfaces.Repositories.Auth;
 using Lazar.Domain.Interfaces.Repositories.Common;
-using Lazar.Domain.Interfaces.Repositories.EventLogs;
+using Lazar.Domain.Interfaces.Repositories.Logging;
 using Lazar.Infrastructure.Data.Ef.Context;
 using Lazar.Infrastructure.Data.Ef.Repositories.Administration;
 using Lazar.Infrastructure.Data.Ef.Repositories.Auth;
+using Lazar.Infrastructure.Data.Ef.Repositories.Logging;
 
 namespace Lazar.Infrastructure.Data.Ef.Repositories.Common {
     public class RepositoryManager : IRepositoryManager
@@ -18,14 +19,14 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Common {
         private Lazy<IAuthRepository> _lazyAuthRepository;
         public IAuthRepository AuthRepository => _lazyAuthRepository.Value;
 
-        private Lazy<ISystemLogRepository> _lazyEventLogRepository;
-        public ISystemLogRepository SystemLogRepository => _lazyEventLogRepository.Value;
+        private Lazy<ISystemLogRepository> _lazyLoggingRepository;
+        public ISystemLogRepository SystemLogRepository => _lazyLoggingRepository.Value;
 
         public RepositoryManager(LazarContext context) {
             _lazyRoleRepository = new Lazy<IRoleRepository>(() => new RoleRepository(context));
             _lazyUsersRepository = new Lazy<IUserRepository>(() => new UserRepository(context));
             _lazyAuthRepository = new Lazy<IAuthRepository>(() => new AuthRepository(context));
-            _lazyEventLogRepository = new Lazy<ISystemLogRepository>(() => new SystemLogRepository(context));
+            _lazyLoggingRepository = new Lazy<ISystemLogRepository>(() => new SystemLogRepository(context));
         }
     }
 }

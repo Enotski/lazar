@@ -1,6 +1,6 @@
 ﻿using Lazar.Domain.Interfaces.Repositories.Administration;
 using Lazar.Domain.Interfaces.Repositories.Auth;
-using Lazar.Domain.Interfaces.Repositories.EventLogs;
+using Lazar.Domain.Interfaces.Repositories.Logging;
 
 namespace Lazar.Domain.Interfaces.Repositories.Common {
     public interface IRepositoryManager {

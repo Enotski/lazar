@@ -1,14 +1,14 @@
 ﻿using CommonUtils.Utils;
-using Lazar.Domain.Core.EntityModels.EventLogs;
+using Lazar.Domain.Core.EntityModels.Logging;
 using Lazar.Domain.Core.Enums;
 using Lazar.Domain.Interfaces.Options;
-using Lazar.Domain.Interfaces.Repositories.EventLogs;
+using Lazar.Domain.Interfaces.Repositories.Logging;
 using Lazar.Infrastructure.Data.Ef.Context;
 using Lazar.Infrastructure.Data.Ef.Repositories.Base;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace Lazar.Infrastructure.Data.Ef.Repositories.EventLogs {
+namespace Lazar.Infrastructure.Data.Ef.Repositories.Logging {
     /// <summary>
     /// Repository of events logs in app
     /// </summary>

@@ -1,398 +1,159 @@
-﻿using Lazar.Domain.Core.Enums;
+﻿using CommonUtils.Utils;
+using Lazar.Domain.Core.Enums;
 using Lazar.Domain.Core.Models.Administration;
+using Lazar.Domain.Core.SelectorModels.Administration;
+using Lazar.Domain.Interfaces.Options;
 using Lazar.Domain.Interfaces.Repositories.Administration;
-using Lazar.Domain.Interfaces.Repositories.EventLogs;
 using Lazar.Infrastructure.Data.Ef.Context;
 using Lazar.Infrastructure.Data.Ef.Repositories.Base;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
-    public class UserRepository : BaseRepository<User>, IUserRepository
-    {
-        ISystemLogRepository logRepo;
-        public UserRepository(LazarContext context) : base(context)
-        {
+    public class UserRepository : NameRepository<User>, IUserRepository {
+        public UserRepository(LazarContext context) : base(context) {
         }
 
-        public IHelperResult GetUsersDataGrid(int skip, int take, IEnumerable<DataGridSort> sorts, IEnumerable<DataGridFilter> filters)
-        {
-            try
-            {
-                DataGridResponseModel<UserDataGrid> model = new DataGridResponseModel<UserDataGrid>();
-                var query = GetAll<User>(true, x => x.Roles);
-                FilterData(ref query, filters);
-                var orderedQuery = query.OrderBy(x => 0);
-                SortData(ref orderedQuery, sorts);
-                model.totalCount = orderedQuery.Count();
-                model.data = orderedQuery.Skip(skip).Take(take).AsEnumerable()
-                    .Select(ModelToDataGridViewModel())
-                    .ToArray();
-                return model;
-            } catch (Exception exp)
-            {
-                return new BaseResponse(exp);
+        #region private
+        /// <summary>
+        /// Задает дополнительные условия для выборки
+        /// </summary>
+        /// <param name="options">Параметры выборки</param> 
+        /// <returns></returns>
+        private Expression<Func<User, bool>> BuildWherePredicate(IEnumerable<ISearchOption> options) {
+            if (options is null || !options.Any()) {
+                return null;
             }
-        }
-
-        public Func<User, int, UserDataGrid> ModelToDataGridViewModel()
-        {
-            return (x, index) => new UserDataGrid
-            {
-                Id = x.Id,
-                DateChange = x.DateChange.ToLocalTime().ToDataGridFormat(),
-                Email = x.Email,
-                Login = x.Login,
-                Roles = string.Join("; ", x.Roles.Select(r => r.Name)),
-                Num = index + 1
-            };
-        }
-
-        public static void FilterData(ref IQueryable<User> source, IEnumerable<DataGridFilter> filters)
-        {
-            if (filters == null || !filters.Any()) return;
-            foreach (var filter in filters)
-            {
-                filter.Value = filter.Value.Trim().ToLower();
-                switch (filter.ColumnName)
-                {
-                    case "Login":
-                        {
-                            switch (filter.Type)
-                            {
-                                case FilterType.Contains:
-                                    {
-                                        source = source.Where(x => x.Login.ToLower().Contains(filter.Value));
-                                        break;
-                                    }
-
-                                case FilterType.NotContains:
-                                    {
-                                        source = source.Where(x => !x.Login.ToLower().Contains(filter.Value));
-                                        break;
-                                    }
-
-                                case FilterType.StartsWith:
-                                    {
-                                        source = source.Where(x => x.Login.ToLower().StartsWith(filter.Value));
-                                        break;
-                                    }
-
-                                case FilterType.EndsWith:
-                                    {
-                                        source = source.Where(x => x.Login.ToLower().EndsWith(filter.Value));
-                                        break;
-                                    }
-
-                                case FilterType.Equals:
-                                    {
-                                        source = source.Where(x => x.Login.ToLower() == filter.Value);
-                                        break;
-                                    }
-                                case FilterType.NotEquals:
-                                    {
-                                        source = source.Where(x => x.Login.ToLower() != filter.Value);
-                                        break;
-                                    }
-                            }
+            Expression<Func<User, bool>> predicate = PredicateBuilder.True<User>();
+            foreach (var opt in options) {
+                if (opt == null || string.IsNullOrWhiteSpace(opt.ColumnName) || string.IsNullOrWhiteSpace(opt.Value)) {
+                    continue;
+                }
+                var val = opt.Value.TrimToUpper();
+                var column = opt.ColumnName.TrimToUpper();
+                switch (column) {
+                    case "NAME": {
+                            predicate = predicate.And(m => m.Name.ToUpper().Contains(val));
                             break;
                         }
-                    case "Email":
-                        {
-                            switch (filter.Type)
-                            {
-                                case FilterType.Contains:
-                                    {
-                                        source = source.Where(x => x.Email.ToLower().Contains(filter.Value));
-                                        break;
-                                    }
-
-                                case FilterType.NotContains:
-                                    {
-                                        source = source.Where(x => !x.Email.ToLower().Contains(filter.Value));
-                                        break;
-                                    }
-
-                                case FilterType.StartsWith:
-                                    {
-                                        source = source.Where(x => x.Email.ToLower().StartsWith(filter.Value));
-                                        break;
-                                    }
-
-                                case FilterType.EndsWith:
-                                    {
-                                        source = source.Where(x => x.Email.ToLower().EndsWith(filter.Value));
-                                        break;
-                                    }
-
-                                case FilterType.Equals:
-                                    {
-                                        source = source.Where(x => x.Email.ToLower() == filter.Value);
-                                        break;
-                                    }
-                                case FilterType.NotEquals:
-                                    {
-                                        source = source.Where(x => x.Email.ToLower() != filter.Value);
-                                        break;
-                                    }
-                            }
+                    case "LOGIN": {
+                            predicate = predicate.And(m => m.Login.ToUpper().Contains(val));
                             break;
                         }
-                    case "Roles":
-                        {
-                            switch (filter.Type)
-                            {
-                                case FilterType.Contains:
-                                    {
-                                        source = source.AsEnumerable().Where(x => x.Roles.Any(r => r.Name.ToLower().Contains(filter.Value))).AsQueryable();
-                                        break;
-                                    }
-                                case FilterType.NotContains:
-                                    {
-                                        source = source.AsEnumerable().Where(x => x.Roles.All(r => !r.Name.ToLower().Contains(filter.Value))).AsQueryable();
-                                        break;
-                                    }
-                                case FilterType.StartsWith:
-                                    {
-                                        source = source.AsEnumerable().Where(x => x.Roles.Any(r => r.Name.ToLower().StartsWith(filter.Value))).AsQueryable();
-                                        break;
-                                    }
-                                case FilterType.EndsWith:
-                                    {
-                                        source = source.AsEnumerable().Where(x => x.Roles.Any(r => r.Name.ToLower().EndsWith(filter.Value))).AsQueryable();
-                                        break;
-                                    }
-                                case FilterType.Equals:
-                                    {
-                                        source = source.AsEnumerable().Where(x => x.Roles.Any(r => r.Name.ToLower() == filter.Value)).AsQueryable();
-                                        break;
-                                    }
-                                case FilterType.NotEquals:
-                                    {
-                                        source = source.AsEnumerable().Where(x => x.Roles.Any(r => r.Name.ToLower() != filter.Value)).AsQueryable();
-                                        break;
-                                    }
-                            }
+                    case "EMAIL": {
+                            predicate = predicate.And(m => m.Email.ToUpper().Contains(val));
                             break;
                         }
-                    case "DateChange":
-                        {
-                            var dates = filter.Value.Split(';').Select(DateTime.Parse).ToArray();
-                            DateTime date1 = dates[0];
-                            switch (filter.Type)
-                            {
-                                case FilterType.Less:
-                                    {
-                                        source = source.Where(x => DbFunctions.TruncateTime(x.DateChange) < date1);
-                                        break;
-                                    }
-                                case FilterType.Greater:
-                                    {
-                                        source = source.Where(x => DbFunctions.TruncateTime(x.DateChange) > date1);
-                                        break;
-                                    }
-                                case FilterType.LessOrEqual:
-                                    {
-                                        source = source.Where(x => DbFunctions.TruncateTime(x.DateChange) <= date1);
-                                        break;
-                                    }
-                                case FilterType.GreaterOrEqual:
-                                    {
-                                        source = source.Where(x => DbFunctions.TruncateTime(x.DateChange) >= date1);
-                                        break;
-                                    }
-                                case FilterType.Equals:
-                                    {
-                                        source = source.Where(x => DbFunctions.TruncateTime(x.DateChange) == date1);
-                                        break;
-                                    }
-                                case FilterType.NotEquals:
-                                    {
-                                        source = source.Where(x => DbFunctions.TruncateTime(x.DateChange) != date1);
-                                        break;
-                                    }
-                                case FilterType.Between:
-                                    {
-                                        DateTime date2 = dates[1];
-                                        source = source.Where(x => date1 <= DbFunctions.TruncateTime(x.DateChange) && DbFunctions.TruncateTime(x.DateChange) <= date2);
-                                        break;
-                                    }
+                    case "CHANGEDBY": {
+                            predicate = predicate.And(m => !string.IsNullOrEmpty(m.ChangedBy) && m.ChangedBy.ToUpper().Contains(val));
+                            break;
+                        }
+                    case "ROLES": {
+                            predicate = predicate.And(m => !string.IsNullOrEmpty(m.ChangedBy) && m.ChangedBy.ToUpper().Contains(val));
+                            break;
+                        }
+                    case "DATEOFCHANGE": {
+                            var interval = val.Split(';');
+                            if (interval.Length == 2) {
+                                predicate = predicate.WhereDateBetween(x => x.DateChange, interval[0], interval[1]);
                             }
                             break;
                         }
                 }
             }
+            return predicate;
         }
-
-        public static void SortData(ref IOrderedQueryable<User> source, IEnumerable<DataGridSort> sorts)
-        {
-            if (sorts == null || !sorts.Any()) return;
-            foreach (var sort in sorts)
-            {
-                switch (sort.ColumnName)
-                {
-                    case "Login":
-                        {
-                            source = sort.Type == SortType.Descending
-                                ? source.ThenByDescending(x => x.Login)
-                                : source.ThenBy(x => x.Login);
+        /// <summary>
+        /// Используется для сортировки результирующего набора в порядке возрастания или убывания
+        /// </summary>
+        /// <param name="options">Параметры сортировки</param> 
+        /// <returns></returns>
+        private Func<IQueryable<User>, IOrderedQueryable<User>> BuildSortFunction(IEnumerable<ISortOption> options) {
+            if (options is null || !options.Any()) {
+                return null;
+            }
+            //TODO: переписать .OrderBy(x => true) делает плохой SQL
+            var ordered = _dbContext.Users.OrderBy(x => true);
+            foreach (var opt in options) {
+                var column = opt.ColumnName.TrimToUpper();
+                switch (column) {
+                    case "NAME": {
+                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.Name) : ordered.ThenByDescending(m => m.Name);
                             break;
                         }
-                    case "Email":
-                        {
-                            source = sort.Type == SortType.Descending
-                                ? source.ThenByDescending(x => x.Email)
-                                : source.ThenBy(x => x.Email);
+                    case "LOGIN": {
+                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.Login) : ordered.ThenByDescending(m => m.Login);
                             break;
                         }
-                    case "Roles":
-                        {
-                            source = sort.Type == SortType.Descending
-                                ? source.ThenByDescending(x => x.Roles.Count())
-                                : source.ThenBy(x => x.Roles.Count());
+                    case "EMAIL": {
+                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.Email) : ordered.ThenByDescending(m => m.Email);
                             break;
                         }
-                    case "DateChange":
-                        {
-                            source = sort.Type == SortType.Descending
-                                ? source.ThenByDescending(x => x.DateChange)
-                                : source.ThenBy(x => x.DateChange);
+                    case "CHANGEDBY": {
+                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.ChangedBy) : ordered.ThenByDescending(m => m.ChangedBy);
+                            break;
+                        }
+                    default: {
+                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.DateChange) : ordered.ThenByDescending(m => m.DateChange);
                             break;
                         }
                 }
             }
+            return orb => ordered;
         }
-
-        public Func<User, UserDto> ModelToViewModel()
-        {
-            return model => new UserDto
-            {
-                Id = model.Id,
-                Email = model.Email,
-                Login = model.Login,
-                Password = model.Password
-            };
-        }
-        public BaseResponse GetView(Guid? id)
-        {
-            try
-            {
-                return new BaseResponse(GetViewById(id, ModelToViewModel(), true));
-            } catch (Exception ex) { return new BaseResponse(ex); }
-        }
-        public BaseResponse<UserDto> AddEditUser(UserDto model, Guid currentUserId)
-        {
-            try
-            {
-                User user = null;
-                EventType type;
-                if (!model.Id.HasValue)
-                {
-                    user = new User
-                    {
-                        Id = Guid.NewGuid(),
-                        DateChange = DateTime.UtcNow,
-                        Login = model.Login,
-                        Email = model.Email,
-
-                    };
-                    Context.Users.Add(user);
-                    type = EventType.Create;
-                } else
-                {
-                    user = Context.Users.FirstOrDefault(w => w.Id == model.Id);
-                    if (user == null)
-                    {
-                        return new BaseResponse<UserDto>(new Exception("Пользователь отсутствует"));
-                    }
-
-                    user.Password = model.Password;
-                    user.Email = model.Email;
-                    user.Login = model.Login;
-                    user.DateChange = DateTime.UtcNow;
-                    type = EventType.Update;
-                }
-
-                Context.SaveChanges();
-                logRepo.LogEvent(SubSystemType.Users, type, currentUserId);
-                return new BaseResponse<UserDto>(ModelToViewModel().Invoke(user));
-            } catch (Exception exp)
-            {
-                logRepo.LogEvent(SubSystemType.Users, EventType.Error, currentUserId);
-                return new BaseResponse<UserDto>(exp);
+        /// <summary>
+        /// Формирует предикат возвращаемого набора данных
+        /// </summary>
+        /// <param name="columnSelector"></param>
+        /// <returns></returns>
+        private Expression<Func<User, string>> BuildSelectorPredicate(string columnSelector) {
+            if (string.IsNullOrEmpty(columnSelector)) {
+                return null;
             }
-        }
-        public ResponseModel<UserDto> LoginUser(UserDto model)
-        {
-            try
-            {
-                var user = GetAll<User>(true).FirstOrDefault(x => x.Login == model.Login/* && x.Password == model.Password*/);
-                if(user == null)
-                {
-                    return new ResponseModel<UserDto>("Не верный логин или пароль");
-                }
-                return new ResponseModel<UserDto>(new UserDto()
-                {
-                    Id = user.Id,
-                    Login = user.Login,
-                    Email = user.Email,
-                });
-            } catch(Exception ex)
-            {
-                return new ResponseModel<UserDto>(ex.Message);
+            switch (columnSelector.TrimToUpper()) {
+                case "NAME": {
+                        return x => x.Name;
+                    }
+                case "LOGIN": {
+                        return x => x.Login;
+                    }
+                case "EMAIL": {
+                        return x => x.Email;
+                    }
+                case "CHANGEDBY": {
+                        return x => x.ChangedBy;
+                    }
             }
+            return null;
         }
-        public BaseResponse<UserDto> SetRoleToUser(Guid? userId, Guid? roleId)
-        {
-            try
-            {
-                if (userId.HasValue && roleId.HasValue)
-                {
-                    var user = GetAll<User>(false, x => x.Roles).FirstOrDefault(w => w.Id == userId.Value);
-                    if (user == null)
-                    {
-                        return new BaseResponse<UserDto>(new Exception("Пользователь отсутствует"));
-                    }
-                    if (user.Roles.Any(x => x.Id == roleId.Value)) { return new BaseResponse<UserDto>(new UserDto()); }
+        #endregion
 
-                    var role = Context.Roles.FirstOrDefault(x => x.Id == roleId.Value);
-
-                    user.Roles.Add(role);
-                    user.DateChange = DateTime.UtcNow;
-                    Context.SaveChanges();
-                    //logRepo.LogEvent(SubSystemType.Users, EventType.Update, currentUserId);
-                }
-                return new BaseResponse<UserDto>(new UserDto());
-            } catch (Exception exp)
-            {
-                //logRepo.LogEvent(SubSystemType.Users, EventType.Error, currentUserId);
-                return new BaseResponse<UserDto>(exp);
+        public async Task<IReadOnlyList<UserSelectorModel>> GetRecordsAsync(IEnumerable<Guid> ids) {
+            return await BuildQuery(x => ids.Contains(x.Id)).Select(x => new UserSelectorModel(x.Id, x.Roles.Select(r => r.Name), x.Roles.Select(r => r.Id), x.Name, x.Login, x.Password, x.Email, x.ChangedBy, x.DateChange)).ToListAsync();
+        }
+        public async Task<int> CountAsync(IEnumerable<ISearchOption> options) {
+            var filter = BuildWherePredicate(options);
+            return await CountAsync(filter);
+        }
+        public async Task<IReadOnlyList<UserSelectorModel>> GetRecordsAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption) {
+            var filter = BuildWherePredicate(searchOptions);
+            var ordered = BuildSortFunction(sortOptions);
+            return await BuildQuery(filter, ordered, paginationOption).Select(x => new UserSelectorModel(x.Id, x.Roles.Select(r => r.Name), x.Roles.Select(r => r.Id), x.Name, x.Login, x.Password, x.Email, x.ChangedBy, x.DateChange)).ToListAsync();
+        }
+        public async Task<IReadOnlyList<string>> GetRecordsBySelectorAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption, string columnSelector) {
+            var selector = BuildSelectorPredicate(columnSelector);
+            if (selector is null) {
+                return new List<string>();
             }
+            var filter = BuildWherePredicate(searchOptions);
+            var ordered = BuildSortFunction(sortOptions);
+            return await BuildQuery(filter, ordered, paginationOption).Select(selector).Distinct().ToListAsync();
         }
-        public BaseResponse<UserDto> RemoveRoleFromUser(Guid? userId, Guid? roleId)
-        {
-            try
-            {
-                if (userId.HasValue && roleId.HasValue)
-                {
-                    var user = GetAll<User>(false, x => x.Roles).FirstOrDefault(w => w.Id == userId.Value);
-                    if (user == null)
-                    {
-                        return new BaseResponse<UserDto>(new Exception("Пользователь отсутствует"));
-                    }
-
-                    if (user.Roles.Any(x => x.Id == roleId)) {
-                        var role = user.Roles.FirstOrDefault(x => x.Id == roleId.Value);
-
-                        user.Roles.Remove(role);
-                        user.DateChange = DateTime.UtcNow;
-                        Context.SaveChanges();
-                    }
-                    //logRepo.LogEvent(SubSystemType.Users, EventType.Update, currentUserId);
-                }
-                return new BaseResponse<UserDto>(new UserDto());
-            } catch (Exception exp)
-            {
-                //logRepo.LogEvent(SubSystemType.Users, EventType.Error, currentUserId);
-                return new BaseResponse<UserDto>(exp);
+        public async Task<bool> PermissionToPerformOperation(string login) {
+            try {
+                return true;
+            }catch(Exception ex) {
+                throw;
             }
         }
     }

@@ -71,7 +71,7 @@ namespace Lazar.Services.Administration {
                 var records = await _repositoryManager.RoleRepository.GetRecordsAsync(options.Filters, options.Sorts, options.Pagination);
                 return new DataTableDto<RoleDto>(totalRecords, _mapper.Mapper.Map<IReadOnlyList<RoleDto>>(records));
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Read, "Получение списка диспетчерских центров", exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Read, "Получение списка ролей", exp.Format());
                 throw;
             }
         }
@@ -83,7 +83,7 @@ namespace Lazar.Services.Administration {
                 }
                 return new EntityResponseDto<RoleDto>(_mapper.Mapper.Map<RoleDto>(data));
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Read, "Получение диспетчерского центра", exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Read, "Получение роли", exp.Format());
                 throw;
             }
         }
@@ -92,7 +92,7 @@ namespace Lazar.Services.Administration {
                 var records = await _repositoryManager.RoleRepository.GetKeyNameRecordsAsync(options.SearchValue);
                 return new EntityResponseDto<IReadOnlyList<ListItemDto<Guid>>>(_mapper.Mapper.Map<IReadOnlyList<ListItemDto<Guid>>>(records));
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Read, "Получение списка пар код-наименование справочника диспетчерских центров", exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Read, "Получение списка пар код-наименование ролей", exp.Format());
                 throw;
             }
         }
@@ -108,7 +108,7 @@ namespace Lazar.Services.Administration {
 
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Create, $"{string.Join("; ", changes)}", login);
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Create, "Создание диспетчерского центра", exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Create, "Создание роли", exp.Format());
                 throw;
             }
         }
@@ -133,7 +133,7 @@ namespace Lazar.Services.Administration {
 
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Update, $"{string.Join("; ", changes)}", login);
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Update, "Обновление диспетчерского центра", exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Update, "Обновление роли", exp.Format());
                 throw;
             }
         }
@@ -154,7 +154,7 @@ namespace Lazar.Services.Administration {
 
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Delete, $"{entitiesFields}", login);
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Delete, "Удаление диспетчерских центров", exp.Format(), login);
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Delete, "Удаление роли", exp.Format(), login);
                 throw;
             }
         }

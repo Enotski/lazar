@@ -1,4 +1,4 @@
-﻿using Lazar.Domain.Core.EntityModels.EventLogs;
+﻿using Lazar.Domain.Core.EntityModels.Logging;
 using Lazar.Domain.Core.Keys;
 using Lazar.Domain.Core.Models.Administration;
 using Microsoft.EntityFrameworkCore;

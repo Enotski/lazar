@@ -6,12 +6,12 @@ namespace Lazar.Services.Contracts.Response.Models {
     /// Элемент для выпадающего списка
     /// </summary>
     /// <typeparam name="Tid"></typeparam>
-    public class ListItemDto<Tid> : BaseResponseDto
-        where Tid : struct {
+    public class ListItemDto<TKey> : BaseResponseDto
+        where TKey : struct {
         /// <summary>
         /// Ключ
         /// </summary>
-        public Tid Id { get; set; }
+        public TKey Id { get; set; }
         /// <summary>
         /// Значение
         /// </summary>
@@ -26,14 +26,14 @@ namespace Lazar.Services.Contracts.Response.Models {
         /// </summary>
         /// <param name="id">Ключ</param>
         /// <param name="value">Значение</param>
-        public ListItemDto(Tid id, string value) : base() {
+        public ListItemDto(TKey id, string value) : base() {
             Id = id;
             Text = value;
         }
-        public ListItemDto(Tid id, string value, string message) : this(id, value) {
+        public ListItemDto(TKey id, string value, string message) : this(id, value) {
             Message = message;
         }
-        public ListItemDto(Tid id, string value, string message, ResponseResultState state) : this(id, value, message) {
+        public ListItemDto(TKey id, string value, string message, ResponseResultState state) : this(id, value, message) {
             Result = state;
         }
     }

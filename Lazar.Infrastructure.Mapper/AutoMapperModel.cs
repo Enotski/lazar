@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
-using Lazar.Domain.Core.EntityModels.EventLogs;
+using Lazar.Domain.Core.EntityModels.Logging;
 using Lazar.Domain.Core.Models.Administration;
+using Lazar.Domain.Core.SelectorModels.Administration;
 using Lazar.Services.Contracts.Administration;
-using Lazar.Services.Contracts.EventLogs;
+using Lazar.Services.Contracts.Logging;
 
 namespace Lazar.Infrastructure.Mapper {
     public class AutoModelMapper : IModelMapper {
@@ -23,7 +24,7 @@ namespace Lazar.Infrastructure.Mapper {
         public ModelMapperProfile() {
             CreateMap<SystemLog, SystemLogDto>().ReverseMap();
             CreateMap<Role, RoleDto>().ReverseMap();
-            CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<UserSelectorModel, UserDto>().ReverseMap();
         }
     }
 }

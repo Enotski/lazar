@@ -1,4 +1,6 @@
 ﻿using Lazar.Services.Contracts.Administration;
+using Lazar.Services.Contracts.Request;
+using Lazar.Services.Contracts.Request.DataTable;
 using Lazar.Services.Contracts.Request.DataTable.Base;
 using Lazar.Services.Contracts.Response.Models;
 using Lazar.Srevices.Iterfaces.Base;
