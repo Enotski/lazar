@@ -17,6 +17,7 @@ namespace Lazar.Domain.Interfaces.Repositories.Administration {
         /// <param name="options">Фильтрация</param> 
         /// <returns></returns>
         Task<int> CountAsync(IEnumerable<ISearchOption> options);
+        Task<User> GetUserAsync(Guid id);
         /// <summary>
         /// Возвращает список записей в соответсии с параметрами поиска и сортировки
         /// </summary>

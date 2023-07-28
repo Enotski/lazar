@@ -131,6 +131,10 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
         public async Task<IReadOnlyList<UserSelectorModel>> GetRecordsAsync(IEnumerable<Guid> ids) {
             return await BuildQuery(x => ids.Contains(x.Id)).Select(x => new UserSelectorModel(x.Id, x.Roles.Select(r => r.Name), x.Roles.Select(r => r.Id), x.Name, x.Login, x.Password, x.Email, x.ChangedBy, x.DateChange)).ToListAsync();
         }
+        public async Task<User> GetUserAsync(Guid id) {
+            var predicates = new[] { PredicateBuilder.Create<User>(x => x.Roles) };
+            return await GetAsync(id, predicates);
+        }
         public async Task<int> CountAsync(IEnumerable<ISearchOption> options) {
             var filter = BuildWherePredicate(options);
             return await CountAsync(filter);
@@ -152,7 +156,7 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
         public async Task<bool> PermissionToPerformOperation(string login) {
             try {
                 return true;
-            }catch(Exception ex) {
+            } catch (Exception ex) {
                 throw;
             }
         }

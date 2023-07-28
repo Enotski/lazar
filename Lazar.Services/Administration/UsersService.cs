@@ -99,7 +99,7 @@ namespace Lazar.Services.Administration {
                 var entity = new User(model.Name, model.Login, model.Password, model.Email, roles, login);
                 await _repositoryManager.UserRepository.AddAsync(entity);
 
-                var newEntity = await _repositoryManager.UserRepository.GetAsync(entity.Id);
+                var newEntity = await _repositoryManager.UserRepository.GetUserAsync(entity.Id);
                 var changes = GetChangeFieldsList(newEntity);
 
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Create, $"{string.Join("; ", changes)}", login);
@@ -112,12 +112,12 @@ namespace Lazar.Services.Administration {
             try {
                 await ModelValidation(model, login);
 
-                var entity = await _repositoryManager.UserRepository.GetAsync(model.Id);
+                var entity = await _repositoryManager.UserRepository.GetUserAsync(model.Id);
                 if (entity is null) {
                     throw new Exception("Запись не найдена");
                 }
                 // Запись до измемнений
-                var oldDc = await _repositoryManager.UserRepository.GetAsync(model.Id);
+                var oldDc = await _repositoryManager.UserRepository.GetUserAsync(model.Id);
 
                 // Обновление записи
                 var roles = await _repositoryManager.RoleRepository.GetAsync(model.RoleIds);
@@ -125,7 +125,7 @@ namespace Lazar.Services.Administration {
                 await _repositoryManager.UserRepository.UpdateAsync(entity);
 
                 // Обновленная запись
-                var newDc = await _repositoryManager.UserRepository.GetAsync(model.Id);
+                var newDc = await _repositoryManager.UserRepository.GetUserAsync(model.Id);
                 var changes = GetChangeFieldsList(oldDc, newDc);
 
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, $"{string.Join("; ", changes)}", login);
