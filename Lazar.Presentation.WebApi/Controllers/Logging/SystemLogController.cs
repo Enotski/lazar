@@ -1,30 +1,18 @@
-using Lazar.Domain.Core.Interfaces;
-using Lazar.Domain.Core.Models.Response.ViewModels;
-using Lazar.Domain.Core.Repositories.Administration;
-using Lazar.Domain.Core.ResponseModels.Dtos.Administration;
+using Lazar.Infrastructure.Mapper;
+using Lazar.Presentation.WebApi.Controllers.Base;
 using Lazar.Services.Contracts.Request;
-using Lazar.Services.Contracts.Request.DataGrid.Base;
-using LazarWebApi.Controllers;
+using Lazar.Srevices.Iterfaces.Common;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Lazar.Presentation.WebApi.Controllers.Logging
-{
-    /// <summary>
-    /// Controller of events records in app
-    /// </summary>
+namespace Lazar.Presentation.WebApi.Controllers.Logging {
+    [ApiController]
+    [Route("api/users")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class LoggingController : BaseApiController
-    {
-        LoggingRepository LoggingRepository;
-        /// <summary>
-        /// Main constructor
-        /// </summary>
-        /// <param name="contextRepo">IContextRepository instance</param>
-        public LoggingController(IContextRepository contextRepo)
-        {
-            LoggingRepository = new LoggingRepository(contextRepo);
+    public class SystemLogController : BaseController {
+        public SystemLogController(IServiceManager serviceManager, IModelMapper mapper)
+            : base(serviceManager, mapper) {
         }
         /// <summary>
         /// Get Logging list for dataGrid representation

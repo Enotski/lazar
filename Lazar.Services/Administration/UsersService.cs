@@ -1,6 +1,7 @@
 ﻿using CommonUtils.Utils;
 using Lazar.Domain.Core.Enums;
 using Lazar.Domain.Core.Models.Administration;
+using Lazar.Domain.Core.SelectorModels.Administration;
 using Lazar.Domain.Interfaces.Repositories.Common;
 using Lazar.Infrastructure.Mapper;
 using Lazar.Services.Contracts.Administration;
@@ -10,10 +11,10 @@ using Lazar.Services.Contracts.Request.DataTable.Base;
 using Lazar.Services.Contracts.Response.Models;
 using Lazar.Srevices.Iterfaces.Administration;
 using System.Data;
+using System.Reflection;
 
 namespace Lazar.Services.Administration {
-    public class UsersService : IUsersService
-    {
+    public class UsersService : IUsersService {
         private readonly IRepositoryManager _repositoryManager;
         private readonly IModelMapper _mapper;
 
@@ -22,7 +23,7 @@ namespace Lazar.Services.Administration {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        private List<string> GetChangeFieldsList(User model, User newModel = null) {
+        private List<string> GetChangeFieldsList(UserSelectorModel model, UserSelectorModel newModel = null) {
             try {
                 var res = new List<string>();
 
@@ -33,10 +34,13 @@ namespace Lazar.Services.Administration {
                         res.Add($"Логин: {model.Login} -> {newModel.Login}");
                     if (newModel.Email != model.Email)
                         res.Add($"Почта: {model.Email} -> {newModel.Email}");
+                    if (newModel.RoleNames != model.RoleNames)
+                        res.Add($"Роли: {model.RoleNames} -> {newModel.RoleNames}");
                 } else {
                     res.Add($"Наименование: {model.Name}");
                     res.Add($"Логин: {model.Login}");
                     res.Add($"Почта: {model.Email}");
+                    res.Add($"Роли: {model.RoleNames}");
                 }
                 return res;
             } catch {
@@ -99,7 +103,7 @@ namespace Lazar.Services.Administration {
                 var entity = new User(model.Name, model.Login, model.Password, model.Email, roles, login);
                 await _repositoryManager.UserRepository.AddAsync(entity);
 
-                var newEntity = await _repositoryManager.UserRepository.GetUserAsync(entity.Id);
+                var newEntity = await _repositoryManager.UserRepository.GetRecordAsync(entity.Id);
                 var changes = GetChangeFieldsList(newEntity);
 
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Create, $"{string.Join("; ", changes)}", login);
@@ -112,12 +116,12 @@ namespace Lazar.Services.Administration {
             try {
                 await ModelValidation(model, login);
 
-                var entity = await _repositoryManager.UserRepository.GetUserAsync(model.Id);
+                var entity = await _repositoryManager.UserRepository.GetAsync(model.Id);
                 if (entity is null) {
                     throw new Exception("Запись не найдена");
                 }
                 // Запись до измемнений
-                var oldDc = await _repositoryManager.UserRepository.GetUserAsync(model.Id);
+                var oldDc = await _repositoryManager.UserRepository.GetRecordAsync(model.Id);
 
                 // Обновление записи
                 var roles = await _repositoryManager.RoleRepository.GetAsync(model.RoleIds);
@@ -125,7 +129,7 @@ namespace Lazar.Services.Administration {
                 await _repositoryManager.UserRepository.UpdateAsync(entity);
 
                 // Обновленная запись
-                var newDc = await _repositoryManager.UserRepository.GetUserAsync(model.Id);
+                var newDc = await _repositoryManager.UserRepository.GetRecordAsync(model.Id);
                 var changes = GetChangeFieldsList(oldDc, newDc);
 
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, $"{string.Join("; ", changes)}", login);
@@ -157,28 +161,87 @@ namespace Lazar.Services.Administration {
             }
         }
 
-        public Task<IReadOnlyList<ListItemDto<Guid>>> GetListByUserAsync(ListRequestDto options) {
-            throw new NotImplementedException();
+        public async Task<DataTableDto<RoleDto>> GetRolesByUserAsync(RoleDataTableRequestDto options) {
+            try {
+                if (!options.SelectedUserId.HasValue) {
+                    return new DataTableDto<RoleDto>();
+                }
+                var roles = await _repositoryManager.UserRepository.GetUserRolesAsync(options.SelectedUserId.Value);
+                if (roles is null) {
+                    throw new Exception("Записи не найдены");
+                }
+
+                int totalRecords = roles.Count;
+                var records = roles.OrderBy(x => x.Name);
+
+                return new DataTableDto<RoleDto>(totalRecords, _mapper.Mapper.Map<IReadOnlyList<RoleDto>>(records));
+            } catch (Exception exp) {
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, "Получение ролей пользователя", exp.Format());
+                throw;
+            }
         }
 
-        public Task<DataTableDto<RoleDto>> GetRolesByUserAsync(RoleDataTableRequestDto options) {
-            throw new NotImplementedException();
+        public async Task<IEnumerable<ListItemDto<Guid>>> GetRolesListByUserAsync(SelectRoleRequestDto options) {
+            try {
+                if (!options.SelectedUserId.HasValue) {
+                    return new List<ListItemDto<Guid>>();
+                }
+                var roles = await _repositoryManager.UserRepository.GetUserRolesAsync(options.SelectedUserId.Value);
+                if (roles is null) {
+                    throw new Exception("Записи не найдены");
+                }
+                return roles.OrderBy(x => x.Name).Select(x => new ListItemDto<Guid>(x.Id, x.Name));
+            } catch (Exception exp) {
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, "Получение списка ролей пользователя", exp.Format());
+                throw;
+            }
         }
 
-        public Task<IReadOnlyList<ListItemDto<Guid>>> GetRolesListByUserAsync(SelectRoleRequestDto options) {
-            throw new NotImplementedException();
-        }
+        public async Task UpdateUserRoleAsync(UserRoleDto model, string login) {
+            try {
+                // Проверка на наличие прав для редактирования
+                bool IsHaveRight = await _repositoryManager.UserRepository.PermissionToPerformOperation(login);
+                if (!IsHaveRight) {
+                    throw new Exception("У вас недостаточно прав для выполнения данной операции");
+                }
 
-        public Task SetUserRoleAsync(UserRoleDto model, string login) {
-            throw new NotImplementedException();
-        }
+                var userEntity = await _repositoryManager.UserRepository.GetAsync(model.UserId);
+                if (userEntity is null) {
+                    throw new Exception("Пользователь не найден");
+                }
+                var roleEntity = await _repositoryManager.RoleRepository.GetAsync(model.RoleId);
+                if (userEntity is null) {
+                    throw new Exception("Роль не найдена");
+                }
+                // Запись до измемнений
+                var oldUser = await _repositoryManager.UserRepository.GetRecordAsync(model.UserId);
+                List<Role> roles = null;
+                if (model.IsAddRole) {
+                    // Обновление записи
+                    if (userEntity.Roles.Any(x => x.Id == roleEntity.Id)) {
+                        throw new Exception("Роль уже задана");
+                    }
+                    roles = userEntity.Roles.ToList();
+                    roles.Add(roleEntity);
+                } else {
+                    if (!userEntity.Roles.Any(x => x.Id == roleEntity.Id)) {
+                        throw new Exception("Роль уже не задана");
+                    }
+                    roles = userEntity.Roles.Where(x => x.Id != roleEntity.Id).ToList();
+                }
 
-        public Task RemoveUserRoleAsync(UserRoleDto model, string login) {
-            throw new NotImplementedException();
-        }
+                userEntity.Update(roles, login);
+                await _repositoryManager.UserRepository.UpdateAsync(userEntity);
 
-        public Task<EntityResponseDto<UserDto>> GetRecordAsync(Guid id) {
-            throw new NotImplementedException();
+                // Обновленная запись
+                var newUser = await _repositoryManager.UserRepository.GetRecordAsync(userEntity.Id);
+                var changes = GetChangeFieldsList(oldUser, newUser);
+
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, $"{string.Join("; ", changes)}", login);
+            } catch (Exception exp) {
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, "Привязка роли пользователю", exp.Format(), login);
+                throw;
+            }
         }
     }
 }

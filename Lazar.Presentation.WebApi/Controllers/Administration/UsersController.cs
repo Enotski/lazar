@@ -1,25 +1,56 @@
-using Lazar.Domain.Core.Interfaces;
-using Lazar.Domain.Core.Repositories.Administration;
-using Lazar.Domain.Core.ResponseModels.Dtos.Administration;
-using Lazar.Services.Contracts.Request.DataGrid.Base;
+using Lazar.Infrastructure.Mapper;
+using Lazar.Presentation.WebApi.Controllers.Base;
+using Lazar.Srevices.Iterfaces.Common;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LazarWebApi.Controllers.Administration
-{
+namespace LazarWebApi.Controllers.Administration {
+    [ApiController]
+    [Route("api/users")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class UsersController : BaseApiController {
-        UserRepository userRepository;
-        public UsersController(IContextRepository contextRepo)
-        {
-            userRepository = new UserRepository(contextRepo);
+    public class UsersController : BaseController {
+        public UsersController(IServiceManager serviceManager, IModelMapper mapper)
+            : base(serviceManager, mapper) {
         }
         [HttpPost]
         public JsonResult GetUsersDataGrid([FromBody] DataGridRequestDto args)
         {
             var data = userRepository.GetUsersDataGrid(args.skip, args.take, args.Sorts, args.Filters);
+            return Json(data); [HttpPost]
+        public JsonResult GetUserModel([FromBody] Guid? id)
+        {
+            var res = userRepository.GetView(id);
+            return Json(res);
+        }
+        [HttpPost]
+        public JsonResult AddEditUser([FromBody] UserDto model)
+        {
+            var data = userRepository.AddEditUser(model, CurrentUser.Id);
             return Json(data);
+        }
+        [HttpPost]
+        public JsonResult SetRoleToUser([FromBody] UserDto model)
+        {
+            var data = userRepository.SetRoleToUser(model.Id, model.RoleId/*, CurrentUser.Id*/);
+            return Json(data);
+        }
+        [HttpGet]
+        public JsonResult IsUserAdmin()
+        {
+            var isAdmin = CurrentUser.Roles.Any(r => r.Id == Guids.Roles.Administrator);
+            return Json(new BaseResponse(new BaseResponseModel(), new { UserIsAdmin = isAdmin }));
+        }
+        [HttpPost]
+        public JsonResult LoginUser(UserDto model)
+        {
+            return Json(userRepository.LoginUser(model));
+        }
+        [HttpPost]
+        public JsonResult RegisterUser(UserDto model)
+        {
+            return Json(userRepository.AddUser(model));
+        }
         }
         [HttpPost]
         public JsonResult AddUser([FromBody] UserDto model)
@@ -51,5 +82,6 @@ namespace LazarWebApi.Controllers.Administration
             var data = userRepository.DeleteUsers(userIds);
             return Json(data);
         }
+
     }
 }

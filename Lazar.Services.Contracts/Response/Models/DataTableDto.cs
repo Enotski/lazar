@@ -6,6 +6,9 @@ namespace Lazar.Services.Contracts.Response.Models {
     {
         public int totalCount { get; set; } = 0;
         public IReadOnlyList<TModelDto> data { get; set; } = new List<TModelDto>();
+        public DataTableDto() : base() {
+            totalCount = 0;
+        }
         public DataTableDto(int totalRecords, IReadOnlyList<TModelDto> data) : base() {
             totalCount = totalRecords;
             this.data = data;

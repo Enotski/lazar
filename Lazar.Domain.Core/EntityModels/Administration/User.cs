@@ -25,5 +25,9 @@ namespace Lazar.Domain.Core.Models.Administration {
             Roles = roles;
             base.Update(name, changedBy);
         }
+        public void Update(IEnumerable<Role> roles, string changedBy) {
+            Roles = roles;
+            base.Update(changedBy);
+        }
     }
 }

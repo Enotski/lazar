@@ -1,7 +1,7 @@
 ﻿using System.Text;
 
 namespace Lazar.Services.Contracts.Auth {
-    internal class AuthDto
+    public class AuthDto
     {
         public string Key { get; set; }
         public string Issuer { get; set; }

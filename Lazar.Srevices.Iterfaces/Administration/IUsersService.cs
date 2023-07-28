@@ -13,11 +13,9 @@ namespace Lazar.Srevices.Iterfaces.Administration {
         /// <param name="options">Параметры фильтрации и поиска</param>
         /// <returns></returns>
         Task<DataTableDto<UserDto>> GetAsync(DataTableRequestDto options);
-        Task<IReadOnlyList<ListItemDto<Guid>>> GetListByUserAsync(ListRequestDto options);
         Task<DataTableDto<RoleDto>> GetRolesByUserAsync(RoleDataTableRequestDto options);
-        Task<IReadOnlyList<ListItemDto<Guid>>> GetRolesListByUserAsync(SelectRoleRequestDto options);
-        Task SetUserRoleAsync(UserRoleDto model, string login);
-        Task RemoveUserRoleAsync(UserRoleDto model, string login);
+        Task<IEnumerable<ListItemDto<Guid>>> GetRolesListByUserAsync(SelectRoleRequestDto options);
+        Task UpdateUserRoleAsync(UserRoleDto model, string login);
         /// <summary>
         /// Возвращает запись
         /// </summary>

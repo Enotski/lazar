@@ -1,3 +1,10 @@
+using Lazar.Domain.Interfaces.Repositories.Common;
+using Lazar.Infrastructure.Data.Ef.Context;
+using Lazar.Infrastructure.Data.Ef.Repositories.Common;
+using Lazar.Infrastructure.JwtAuth.Models;
+using Lazar.Infrastructure.Mapper;
+using Lazar.Services.Common;
+using Lazar.Srevices.Iterfaces.Common;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -9,7 +16,7 @@ namespace Lazar.Presentation.WebApi {
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            //builder.Services.Configure<AuthOptions>(options => builder.Configuration.GetSection("Jwt").Bind(options));
+            builder.Services.Configure<AuthOptions>(options => builder.Configuration.GetSection("Jwt").Bind(options));
             builder.Services.AddCors();
             // Add services to the container.
 
@@ -47,7 +54,7 @@ namespace Lazar.Presentation.WebApi {
             });
 
             string connection = builder.Configuration.GetConnectionString("home");
-            builder.Services.AddDbContext<Lazar.Domain.Core.Context.LazarContext>(options => options.UseSqlServer(connection));
+            builder.Services.AddDbContext<LazarContext>(options => options.UseSqlServer(connection));
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
@@ -68,7 +75,10 @@ namespace Lazar.Presentation.WebApi {
 
             builder.Services.AddHttpContextAccessor();
 
-            builder.Services.AddTransient<IContextRepository, ContextRepository>();
+            builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
+            builder.Services.AddScoped<IServiceManager, ServiceManager>();
+            builder.Services.AddScoped<IModelMapper, AutoModelMapper>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
