@@ -19,14 +19,14 @@ namespace Lazar.Services.Contracts.Response.Models {
         }
     }
     public sealed class EntitiesResponseDto<TModelDto> : BaseResponseDto where TModelDto : class {
-        public IReadOnlyList<TModelDto> Data { get; set; }
-        public EntitiesResponseDto(IReadOnlyList<TModelDto> data) : base() {
+        public IEnumerable<TModelDto> Data { get; set; }
+        public EntitiesResponseDto(IEnumerable<TModelDto> data) : base() {
             Data = data;
         }
-        public EntitiesResponseDto(IReadOnlyList<TModelDto> data, string message) : this(data) {
+        public EntitiesResponseDto(IEnumerable<TModelDto> data, string message) : this(data) {
             Message = message;
         }
-        public EntitiesResponseDto(IReadOnlyList<TModelDto> data, string message, ResponseResultState result) : this(data, message) {
+        public EntitiesResponseDto(IEnumerable<TModelDto> data, string message, ResponseResultState result) : this(data, message) {
             Result = result;
         }
     }

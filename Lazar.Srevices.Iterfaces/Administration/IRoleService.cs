@@ -1,6 +1,5 @@
 ﻿using Lazar.Services.Contracts.Administration;
 using Lazar.Services.Contracts.Request;
-using Lazar.Services.Contracts.Request.DataTable;
 using Lazar.Services.Contracts.Request.DataTable.Base;
 using Lazar.Services.Contracts.Response.Models;
 using Lazar.Srevices.Iterfaces.Base;
@@ -32,6 +31,7 @@ namespace Lazar.Srevices.Iterfaces.Administration {
         /// <param name="model">Dto модель</param>
         /// <param name="login">Логин пользователя, инициирующего событие</param>
         /// <returns></returns>
-        Task EditAsync(RoleDto model, string login);
+        Task UpdateAsync(RoleDto model, string login);
+        Task<EntityResponseDto<IReadOnlyList<ListItemDto<Guid>>>> GetListAsync(KeyNameRequestDto options);
     }
 }

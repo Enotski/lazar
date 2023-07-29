@@ -129,21 +129,17 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
         #endregion
 
         public async Task<IReadOnlyList<UserSelectorModel>> GetRecordsAsync(IEnumerable<Guid> ids) {
-            return await BuildQuery(x => ids.Contains(x.Id)).Select(x => new UserSelectorModel(x.Id, x.Roles.Select(r => r.Name), x.Roles.Select(r => r.Id), x.Name, x.Login, x.Password, x.Email, x.ChangedBy, x.DateChange)).ToListAsync();
+            return await BuildQuery(x => ids.Contains(x.Id), null, null).Select(x => new UserSelectorModel(x.Id, x.Roles.Select(r => r.Name), x.Roles.Select(r => r.Id), x.Name, x.Login, x.Password, x.Email, x.ChangedBy, x.DateChange)).ToListAsync();
         }
-        public async Task<UserSelectorModel> GetRecordAsync(Guid id) {
-            List<Expression<Func<User, object>>> includes = new List<Expression<Func<User, object>>> {
-                x => x.Roles
-            };
-            var entity = await GetAsync(id, includes);
+        public async Task<UserSelectorModel> GetRecordAsync(Guid? id) {
+            var entity = await GetAsync(id);
             return new UserSelectorModel(entity.Id, entity.Roles.Select(r => r.Name), entity.Roles.Select(r => r.Id), entity.Name, entity.Login, entity.Password, entity.Email, entity.ChangedBy, entity.DateChange);
         }
-        public async Task<IReadOnlyList<Role>> GetUserRolesAsync(Guid id) {
-            List<Expression<Func<User, object>>> includes = new List<Expression<Func<User, object>>> {
-                x => x.Roles
-            };
-            var entity = await GetAsync(id, includes);
-            return entity.Roles.ToList();
+        public async Task<User> GetByLoginAsync(string login) {
+            if (string.IsNullOrEmpty(login)) {
+                return null;
+            }
+            return await _dbContext.Users.FirstOrDefaultAsync(m => m.Login == login);
         }
         public async Task<int> CountAsync(IEnumerable<ISearchOption> options) {
             var filter = BuildWherePredicate(options);

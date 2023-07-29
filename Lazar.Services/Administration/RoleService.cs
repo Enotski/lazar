@@ -87,12 +87,13 @@ namespace Lazar.Services.Administration {
                 throw;
             }
         }
-        public async Task<EntityResponseDto<IReadOnlyList<ListItemDto<Guid>>>> GetAsync(SelectRoleRequestDto options) {
+        public async Task<EntityResponseDto<IReadOnlyList<ListItemDto<Guid>>>> GetListAsync(KeyNameRequestDto options) {
             try {
-                var records = await _repositoryManager.RoleRepository.GetKeyNameRecordsAsync(options.SearchValue);
-                return new EntityResponseDto<IReadOnlyList<ListItemDto<Guid>>>(_mapper.Mapper.Map<IReadOnlyList<ListItemDto<Guid>>>(records));
+                var records = await _repositoryManager.RoleRepository.GetKeyNameRecordsAsync(options.Search, options.Pagination);
+                return new EntityResponseDto<IReadOnlyList<ListItemDto<Guid>>>(
+                     _mapper.Mapper.Map<IReadOnlyList<ListItemDto<Guid>>>(records));
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Read, "Получение списка пар код-наименование ролей", exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Read, "Получение списка пар ключ-наименование ролей", exp.Format());
                 throw;
             }
         }
@@ -112,7 +113,7 @@ namespace Lazar.Services.Administration {
                 throw;
             }
         }
-        public async Task EditAsync(RoleDto model, string login) {
+        public async Task UpdateAsync(RoleDto model, string login) {
             try {
                 await ModelValidation(model, login);
 

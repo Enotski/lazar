@@ -8,7 +8,7 @@ namespace Lazar.Domain.Core.EntityModels.Base {
         /// <summary>
         /// Пользователь изменивший запись
         /// </summary>
-        public string ChangedBy { get; set; }
+        public string? ChangedBy { get; set; }
         public ChangedByEntity() : base() { }
         public ChangedByEntity(Guid id, string changedBy, DateTime dateChange) : base(id, dateChange) {
             ChangedBy = changedBy;

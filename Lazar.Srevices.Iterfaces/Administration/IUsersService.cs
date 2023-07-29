@@ -1,6 +1,5 @@
 ﻿using Lazar.Services.Contracts.Administration;
 using Lazar.Services.Contracts.Request;
-using Lazar.Services.Contracts.Request.DataTable;
 using Lazar.Services.Contracts.Request.DataTable.Base;
 using Lazar.Services.Contracts.Response.Models;
 using Lazar.Srevices.Iterfaces.Base;
@@ -13,9 +12,6 @@ namespace Lazar.Srevices.Iterfaces.Administration {
         /// <param name="options">Параметры фильтрации и поиска</param>
         /// <returns></returns>
         Task<DataTableDto<UserDto>> GetAsync(DataTableRequestDto options);
-        Task<DataTableDto<RoleDto>> GetRolesByUserAsync(RoleDataTableRequestDto options);
-        Task<IEnumerable<ListItemDto<Guid>>> GetRolesListByUserAsync(SelectRoleRequestDto options);
-        Task UpdateUserRoleAsync(UserRoleDto model, string login);
         /// <summary>
         /// Возвращает запись
         /// </summary>
@@ -35,6 +31,7 @@ namespace Lazar.Srevices.Iterfaces.Administration {
         /// <param name="model">Dto модель</param>
         /// <param name="login">Логин пользователя, инициирующего событие</param>
         /// <returns></returns>
-        Task EditAsync(UserDto model, string login);
+        Task UpdateAsync(UserDto model, string login);
+        Task<EntityResponseDto<IReadOnlyList<ListItemDto<Guid>>>> GetListAsync(KeyNameRequestDto options);
     }
 }

@@ -3,8 +3,8 @@
 namespace Lazar.Services.Contracts.Request.DataTable.Base {
     public class DataTableRequestDto
     {
-        public IPaginatedOption Pagination { get; set; }
-        public IEnumerable<ISearchOption>? Filters { get; set; }
-        public IEnumerable<ISortOption>? Sorts { get; set; }
+        public PaginatedOptionDto Pagination { get; set; }
+        public IEnumerable<SearchOptionDto>? Filters { get; set; }
+        public IEnumerable<SortOptionDto>? Sorts { get; set; }
     }
 }

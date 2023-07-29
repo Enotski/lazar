@@ -1,5 +1,5 @@
-﻿using Lazar.Srevices.Iterfaces.Administration;
-using Lazar.Srevices.Iterfaces.Auth;
+﻿using Lazar.Infrastructure.JwtAuth.Iterfaces.Auth;
+using Lazar.Srevices.Iterfaces.Administration;
 using Lazar.Srevices.Iterfaces.Logging;
 
 namespace Lazar.Srevices.Iterfaces.Common {
@@ -7,6 +7,6 @@ namespace Lazar.Srevices.Iterfaces.Common {
         IRoleService RoleService { get; }
         IUsersService UsersService { get; }
         IAuthService AuthService { get; }
-        ILoggingervice Loggingervice { get; }
+        ILoggingervice LoggingService { get; }
     }
 }

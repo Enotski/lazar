@@ -20,7 +20,7 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Base {
         /// <returns></returns>
         protected IQueryable<TEntity> BuildQuery(Expression<Func<TEntity, bool>> filter = null,
              Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> ordered = null,
-             IPaginatedOption paginated = null, IEnumerable<Expression<Func<TEntity, object>>> includes = null) {
+             IPaginatedOption paginated = null, params Expression<Func<TEntity, object>>[] includes) {
 
             IQueryable<TEntity> query = _dbContext.Set<TEntity>();
 
@@ -47,10 +47,10 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Base {
             }
             return query;
         }
-        public async Task<TEntity> GetAsync(Guid id) {
+        public async Task<TEntity> GetAsync(Guid? id) {
             return await BuildQuery(m => m.Id == id).FirstOrDefaultAsync();
         }
-        protected async Task<TEntity> GetAsync(Guid id, IEnumerable<Expression<Func<TEntity, object>>> includes) {
+        protected async Task<TEntity> GetAsync(Guid? id, params Expression<Func<TEntity, object>>[] includes) {
             return await BuildQuery(m => m.Id == id, null, null, includes).FirstOrDefaultAsync();
         }
         public async Task<IReadOnlyList<TEntity>> GetAsync(IEnumerable<Guid> ids) {
@@ -90,7 +90,7 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Base {
             _dbContext.Set<TEntity>().Remove(entity);
             await _dbContext.SaveChangesAsync();
         }
-        public async Task DeleteAsync(Guid id) {
+        public async Task DeleteAsync(Guid? id) {
             var entity = await GetAsync(id);
             if (entity is not null) {
                 await DeleteAsync(entity);

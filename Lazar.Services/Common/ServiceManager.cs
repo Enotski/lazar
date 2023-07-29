@@ -22,7 +22,7 @@ namespace Lazar.Services.Common
         public IAuthService AuthService => _lazyAuthService.Value;
 
         private Lazy<ILoggingervice> _lazyLoggingervice;
-        public ILoggingervice Loggingervice => _lazyLoggingervice.Value;
+        public ILoggingervice LoggingService => _lazyLoggingervice.Value;
 
         public ServiceManager(IRepositoryManager repositoryManager, IModelMapper mapper)
         {

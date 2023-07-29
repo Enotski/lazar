@@ -1,5 +1,9 @@
 using Lazar.Infrastructure.Mapper;
 using Lazar.Presentation.WebApi.Controllers.Base;
+using Lazar.Services.Contracts.Administration;
+using Lazar.Services.Contracts.Request;
+using Lazar.Services.Contracts.Request.DataTable.Base;
+using Lazar.Services.Contracts.Response.Base;
 using Lazar.Srevices.Iterfaces.Common;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -7,81 +11,67 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LazarWebApi.Controllers.Administration {
     [ApiController]
-    [Route("api/users")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Route("api/users"), Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class UsersController : BaseController {
         public UsersController(IServiceManager serviceManager, IModelMapper mapper)
             : base(serviceManager, mapper) {
         }
         [HttpPost]
-        public JsonResult GetUsersDataGrid([FromBody] DataGridRequestDto args)
-        {
-            var data = userRepository.GetUsersDataGrid(args.skip, args.take, args.Sorts, args.Filters);
-            return Json(data); [HttpPost]
-        public JsonResult GetUserModel([FromBody] Guid? id)
-        {
-            var res = userRepository.GetView(id);
-            return Json(res);
+        [Route("get-all")]
+        public async Task<IActionResult> GetAll([FromBody] DataTableRequestDto options) {
+            try {
+                return Ok(await _serviceManager.UsersService.GetAsync(options));
+            } catch (Exception exp) {
+                return Ok(new ErrorResponseDto(exp));
+            }
         }
         [HttpPost]
-        public JsonResult AddEditUser([FromBody] UserDto model)
-        {
-            var data = userRepository.AddEditUser(model, CurrentUser.Id);
-            return Json(data);
-        }
-        [HttpPost]
-        public JsonResult SetRoleToUser([FromBody] UserDto model)
-        {
-            var data = userRepository.SetRoleToUser(model.Id, model.RoleId/*, CurrentUser.Id*/);
-            return Json(data);
+        [Route("get-list")]
+        public async Task<IActionResult> GetUsersList([FromBody] KeyNameRequestDto options) {
+            try {
+                return Ok(await _serviceManager.UsersService.GetListAsync(options));
+            } catch (Exception exp) {
+                return Ok(new ErrorResponseDto(exp));
+            }
         }
         [HttpGet]
-        public JsonResult IsUserAdmin()
-        {
-            var isAdmin = CurrentUser.Roles.Any(r => r.Id == Guids.Roles.Administrator);
-            return Json(new BaseResponse(new BaseResponseModel(), new { UserIsAdmin = isAdmin }));
+        [Route("get/{id}")]
+        public async Task<IActionResult> GetModel(Guid id) {
+            try {
+                return Ok(await _serviceManager.UsersService.GetAsync(id));
+            } catch (Exception exp) {
+                return Ok(new ErrorResponseDto(exp));
+            }
         }
         [HttpPost]
-        public JsonResult LoginUser(UserDto model)
-        {
-            return Json(userRepository.LoginUser(model));
+        [Route("create")]
+        public async Task<IActionResult> Create([FromBody] UserDto data) {
+            try {
+                await _serviceManager.UsersService.CreateAsync(data, UserIdentityName);
+                return Ok(new SuccessResponseDto());
+            } catch (Exception exp) {
+                return Ok(new ErrorResponseDto(exp));
+            }
         }
         [HttpPost]
-        public JsonResult RegisterUser(UserDto model)
-        {
-            return Json(userRepository.AddUser(model));
-        }
-        }
-        [HttpPost]
-        public JsonResult AddUser([FromBody] UserDto model)
-        {
-            var data = userRepository.AddUser(model);
-            return Json(data);
+        [Route("update")]
+        public async Task<IActionResult> Update([FromBody] UserDto data) {
+            try {
+                await _serviceManager.UsersService.UpdateAsync(data, UserIdentityName);
+                return Ok(new SuccessResponseDto());
+            } catch (Exception exp) {
+                return Ok(new ErrorResponseDto(exp));
+            }
         }
         [HttpPost]
-        public JsonResult UpdateUser([FromBody] UserDto model)
-        {
-            var data = userRepository.UpdateUser(model);
-            return Json(data);
+        [Route("delete")]
+        public async Task<IActionResult> Delete([FromBody] IEnumerable<Guid> ids) {
+            try {
+                await _serviceManager.RoleService.DeleteAsync(ids, UserIdentityName);
+                return Ok(new SuccessResponseDto());
+            } catch (Exception exp) {
+                return Ok(new ErrorResponseDto(exp));
+            }
         }
-        [HttpPost]
-        public JsonResult RemoveRoleFromUser([FromBody] UserDto model)
-        {
-            var data = userRepository.RemoveRoleFromUser(model.Id, model.RoleId);
-            return Json(data);
-        }
-        [HttpPost]
-        public JsonResult DeleteUser([FromBody] UserDto model)
-        {
-            var data = userRepository.DeleteUser(model.Id);
-            return Json(data);
-        }
-        [HttpPost]
-        public JsonResult DeleteUsers([FromBody] IEnumerable<Guid> userIds)
-        {
-            var data = userRepository.DeleteUsers(userIds);
-            return Json(data);
-        }
-
     }
 }

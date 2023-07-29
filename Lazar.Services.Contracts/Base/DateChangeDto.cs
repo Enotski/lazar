@@ -6,7 +6,7 @@
         /// <summary>
         /// Дата изменения записи
         /// </summary>
-        public DateTime DateChange { get; set; }
+        public DateTime? DateChange { get; set; }
         public DateChangeDto() : base() { }
         public DateChangeDto(Guid id, DateTime dateChange)
             : base(id) {

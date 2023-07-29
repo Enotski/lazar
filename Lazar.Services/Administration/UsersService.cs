@@ -95,12 +95,23 @@ namespace Lazar.Services.Administration {
                 throw;
             }
         }
+        public async Task<EntityResponseDto<IReadOnlyList<ListItemDto<Guid>>>> GetListAsync(KeyNameRequestDto options) {
+            try {
+                var records = await _repositoryManager.UserRepository.GetKeyNameRecordsAsync(options.Search, options.Pagination);
+                return new EntityResponseDto<IReadOnlyList<ListItemDto<Guid>>>(
+                     _mapper.Mapper.Map<IReadOnlyList<ListItemDto<Guid>>>(records));
+            } catch (Exception exp) {
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Read, "Получение списка пар ключ-наименование пользователей", exp.Format());
+                throw;
+            }
+        }
         public async Task CreateAsync(UserDto model, string login) {
             try {
                 await ModelValidation(model, login);
 
                 var roles = await _repositoryManager.RoleRepository.GetAsync(model.RoleIds);
-                var entity = new User(model.Name, model.Login, model.Password, model.Email, roles, login);
+                var entity = new User(model.Name, model.Login, model.Password, model.Email, login);
+                entity.Roles = roles;
                 await _repositoryManager.UserRepository.AddAsync(entity);
 
                 var newEntity = await _repositoryManager.UserRepository.GetRecordAsync(entity.Id);
@@ -112,7 +123,7 @@ namespace Lazar.Services.Administration {
                 throw;
             }
         }
-        public async Task EditAsync(UserDto model, string login) {
+        public async Task UpdateAsync(UserDto model, string login) {
             try {
                 await ModelValidation(model, login);
 
@@ -157,89 +168,6 @@ namespace Lazar.Services.Administration {
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Delete, $"{entitiesFields}", login);
             } catch (Exception exp) {
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Delete, "Удаление пользователя", exp.Format(), login);
-                throw;
-            }
-        }
-
-        public async Task<DataTableDto<RoleDto>> GetRolesByUserAsync(RoleDataTableRequestDto options) {
-            try {
-                if (!options.SelectedUserId.HasValue) {
-                    return new DataTableDto<RoleDto>();
-                }
-                var roles = await _repositoryManager.UserRepository.GetUserRolesAsync(options.SelectedUserId.Value);
-                if (roles is null) {
-                    throw new Exception("Записи не найдены");
-                }
-
-                int totalRecords = roles.Count;
-                var records = roles.OrderBy(x => x.Name);
-
-                return new DataTableDto<RoleDto>(totalRecords, _mapper.Mapper.Map<IReadOnlyList<RoleDto>>(records));
-            } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, "Получение ролей пользователя", exp.Format());
-                throw;
-            }
-        }
-
-        public async Task<IEnumerable<ListItemDto<Guid>>> GetRolesListByUserAsync(SelectRoleRequestDto options) {
-            try {
-                if (!options.SelectedUserId.HasValue) {
-                    return new List<ListItemDto<Guid>>();
-                }
-                var roles = await _repositoryManager.UserRepository.GetUserRolesAsync(options.SelectedUserId.Value);
-                if (roles is null) {
-                    throw new Exception("Записи не найдены");
-                }
-                return roles.OrderBy(x => x.Name).Select(x => new ListItemDto<Guid>(x.Id, x.Name));
-            } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, "Получение списка ролей пользователя", exp.Format());
-                throw;
-            }
-        }
-
-        public async Task UpdateUserRoleAsync(UserRoleDto model, string login) {
-            try {
-                // Проверка на наличие прав для редактирования
-                bool IsHaveRight = await _repositoryManager.UserRepository.PermissionToPerformOperation(login);
-                if (!IsHaveRight) {
-                    throw new Exception("У вас недостаточно прав для выполнения данной операции");
-                }
-
-                var userEntity = await _repositoryManager.UserRepository.GetAsync(model.UserId);
-                if (userEntity is null) {
-                    throw new Exception("Пользователь не найден");
-                }
-                var roleEntity = await _repositoryManager.RoleRepository.GetAsync(model.RoleId);
-                if (userEntity is null) {
-                    throw new Exception("Роль не найдена");
-                }
-                // Запись до измемнений
-                var oldUser = await _repositoryManager.UserRepository.GetRecordAsync(model.UserId);
-                List<Role> roles = null;
-                if (model.IsAddRole) {
-                    // Обновление записи
-                    if (userEntity.Roles.Any(x => x.Id == roleEntity.Id)) {
-                        throw new Exception("Роль уже задана");
-                    }
-                    roles = userEntity.Roles.ToList();
-                    roles.Add(roleEntity);
-                } else {
-                    if (!userEntity.Roles.Any(x => x.Id == roleEntity.Id)) {
-                        throw new Exception("Роль уже не задана");
-                    }
-                    roles = userEntity.Roles.Where(x => x.Id != roleEntity.Id).ToList();
-                }
-
-                userEntity.Update(roles, login);
-                await _repositoryManager.UserRepository.UpdateAsync(userEntity);
-
-                // Обновленная запись
-                var newUser = await _repositoryManager.UserRepository.GetRecordAsync(userEntity.Id);
-                var changes = GetChangeFieldsList(oldUser, newUser);
-
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, $"{string.Join("; ", changes)}", login);
-            } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, "Привязка роли пользователю", exp.Format(), login);
                 throw;
             }
         }

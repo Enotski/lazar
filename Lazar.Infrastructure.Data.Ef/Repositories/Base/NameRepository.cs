@@ -46,6 +46,10 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Base {
         /// Возвращает список пар Код-Наименование
         /// </summary>
         /// <returns></returns>
+        /// <summary>
+        /// Возвращает список пар Код-Наименование
+        /// </summary>
+        /// <returns></returns>
         public async Task<IReadOnlyList<KeyNameSelectorModel>> GetKeyNameRecordsAsync(string term, IPaginatedOption paginationOption) {
             try {
                 var predicate = PredicateBuilder.True<TEntity>();

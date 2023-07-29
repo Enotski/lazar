@@ -15,7 +15,7 @@ namespace Lazar.Services.Contracts.Response.Models {
         /// <summary>
         /// Значение
         /// </summary>
-        public string Text { get; set; }
+        public string Name { get; set; }
         /// <summary>
         /// Конструктор
         /// </summary>
@@ -25,15 +25,15 @@ namespace Lazar.Services.Contracts.Response.Models {
         /// Конструктор
         /// </summary>
         /// <param name="id">Ключ</param>
-        /// <param name="value">Значение</param>
-        public ListItemDto(TKey id, string value) : base() {
+        /// <param name="name">Значение</param>
+        public ListItemDto(TKey id, string name) : base() {
             Id = id;
-            Text = value;
+            Name = name;
         }
-        public ListItemDto(TKey id, string value, string message) : this(id, value) {
+        public ListItemDto(TKey id, string name, string message) : this(id, name) {
             Message = message;
         }
-        public ListItemDto(TKey id, string value, string message, ResponseResultState state) : this(id, value, message) {
+        public ListItemDto(TKey id, string name, string message, ResponseResultState state) : this(id, name, message) {
             Result = state;
         }
     }
