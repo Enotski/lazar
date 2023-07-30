@@ -135,11 +135,12 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
             var entity = await GetAsync(id);
             return new UserSelectorModel(entity.Id, entity.Roles.Select(r => r.Name), entity.Roles.Select(r => r.Id), entity.Name, entity.Login, entity.Password, entity.Email, entity.ChangedBy, entity.DateChange);
         }
-        public async Task<User> GetByLoginAsync(string login) {
+        public async Task<UserSelectorModel> GetByLoginAsync(string login) {
             if (string.IsNullOrEmpty(login)) {
                 return null;
             }
-            return await _dbContext.Users.FirstOrDefaultAsync(m => m.Login == login);
+            var entity = await _dbContext.Users.FirstOrDefaultAsync(m => m.Login == login);
+            return new UserSelectorModel(entity.Id, entity.Roles.Select(r => r.Name), entity.Roles.Select(r => r.Id), entity.Name, entity.Login, entity.Password, entity.Email, entity.ChangedBy, entity.DateChange);
         }
         public async Task<int> CountAsync(IEnumerable<ISearchOption> options) {
             var filter = BuildWherePredicate(options);
@@ -163,6 +164,28 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
             try {
                 return true;
             } catch (Exception ex) {
+                throw;
+            }
+        }
+        /// <summary>
+        /// Проверка существования записи по наименованию
+        /// </summary>
+        /// <param name="name">Наименование</param>
+        /// <param name="id">Код записи, которая будет исключена из проверки</param>
+        /// <returns></returns>
+        public async Task<bool> UserLoginExistAsync(string login, Guid? id = null) {
+            try {
+                if (string.IsNullOrWhiteSpace(login)) {
+                    throw new Exception("Login is empty");
+                }
+                var predicate = PredicateBuilder.True<User>();
+                predicate = predicate.And(m => !string.IsNullOrEmpty(m.Login) && m.Login.Trim().ToUpper().Contains(login));
+                if (id.HasValue) {
+                    predicate = predicate.And(m => m.Id != id);
+                }
+                var entityId = await BuildQuery(predicate).Select(x => x.Id).FirstOrDefaultAsync();
+                return entityId != Guid.Empty;
+            } catch {
                 throw;
             }
         }

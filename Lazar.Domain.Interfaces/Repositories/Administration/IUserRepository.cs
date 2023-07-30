@@ -18,7 +18,8 @@ namespace Lazar.Domain.Interfaces.Repositories.Administration {
         /// <returns></returns>
         Task<int> CountAsync(IEnumerable<ISearchOption> options);
         Task<UserSelectorModel> GetRecordAsync(Guid? id);
-        Task<User> GetByLoginAsync(string login);
+        Task<UserSelectorModel> GetByLoginAsync(string login);
+        Task<bool> UserLoginExistAsync(string login, Guid? id = null);
         /// <summary>
         /// Возвращает список записей в соответсии с параметрами поиска и сортировки
         /// </summary>

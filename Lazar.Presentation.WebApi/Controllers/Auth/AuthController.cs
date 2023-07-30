@@ -26,6 +26,16 @@ namespace Lazar.Presentation.WebApi.Controllers.Auth {
                 return Ok(new ErrorResponseDto(exp));
             }
         }
+        [HttpGet, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Route("log-out")]
+        public async Task<IActionResult> LogOut([FromBody] string login) {
+            try {
+                await _serviceManager.AuthService.LogOutAsync(login);
+                return Ok(new SuccessResponseDto());
+            } catch (Exception exp) {
+                return Ok(new ErrorResponseDto(exp));
+            }
+        }
         [HttpPost]
         [Route("sign-up")]
         public async Task<IActionResult> SignUp([FromBody] SignUpRequestDto signUpRequest) {
@@ -35,16 +45,7 @@ namespace Lazar.Presentation.WebApi.Controllers.Auth {
                 return Ok(new ErrorResponseDto(exp));
             }
         }
-        [HttpGet, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Route("log-out")]
-        public async Task<IActionResult> LogOut([FromBody] string login) {
-            try {
-                return Ok(await _serviceManager.AuthService.LogOutAsync(login));
-            } catch (Exception exp) {
-                return Ok(new ErrorResponseDto(exp));
-            }
-        }
-        [HttpPost]
+        [HttpPost, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Route("refresh")]
         public async Task <IActionResult> Refresh(TokensDto tokenApiModel) {
             try {
