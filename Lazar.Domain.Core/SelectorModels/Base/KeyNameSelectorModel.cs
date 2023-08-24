@@ -1,13 +1,8 @@
-﻿using Lazar.Domain.Core.Interfaces;
-
-namespace Lazar.Domain.Core.SelectorModels.Base {
+﻿namespace Lazar.Domain.Core.SelectorModels.Base {
     /// <summary>
-    /// Базовая модель сущностей системы  
+    /// Key-Name model
     /// </summary>
     public sealed class KeyNameSelectorModel : BaseSelectorModel {
-        /// <summary>
-        /// Наименование
-        /// </summary>
         public readonly string Name;
         public KeyNameSelectorModel(Guid id, string name)
             : base(id) {

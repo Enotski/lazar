@@ -1,23 +1,23 @@
 ﻿namespace Lazar.Domain.Interfaces.Options {
     /// <summary>
-    /// Интерфейс параметров пагинации
+    /// Pagination parameters
     /// </summary>
     public interface IPaginatedOption : ISkip, ITake { }
     /// <summary>
-    /// Интерфейс пропуска заданного числа элементов 
+    /// Skip records from collection
     /// </summary>
     public interface ISkip {
         /// <summary>
-        /// Пропустит количество элементов 
+        /// Skip count
         /// </summary>
         int? Skip { get; set; }
     }
     /// <summary>
-    /// Интерфейс ограничения выборки числа записей до заданного числа
+    /// Take records from collection
     /// </summary>
     public interface ITake {
         /// <summary>
-        /// Выбрать количество элементов
+        /// Take count
         /// </summary>
         int? Take { get; set; }
     }

@@ -1,6 +1,8 @@
 ﻿namespace Lazar.Domain.Core.Interfaces {
-    public interface IChangedBy
-    {
+    /// <summary>
+    /// Chnaged by info
+    /// </summary>
+    public interface IChangedBy {
         string ChangedBy { get; set; }
     }
 }

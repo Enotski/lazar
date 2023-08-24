@@ -1,13 +1,12 @@
 ﻿using Lazar.Domain.Core.EntityModels.Base;
-using Lazar.Domain.Core.EntityModels.Logging;
+using Lazar.Domain.Core.Interfaces;
 
 namespace Lazar.Domain.Core.Models.Administration {
-    public class User : NameEntity {
+    public class User : NameEntity, ILogin {
         public string Login { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
         public IEnumerable<Role> Roles { get; set; } = new List<Role>();
-        public User() : base() { }
         public User(Guid id, string name, string login, string password, string email, string changedBy, DateTime dateChange)
             : base(id, name, changedBy, dateChange) {
             Login = login;

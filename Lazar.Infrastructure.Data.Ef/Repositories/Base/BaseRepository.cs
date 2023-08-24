@@ -9,7 +9,7 @@ using Z.EntityFramework.Plus;
 namespace Lazar.Infrastructure.Data.Ef.Repositories.Base {
     public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class, IKey {
         protected readonly LazarContext _dbContext;
-        public BaseRepository(LazarContext dbContext) {
+        public BaseRepository(LazarContext dbContext){
             _dbContext = dbContext;
         }
 
@@ -18,9 +18,9 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Base {
         /// </summary>
         /// <param name="filter">Фильтр для выборки</param>
         /// <returns></returns>
-        protected IQueryable<TEntity> BuildQuery(Expression<Func<TEntity, bool>> filter = null,
-             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> ordered = null,
-             IPaginatedOption paginated = null, params Expression<Func<TEntity, object>>[] includes) {
+        protected IQueryable<TEntity> BuildQuery(Expression<Func<TEntity, bool>>? filter = null,
+             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? ordered = null,
+             IPaginatedOption? paginated = null, params Expression<Func<TEntity, object>>[] includes) {
 
             IQueryable<TEntity> query = _dbContext.Set<TEntity>();
 

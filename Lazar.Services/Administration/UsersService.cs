@@ -6,12 +6,10 @@ using Lazar.Domain.Interfaces.Repositories.Common;
 using Lazar.Infrastructure.Mapper;
 using Lazar.Services.Contracts.Administration;
 using Lazar.Services.Contracts.Request;
-using Lazar.Services.Contracts.Request.DataTable;
 using Lazar.Services.Contracts.Request.DataTable.Base;
 using Lazar.Services.Contracts.Response.Models;
 using Lazar.Srevices.Iterfaces.Administration;
 using System.Data;
-using System.Reflection;
 
 namespace Lazar.Services.Administration {
     public class UsersService : IUsersService {
@@ -79,7 +77,7 @@ namespace Lazar.Services.Administration {
                 var records = await _repositoryManager.UserRepository.GetRecordsAsync(options.Filters, options.Sorts, options.Pagination);
                 return new DataTableDto<UserDto>(totalRecords, _mapper.Mapper.Map<IReadOnlyList<UserDto>>(records));
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Read, "Получение списка пользователей", exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Read, "Получение списка пользователей" + exp.Format());
                 throw;
             }
         }
@@ -91,7 +89,7 @@ namespace Lazar.Services.Administration {
                 }
                 return new EntityResponseDto<UserDto>(_mapper.Mapper.Map<UserDto>(data));
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Read, "Получение пользователя", exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Read, "Получение пользователя" + exp.Format());
                 throw;
             }
         }
@@ -101,7 +99,7 @@ namespace Lazar.Services.Administration {
                 return new EntityResponseDto<IReadOnlyList<ListItemDto<Guid>>>(
                      _mapper.Mapper.Map<IReadOnlyList<ListItemDto<Guid>>>(records));
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Read, "Получение списка пар ключ-наименование пользователей", exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Read, "Получение списка пар ключ-наименование пользователей" + exp.Format());
                 throw;
             }
         }
@@ -119,7 +117,7 @@ namespace Lazar.Services.Administration {
 
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Create, $"{string.Join("; ", changes)}", login);
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Create, "Создание пользователя", exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Create, "Создание пользователя" + exp.Format());
                 throw;
             }
         }
@@ -145,7 +143,7 @@ namespace Lazar.Services.Administration {
 
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, $"{string.Join("; ", changes)}", login);
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, "Обновление роли", exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, "Обновление роли" + exp.Format());
                 throw;
             }
         }
@@ -167,7 +165,7 @@ namespace Lazar.Services.Administration {
 
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Delete, $"{entitiesFields}", login);
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Delete, "Удаление пользователя", exp.Format(), login);
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Delete, "Удаление пользователя: " + exp.Format(), login);
                 throw;
             }
         }

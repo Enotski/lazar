@@ -10,7 +10,14 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
+    /// <summary>
+    /// Repository of user
+    /// </summary>
     public class UserRepository : NameRepository<User>, IUserRepository {
+        /// <summary>
+        /// Main constructor
+        /// </summary>
+        /// <param name="dbContext">Ef context</param>
         public UserRepository(LazarContext context) : base(context) {
         }
 
@@ -127,14 +134,28 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
             return null;
         }
         #endregion
-
+        /// <summary>
+        /// Return records by keys
+        /// </summary>
+        /// <param name="ids">List of Keys</param>
+        /// <returns>List of entities selector models</returns>
         public async Task<IReadOnlyList<UserSelectorModel>> GetRecordsAsync(IEnumerable<Guid> ids) {
             return await BuildQuery(x => ids.Contains(x.Id), null, null).Select(x => new UserSelectorModel(x.Id, x.Roles.Select(r => r.Name), x.Roles.Select(r => r.Id), x.Name, x.Login, x.Password, x.Email, x.ChangedBy, x.DateChange)).ToListAsync();
         }
+        /// <summary>
+        /// Return record by key
+        /// </summary>
+        /// <param name="id">Key of record</param>
+        /// <returns>Entity selector model</returns>
         public async Task<UserSelectorModel> GetRecordAsync(Guid? id) {
             var entity = await GetAsync(id);
             return new UserSelectorModel(entity.Id, entity.Roles.Select(r => r.Name), entity.Roles.Select(r => r.Id), entity.Name, entity.Login, entity.Password, entity.Email, entity.ChangedBy, entity.DateChange);
         }
+        /// <summary>
+        /// Return user by login
+        /// </summary>
+        /// <param name="login">Login of user</param>
+        /// <returns>Entity selector model</returns>
         public async Task<UserSelectorModel> GetByLoginAsync(string login) {
             if (string.IsNullOrEmpty(login)) {
                 return null;
@@ -142,15 +163,35 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
             var entity = await _dbContext.Users.FirstOrDefaultAsync(m => m.Login == login);
             return new UserSelectorModel(entity.Id, entity.Roles.Select(r => r.Name), entity.Roles.Select(r => r.Id), entity.Name, entity.Login, entity.Password, entity.Email, entity.ChangedBy, entity.DateChange);
         }
+        /// <summary>
+        /// Returns the number of records according to the search parameters
+        /// </summary>
+        /// <param name="options">Filtration</param> 
+        /// <returns>Number of entities</returns>
         public async Task<int> CountAsync(IEnumerable<ISearchOption> options) {
             var filter = BuildWherePredicate(options);
             return await CountAsync(filter);
         }
+        /// <summary>
+        /// Returns a list of records according to the search and sort options
+        /// </summary>
+        /// <param name="searchOptions">Filtration</param>
+        /// <param name="sortOptions">Sorting</param> 
+        /// <param name="paginationOption">Pagination</param> 
+        /// <returns>Entity selector model</returns>
         public async Task<IReadOnlyList<UserSelectorModel>> GetRecordsAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption) {
             var filter = BuildWherePredicate(searchOptions);
             var ordered = BuildSortFunction(sortOptions);
             return await BuildQuery(filter, ordered, paginationOption).Select(x => new UserSelectorModel(x.Id, x.Roles.Select(r => r.Name), x.Roles.Select(r => r.Id), x.Name, x.Login, x.Password, x.Email, x.ChangedBy, x.DateChange)).ToListAsync();
         }
+        /// <summary>
+        /// Returns a list of unique values ​​in a specific column
+        /// </summary>
+        /// <param name="searchOptions">Filtration</param>
+        /// <param name="sortOptions">Sorting</param> 
+        /// <param name="paginationOption">Pagination</param> 
+        /// <param name="columnSelector">Name of specific column</param> 
+        /// <returns>List of entities specific property values</returns>
         public async Task<IReadOnlyList<string>> GetRecordsBySelectorAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption, string columnSelector) {
             var selector = BuildSelectorPredicate(columnSelector);
             if (selector is null) {
@@ -160,32 +201,15 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
             var ordered = BuildSortFunction(sortOptions);
             return await BuildQuery(filter, ordered, paginationOption).Select(selector).Distinct().ToListAsync();
         }
+        /// <summary>
+        /// Operation Permissions
+        /// </summary>
+        /// <param name="login">Login of user</param>
+        /// <returns>Permission value</returns>
         public async Task<bool> PermissionToPerformOperation(string login) {
             try {
                 return true;
             } catch (Exception ex) {
-                throw;
-            }
-        }
-        /// <summary>
-        /// Проверка существования записи по наименованию
-        /// </summary>
-        /// <param name="name">Наименование</param>
-        /// <param name="id">Код записи, которая будет исключена из проверки</param>
-        /// <returns></returns>
-        public async Task<bool> UserLoginExistAsync(string login, Guid? id = null) {
-            try {
-                if (string.IsNullOrWhiteSpace(login)) {
-                    throw new Exception("Login is empty");
-                }
-                var predicate = PredicateBuilder.True<User>();
-                predicate = predicate.And(m => !string.IsNullOrEmpty(m.Login) && m.Login.Trim().ToUpper().Contains(login));
-                if (id.HasValue) {
-                    predicate = predicate.And(m => m.Id != id);
-                }
-                var entityId = await BuildQuery(predicate).Select(x => x.Id).FirstOrDefaultAsync();
-                return entityId != Guid.Empty;
-            } catch {
                 throw;
             }
         }

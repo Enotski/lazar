@@ -1,6 +1,9 @@
 ﻿using System.ComponentModel;
 
 namespace Lazar.Domain.Core.Enums {
+    /// <summary>
+    /// Type of envent in system
+    /// </summary>
     public enum EventType
     {
         [Description("Read")]

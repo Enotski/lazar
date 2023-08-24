@@ -5,33 +5,33 @@ using Lazar.Domain.Interfaces.Repositories.Base;
 namespace Lazar.Domain.Interfaces.Repositories.Administration {
     public interface IRoleRepository : INameRepository<Role> {
         /// <summary>
-        /// Возвращает количество записей в соответствии с параметрами поиска
+        /// Returns the number of records according to the search parameters
         /// </summary>
-        /// <param name="options">Фильтрация</param> 
-        /// <returns></returns>
+        /// <param name="options">Filtration</param> 
+        /// <returns>Number of records</returns>
         Task<int> CountAsync(IEnumerable<ISearchOption> options);
         /// <summary>
-        /// Возвращает список записей в соответсии с параметрами поиска и сортировки
+        /// Returns a list of entities according to the search and sort options
         /// </summary>
-        /// <param name="searchOptions">Фильтрация</param>
-        /// <param name="sortOptions">Сортировка</param> 
-        /// <param name="paginationOption">Пагинация</param> 
-        /// <returns></returns>
+        /// <param name="searchOptions">Filtration</param>
+        /// <param name="sortOptions">Sorting</param> 
+        /// <param name="paginationOption">Pagination</param> 
+        /// <returns>List of entities</returns>
         Task<IReadOnlyList<Role>> GetRecordsAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption);
         /// <summary>
-        /// Возвращает список записей
+        /// Return records by keys
         /// </summary>
-        /// <param name="ids">список ключей</param>
-        /// <returns></returns>
+        /// <param name="ids">List of Keys</param>
+        /// <returns>List of entities</returns>
         Task<IReadOnlyList<Role>> GetRecordsAsync(IEnumerable<Guid> ids);
         /// <summary>
-        /// Возвращает список уникальных значений в определенной колонке
+        /// Returns a list of unique values ​​in a specific column
         /// </summary>
-        /// <param name="searchOptions">Фильтрация</param>
-        /// <param name="sortOptions">Сортировка</param> 
-        /// <param name="paginationOption">Пагинация</param> 
-        /// <param name="columnSelector"></param> 
-        /// <returns></returns>
+        /// <param name="searchOptions">Filtration</param>
+        /// <param name="sortOptions">Sorting</param> 
+        /// <param name="paginationOption">Pagination</param> 
+        /// <param name="columnSelector">Name of specific column</param> 
+        /// <returns>List of entities specific property values</returns>
         Task<IReadOnlyList<string>> GetRecordsBySelectorAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption, string columnSelector);
     }
 }

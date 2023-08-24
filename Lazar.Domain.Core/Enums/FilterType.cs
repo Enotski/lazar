@@ -1,6 +1,8 @@
 ﻿namespace Lazar.Domain.Core.Enums {
-    public enum FilterType
-    {
+    /// <summary>
+    /// Type of filter predicate in select operation
+    /// </summary>
+    public enum FilterType {
         Contains,
         NotContains,
         StartsWith,

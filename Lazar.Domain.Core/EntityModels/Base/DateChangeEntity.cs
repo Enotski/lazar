@@ -2,11 +2,11 @@
 
 namespace Lazar.Domain.Core.EntityModels.Base {
     /// <summary>
-    /// Базовая модель сущностей системы  
+    /// Base model of date change info
     /// </summary>
     public abstract class DateChangeEntity : BaseEntity, IDateChange {
         /// <summary>
-        /// Дата изменения записи
+        /// Date change of entity in UTC format
         /// </summary>
         public DateTime DateChange { get; set; }
         public DateChangeEntity() : base() { }

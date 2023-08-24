@@ -9,15 +9,21 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
-    public class RoleRepository : NameRepository<Role>, IRoleRepository
-    {
+    /// <summary>
+    /// Repository of role
+    /// </summary>
+    public class RoleRepository : NameRepository<Role>, IRoleRepository {
+        /// <summary>
+        /// Main constructor
+        /// </summary>
+        /// <param name="dbContext">Ef context</param>
         public RoleRepository(LazarContext dbContext) : base(dbContext) { }
         #region private
         /// <summary>
-        /// Задает дополнительные условия для выборки
+        /// Specifies additional conditions for the selection
         /// </summary>
-        /// <param name="options">Параметры выборки</param> 
-        /// <returns></returns>
+        /// <param name="options">Selection options</param> 
+        /// <returns>Conditional expression</returns>
         private Expression<Func<Role, bool>> BuildWherePredicate(IEnumerable<ISearchOption> options) {
             if (options is null || !options.Any()) {
                 return null;
@@ -31,29 +37,29 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
                 var column = opt.ColumnName.TrimToUpper();
                 switch (column) {
                     case "NAME": {
-                            predicate = predicate.And(m => m.Name.ToUpper().Contains(val));
-                            break;
-                        }
+                        predicate = predicate.And(m => m.Name.ToUpper().Contains(val));
+                        break;
+                    }
                     case "CHANGEDBY": {
-                            predicate = predicate.And(m => !string.IsNullOrEmpty(m.ChangedBy) && m.ChangedBy.ToUpper().Contains(val));
-                            break;
-                        }
+                        predicate = predicate.And(m => !string.IsNullOrEmpty(m.ChangedBy) && m.ChangedBy.ToUpper().Contains(val));
+                        break;
+                    }
                     case "DATEOFCHANGE": {
-                            var interval = val.Split(';');
-                            if (interval.Length == 2) {
-                                predicate = predicate.WhereDateBetween(x => x.DateChange, interval[0], interval[1]);
-                            }
-                            break;
+                        var interval = val.Split(';');
+                        if (interval.Length == 2) {
+                            predicate = predicate.WhereDateBetween(x => x.DateChange, interval[0], interval[1]);
                         }
+                        break;
+                    }
                 }
             }
             return predicate;
         }
         /// <summary>
-        /// Используется для сортировки результирующего набора в порядке возрастания или убывания
+        /// Sort selection
         /// </summary>
-        /// <param name="options">Параметры сортировки</param> 
-        /// <returns></returns>
+        /// <param name="options">Sorting options</param> 
+        /// <returns>Sort predicate</returns>
         private Func<IQueryable<Role>, IOrderedQueryable<Role>> BuildSortFunction(IEnumerable<ISortOption> options) {
             if (options is null || !options.Any()) {
                 return null;
@@ -64,54 +70,78 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
                 var column = opt.ColumnName.TrimToUpper();
                 switch (column) {
                     case "NAME": {
-                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.Name) : ordered.ThenByDescending(m => m.Name);
-                            break;
-                        }
+                        ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.Name) : ordered.ThenByDescending(m => m.Name);
+                        break;
+                    }
                     case "CHANGEDBY": {
-                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.ChangedBy) : ordered.ThenByDescending(m => m.ChangedBy);
-                            break;
-                        }
+                        ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.ChangedBy) : ordered.ThenByDescending(m => m.ChangedBy);
+                        break;
+                    }
                     default: {
-                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.DateChange) : ordered.ThenByDescending(m => m.DateChange);
-                            break;
-                        }
+                        ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.DateChange) : ordered.ThenByDescending(m => m.DateChange);
+                        break;
+                    }
                 }
             }
             return orb => ordered;
         }
         /// <summary>
-        /// Формирует предикат возвращаемого набора данных
+        /// Generates a predicate of the returned data
         /// </summary>
-        /// <param name="columnSelector"></param>
-        /// <returns></returns>
+        /// <param name="columnSelector">Property name</param>
+        /// <returns>Selector predicate</returns>
         private Expression<Func<Role, string>> BuildSelectorPredicate(string columnSelector) {
             if (string.IsNullOrEmpty(columnSelector)) {
                 return null;
             }
             switch (columnSelector.TrimToUpper()) {
                 case "NAME": {
-                        return x => x.Name;
-                    }
+                    return x => x.Name;
+                }
                 case "CHANGEDBY": {
-                        return x => x.ChangedBy;
-                    }
+                    return x => x.ChangedBy;
+                }
             }
             return null;
         }
         #endregion
-
+        /// <summary>
+        /// Return records by keys
+        /// </summary>
+        /// <param name="ids">List of Keys</param>
+        /// <returns>List of entities</returns>
         public async Task<IReadOnlyList<Role>> GetRecordsAsync(IEnumerable<Guid> ids) {
             return await BuildQuery(x => ids.Contains(x.Id)).ToListAsync();
         }
+        /// <summary>
+        /// Returns the number of records according to the search parameters
+        /// </summary>
+        /// <param name="options">Filtration</param> 
+        /// <returns>Count of entities</returns>
         public async Task<int> CountAsync(IEnumerable<ISearchOption> options) {
             var filter = BuildWherePredicate(options);
             return await CountAsync(filter);
         }
+        /// <summary>
+        /// Returns a list of entities according to the search and sort options
+        /// </summary>
+        /// <param name="searchOptions">Filtration</param>
+        /// <param name="sortOptions">Sorting</param> 
+        /// <param name="paginationOption">Pagination</param> 
+        /// <returns>List of entities</returns>
         public async Task<IReadOnlyList<Role>> GetRecordsAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption) {
             var filter = BuildWherePredicate(searchOptions);
             var ordered = BuildSortFunction(sortOptions);
             return await BuildQuery(filter, ordered, paginationOption).ToListAsync();
         }
+        /// <summary>
+        /// Returns a list of unique values ​​in a specific column
+        /// </summary>
+        /// <param name="searchOptions">Filtration</param>
+        /// <param name="sortOptions">Sorting</param> 
+        /// <param name="paginationOption">Pagination</param> 
+        /// <param name="columnSelector">Name of specific column</param> 
+        /// <returns>List of entities specific property values</returns>
         public async Task<IReadOnlyList<string>> GetRecordsBySelectorAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption, string columnSelector) {
             var selector = BuildSelectorPredicate(columnSelector);
             if (selector is null) {

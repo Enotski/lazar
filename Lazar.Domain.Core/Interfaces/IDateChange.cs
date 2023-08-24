@@ -1,6 +1,8 @@
 ﻿namespace Lazar.Domain.Core.Interfaces {
-    public interface IDateChange
-    {
+    /// <summary>
+    /// Changed date info
+    /// </summary>
+    public interface IDateChange {
         DateTime DateChange { get; set; }
     }
 }

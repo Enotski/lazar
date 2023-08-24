@@ -1,5 +1,4 @@
-﻿using Lazar.Domain.Core.EntityModels.Auth;
-using Lazar.Domain.Core.EntityModels.Logging;
+﻿using Lazar.Domain.Core.EntityModels.Logging;
 using Lazar.Domain.Core.Keys;
 using Lazar.Domain.Core.Models.Administration;
 using Microsoft.EntityFrameworkCore;
@@ -9,13 +8,14 @@ namespace Lazar.Infrastructure.Data.Ef.Context {
         internal DbSet<User> Users { get; set; }
         internal DbSet<Role> Roles { get; set; }
         internal DbSet<SystemLog> SystemLogs { get; set; }
-        internal DbSet<LoginModel> LoginModels { get; set; }
+        public DbSet<AuthModel> AuthModels { get; set; }
         public LazarContext(DbContextOptions<LazarContext> options) : base(options) {
+            Database.EnsureDeleted();
             Database.EnsureCreated();
         }
         private static DbContextOptions<LazarContext> ModifyOptions(DbContextOptions<LazarContext> options) {
             var optionsBuilder = new DbContextOptionsBuilder<LazarContext>(ModifyOptions(options));
-            // По умолчанию отключаем отслеживание изменений https://metanit.com/sharp/entityframeworkcore/5.7.php
+            // Disable change tracking by defaultй 
             optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             return optionsBuilder.Options;
         }
@@ -26,28 +26,16 @@ namespace Lazar.Infrastructure.Data.Ef.Context {
                 .UsingEntity(j => j.ToTable("UserRole"));
 
             var roles = new Role[] {
-                new Role() {
-                       Id = RoleKeys.User,
-                       Name = "User",
-                       DateChange = DateTime.UtcNow,
-                   },
-                   new Role() {
-                       Id = RoleKeys.Admin,
-                       Name = "Admin",
-                       DateChange = DateTime.UtcNow,
-                   },
-                   new Role() {
-                       Id = RoleKeys.Moderator,
-                       Name = "Moderator",
-                       DateChange = DateTime.UtcNow
-                   }
+                new Role(RoleKeys.User, "User", "_", DateTime.UtcNow),
+                new Role(RoleKeys.Admin, "Admin", "_", DateTime.UtcNow),
+                new Role(RoleKeys.Moderator, "Moderator", "_", DateTime.UtcNow)
             };
             modelBuilder.Entity<Role>().HasData(roles);
-            
+
             modelBuilder.Entity<User>().HasData(
-                new User { Id = Guid.NewGuid(), Name = "Tom", Login = "Tom", Password = "adwa", Email = "aa@fawf.su"},
-                new User { Id = Guid.NewGuid(), Name = "Tom", Login = "Bob", Password = "adwa", Email = "aa@fawf.su"},
-                new User { Id = Guid.NewGuid(), Name = "Tom", Login = "Sam", Password = "adwa", Email = "aa@fawf.su" }
+                new User("Tom", "Tom", "adwa", "aa@fawf.su", "_"),
+                new User("Bob", "Bob", "adwa", "aa@fawf.su", "_"),
+                new User("Sam", "Sam", "adwa", "aa@fawf.su", "_")
             );
 
             base.OnModelCreating(modelBuilder);

@@ -15,7 +15,6 @@
     <ProjectReference Include="..\CommonUtils\CommonUtils.csproj" />
     <ProjectReference Include="..\Lazar.Domain.Interfaces\Lazar.Domain.Interfaces.csproj" />
     <ProjectReference Include="..\Lazar.Domain.Core\Lazar.Domain.Core.csproj" />
-    <ProjectReference Include="..\Lazar.Infrastructure.JwtAuth\Lazar.Infrastructure.JwtAuth.csproj" />
   </ItemGroup>
 
 </Project>

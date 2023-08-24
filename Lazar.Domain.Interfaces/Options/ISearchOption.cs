@@ -1,14 +1,14 @@
 ﻿namespace Lazar.Domain.Interfaces.Options {
     /// <summary>
-    /// Интерфейс параметров выборки
+    /// Select parameters
     /// </summary> 
     public interface ISearchOption {
         /// <summary>
-        /// Столбец, к которому применяется условие
+        /// Column to which the condition applies
         /// </summary>
         string ColumnName { get; set; }
         /// <summary>
-        /// Значение, в соответствии с которыми выполняется выборка
+        /// Value according to which the sample is performed
         /// </summary>
         string Value { get; set; }
     }

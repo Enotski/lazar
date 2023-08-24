@@ -1,12 +1,10 @@
-﻿using Lazar.Domain.Core.Interfaces;
-
-namespace Lazar.Domain.Core.SelectorModels.Base {
+﻿namespace Lazar.Domain.Core.SelectorModels.Base {
     /// <summary>
-    /// Базовая модель сущностей системы  
+    /// Base model for select from storage
     /// </summary>
     public abstract class BaseSelectorModel {
         /// <summary>
-        /// Первичный ключ
+        /// Primary key
         /// </summary>
         public readonly Guid Id;
         public BaseSelectorModel() { }

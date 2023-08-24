@@ -1,6 +1,8 @@
 ﻿namespace Lazar.Domain.Core.Interfaces {
-    public interface IKey
-    {
+    /// <summary>
+    /// Guid key property
+    /// </summary>
+    public interface IKey {
         Guid Id { get; set; }
     }
 }

@@ -6,37 +6,36 @@ using Lazar.Domain.Interfaces.Repositories.Base;
 namespace Lazar.Domain.Interfaces.Repositories.Logging {
     public interface ISystemLogRepository : ILogRepository<SystemLog> {
         /// <summary>
-        /// Добавляет запись в журнал событий
+        /// Adds an entry to the event log
         /// </summary>
-        /// <param name="subSystem"></param>
-        /// <param name="eventType"></param>
-        /// <param name="description"></param>
-        /// <param name="message"></param>
-        /// <param name="changedBy"></param>
+        /// <param name="subSystem">Type of subsystem</param>
+        /// <param name="eventType">Type of event</param>
+        /// <param name="description">Description of event</param>
+        /// <param name="changedBy">Initiator of event</param>
         /// <returns></returns>
-        Task AddAsync(SubSystemType subSystem, EventType eventType, string message, string description, string changedBy = null);
+        Task AddAsync(SubSystemType subSystem, EventType eventType, string description, string? changedBy = null);
         /// <summary>
-        /// Возвращает количество записей в соответствии с параметрами поиска
+        /// Get the count of records according to the search parameters
         /// </summary>
         /// <param name="options"></param> 
-        /// <returns></returns>
+        /// <returns>Count of records</returns>
         Task<int> CountAsync(IEnumerable<ISearchOption> options);
         /// <summary>
-        /// Возвращает список записей журнала в соответсии с параметрами поиска и сортировки
+        /// Get a list of log entries according to search and sort options
         /// </summary>
-        /// <param name="searchOptions"></param>
-        /// <param name="sortOptions"></param> 
-        /// <param name="paginationOption"></param> 
-        /// <returns></returns>
+        /// <param name="searchOptions">Select parameters</param>
+        /// <param name="sortOptions">Sort parameters</param> 
+        /// <param name="paginationOption">Pagination parameters</param> 
+        /// <returns>List of entities</returns>
         Task<IReadOnlyList<SystemLog>> GetRecordsAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption);
         /// <summary>
-        /// Возвращает список уникальных значений в определенной колонке
+        /// Get a list of unique values ​​in a specific column
         /// </summary>
-        /// <param name="searchOptions"></param>
-        /// <param name="sortOptions"></param> 
-        /// <param name="paginationOption"></param> 
-        /// <param name="columnSelector"></param> 
-        /// <returns></returns>
+        /// <param name="searchOptions">Select parameters</param>
+        /// <param name="sortOptions">Sort parameters</param> 
+        /// <param name="paginationOption">Pagination parameters</param> 
+        /// <param name="columnSelector">Property for select</param> 
+        /// <returns>List of values ​​of a properties</returns>
         Task<IReadOnlyList<string>> GetRecordsBySelectorAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption, string columnSelector);
     }
 }

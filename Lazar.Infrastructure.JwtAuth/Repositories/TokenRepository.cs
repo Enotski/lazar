@@ -1,4 +1,4 @@
-﻿using Lazar.Domain.Interfaces.Repositories.Auth;
+﻿using Lazar.Infrastructure.JwtAuth.Iterfaces.Auth;
 using Lazar.Infrastructure.JwtAuth.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

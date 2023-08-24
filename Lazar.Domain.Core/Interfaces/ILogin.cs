@@ -1,8 +1,8 @@
 ﻿namespace Lazar.Domain.Core.Interfaces {
     /// <summary>
-    /// Name property
+    /// Login property
     /// </summary>
-    public interface IName {
-        string Name { get; set; }
+    public interface ILogin {
+        string Login { get; set; }
     }
 }

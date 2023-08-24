@@ -2,19 +2,19 @@
 
 namespace Lazar.Domain.Interfaces.Options {
     /// <summary>
-    /// Интерфейс параметров сортировки
+    /// Sort parameters
     /// </summary>
     public interface ISortOption : ISortColumn, ISortType { }
+    /// <summary>
+    /// Column to sort by
+    /// </summary>
     public interface ISortColumn {
-        /// <summary>
-        /// Столбец, по которому выполняется сортировка
-        /// </summary>
         string ColumnName { get; set; }
     }
+    /// <summary>
+    /// Sorting order
+    /// </summary>
     public interface ISortType {
-        /// <summary>
-        /// Порядок сортировки
-        /// </summary>
         SortType Type { get; set; }
     }
 }

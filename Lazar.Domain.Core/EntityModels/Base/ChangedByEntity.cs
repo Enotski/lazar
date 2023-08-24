@@ -2,11 +2,11 @@
 
 namespace Lazar.Domain.Core.EntityModels.Base {
     /// <summary>
-    /// Базовая модель сущностей системы  
+    /// Base entity with changed by info
     /// </summary>
     public abstract class ChangedByEntity : DateChangeEntity, IChanged {
         /// <summary>
-        /// Пользователь изменивший запись
+        /// User, which changed entity
         /// </summary>
         public string? ChangedBy { get; set; }
         public ChangedByEntity() : base() { }

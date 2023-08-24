@@ -40,10 +40,6 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Logging {
                             predicate = predicate.And(m => !string.IsNullOrEmpty(m.EventType) && m.EventType.ToUpper().Contains(val));
                             break;
                         }
-                    case "MESSAGE": {
-                            predicate = predicate.And(m => !string.IsNullOrEmpty(m.Message) && m.Message.ToUpper().Contains(val));
-                            break;
-                        }
                     case "DESCRIPTION": {
                             predicate = predicate.And(m => !string.IsNullOrEmpty(m.Description) && m.Description.ToUpper().Contains(val));
                             break;
@@ -89,11 +85,6 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Logging {
                                 : ordered.ThenByDescending(m => m.EventType);
                             break;
                         }
-                    case "MESSAGE": {
-                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.Message)
-                                : ordered.ThenByDescending(m => m.Message);
-                            break;
-                        }
                     case "DESCRIPTION": {
                             ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.Description)
                                 : ordered.ThenByDescending(m => m.Description);
@@ -129,9 +120,6 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Logging {
                 case "EVENTTYPE": {
                         return x => x.EventType;
                     }
-                case "MESSAGE": {
-                        return x => x.Message;
-                    }
                 case "DESCRIPTION": {
                         return x => x.Description;
                     }
@@ -142,8 +130,8 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Logging {
             return null;
         }
         #endregion
-        public async Task AddAsync(SubSystemType subSystem, EventType eventType, string message, string description, string changedBy = null) {
-            await AddAsync(new SystemLog(message, description, subSystem, eventType, changedBy));
+        public async Task AddAsync(SubSystemType subSystem, EventType eventType, string description, string? changedBy = null) {
+            await AddAsync(new SystemLog(description, subSystem, eventType, changedBy));
         }
         public async Task<int> CountAsync(IEnumerable<ISearchOption> options) {
             var filter = BuildWherePredicate(options);

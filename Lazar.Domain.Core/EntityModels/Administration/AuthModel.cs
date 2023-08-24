@@ -1,15 +1,14 @@
 ﻿using Lazar.Domain.Core.EntityModels.Base;
+using Lazar.Domain.Core.Interfaces;
 
-namespace Lazar.Domain.Core.EntityModels.Auth
-{
-    public class LoginModel : BaseEntity
-    {
-        public string? Login { get; set; }
+namespace Lazar.Domain.Core.Models.Administration {
+    public class AuthModel : BaseEntity, ILogin {
+        public string Login { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime RefreshTokenExpiryTime { get; set; }
 
-        public LoginModel() : base() { }
-        public LoginModel(string? login, string? refreshToken, DateTime refreshTokenExpiryTime) : base(Guid.NewGuid()){
+        public AuthModel() : base() { }
+        public AuthModel(string login, string? refreshToken, DateTime refreshTokenExpiryTime) : base(Guid.NewGuid()) {
             Login = login;
             RefreshToken = refreshToken;
             RefreshTokenExpiryTime = refreshTokenExpiryTime;
@@ -18,7 +17,7 @@ namespace Lazar.Domain.Core.EntityModels.Auth
             RefreshToken = refreshToken;
             RefreshTokenExpiryTime = refreshTokenExpiryTime;
         }
-        public void Update(string? login, string? refreshToken, DateTime refreshTokenExpiryTime) {
+        public void Update(string login, string? refreshToken, DateTime refreshTokenExpiryTime) {
             Login = login;
             RefreshToken = refreshToken;
             RefreshTokenExpiryTime = refreshTokenExpiryTime;

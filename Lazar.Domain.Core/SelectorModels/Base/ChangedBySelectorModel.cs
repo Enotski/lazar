@@ -1,12 +1,10 @@
-﻿using Lazar.Domain.Core.Interfaces;
-
-namespace Lazar.Domain.Core.SelectorModels.Base {
+﻿namespace Lazar.Domain.Core.SelectorModels.Base {
     /// <summary>
-    /// Базовая модель сущностей системы  
+    /// Base changed by info model for select from storage
     /// </summary>
     public abstract class ChangedBySelectorModel : DateChangeSelectorModel {
         /// <summary>
-        /// Пользователь изменивший запись
+        /// Changed by info
         /// </summary>
         public readonly string ChangedBy;
         public ChangedBySelectorModel() : base() { }

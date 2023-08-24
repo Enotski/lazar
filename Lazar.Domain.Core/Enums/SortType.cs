@@ -1,6 +1,8 @@
 ﻿namespace Lazar.Domain.Core.Enums {
-    public enum SortType
-    {
+    /// <summary>
+    /// Type of filter predicate in order operation
+    /// </summary>
+    public enum SortType {
         Descending,
         Ascending,
     }

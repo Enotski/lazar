@@ -155,7 +155,7 @@ namespace Lazar.Services.Administration {
 
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Delete, $"{entitiesFields}", login);
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Delete, "Удаление роли", exp.Format(), login);
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Delete, exp.Format(), login);
                 throw;
             }
         }

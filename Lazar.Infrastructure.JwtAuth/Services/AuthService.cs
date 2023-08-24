@@ -1,5 +1,4 @@
 ﻿using CommonUtils.Utils;
-using Lazar.Domain.Core.EntityModels.Auth;
 using Lazar.Domain.Core.Enums;
 using Lazar.Domain.Core.Models.Administration;
 using Lazar.Domain.Core.SelectorModels.Administration;
@@ -12,15 +11,16 @@ using System.Security.Claims;
 namespace Lazar.Infrastructure.JwtAuth.Services {
     public class AuthService : IAuthService {
         private readonly IRepositoryManager _repositoryManager;
+        private readonly IAuthRepositoryManager _authRepositoryManager;
         //private readonly IModelMapper _mapper;
         private readonly AuthDto _configuration;
-        public AuthService(IRepositoryManager repositoryManager, /*IModelMapper mapper,*/ IOptions<AuthDto> options) {
+        public AuthService(IRepositoryManager repositoryManager, IAuthRepositoryManager authRepositoryManager, IOptions<AuthDto> options) {
             _repositoryManager = repositoryManager;
-            //_mapper = mapper;
+            _authRepositoryManager = authRepositoryManager;
             _configuration = options.Value;
         }
-
         private record TokenOptions(string AccessToken, string RefreshToken, DateTime ExpiredTime);
+
         private List<Claim> GetClaims(UserSelectorModel user) {
             var claims = new List<Claim> {
                     new Claim(ClaimTypes.Name, user.Login),
@@ -31,8 +31,8 @@ namespace Lazar.Infrastructure.JwtAuth.Services {
             return claims;
         }
         private TokenOptions GetTokenOptions(List<Claim> claims) {
-            var accessToken = _repositoryManager.TokenRepository.GenerateAccessToken(claims, _configuration.Issuer, _configuration.Audience, _configuration.Key);
-            var refreshToken = _repositoryManager.TokenRepository.GenerateRefreshToken();
+            var accessToken = _authRepositoryManager.TokenRepository.GenerateAccessToken(claims, _configuration.Issuer, _configuration.Audience, _configuration.Key);
+            var refreshToken = _authRepositoryManager.TokenRepository.GenerateRefreshToken();
             var expiredTime = DateTime.Now.AddDays(7);
 
             return new TokenOptions(accessToken, refreshToken, expiredTime);
@@ -43,7 +43,7 @@ namespace Lazar.Infrastructure.JwtAuth.Services {
                 if (model is null) {
                     throw new Exception("Invalid client request");
                 }
-                var isExist = await _repositoryManager.UserRepository.UserLoginExistAsync(model.Login);
+                var isExist = await _authRepositoryManager.AuthRepository.LoginExistsAsync(model.Login);
                 if (!isExist)
                     throw new Exception("User not found");
 
@@ -55,13 +55,13 @@ namespace Lazar.Infrastructure.JwtAuth.Services {
 
                 var tokenOptions = GetTokenOptions(claims);
 
-                var loginModel = await _repositoryManager.AuthRepository.GetLoginModelAsync(user.Login);
+                var loginModel = await _authRepositoryManager.AuthRepository.GetLoginModelAsync(user.Login);
                 if (loginModel == null) {
-                    loginModel = new LoginModel(user.Login, tokenOptions.RefreshToken, tokenOptions.ExpiredTime);
-                    await _repositoryManager.AuthRepository.AddAsync(loginModel);
+                    loginModel = new AuthModel(user.Login, tokenOptions.RefreshToken, tokenOptions.ExpiredTime);
+                    await _authRepositoryManager.AuthRepository.AddAsync(loginModel);
                 } else {
                     loginModel.Update(tokenOptions.RefreshToken, tokenOptions.ExpiredTime);
-                    await _repositoryManager.AuthRepository.UpdateAsync(loginModel);
+                    await _authRepositoryManager.AuthRepository.UpdateAsync(loginModel);
                 }
 
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.LogIn, "", $"{user.Login}");
@@ -77,7 +77,7 @@ namespace Lazar.Infrastructure.JwtAuth.Services {
                 if (model is null) {
                     throw new Exception("Invalid client request");
                 }
-                var exist = await _repositoryManager.UserRepository.UserLoginExistAsync(model.Login);
+                var exist = await _authRepositoryManager.AuthRepository.LoginExistsAsync(model.Login);
                 if (exist)
                     throw new Exception("Login already exist");
 
@@ -91,8 +91,8 @@ namespace Lazar.Infrastructure.JwtAuth.Services {
 
                 var tokenOptions = GetTokenOptions(claims);
 
-                var loginModel = new LoginModel(user.Login, tokenOptions.RefreshToken, tokenOptions.ExpiredTime);
-                await _repositoryManager.AuthRepository.AddAsync(loginModel);
+                var loginModel = new AuthModel(user.Login, tokenOptions.RefreshToken, tokenOptions.ExpiredTime);
+                await _authRepositoryManager.AuthRepository.AddAsync(loginModel);
 
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Registration, "", $"{user.Login}");
 
@@ -104,9 +104,9 @@ namespace Lazar.Infrastructure.JwtAuth.Services {
         }
         public async Task LogOutAsync(string login) {
             try {
-                var loginModel = await _repositoryManager.AuthRepository.GetLoginModelAsync(login);
+                var loginModel = await _authRepositoryManager.AuthRepository.GetLoginModelAsync(login);
                 if (loginModel != null) {
-                    await _repositoryManager.AuthRepository.DeleteAsync(loginModel);
+                    await _authRepositoryManager.AuthRepository.DeleteAsync(loginModel);
                 }
             } catch (Exception exp) {
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Read, "Получение списка пользователей", exp.Format());
@@ -121,10 +121,10 @@ namespace Lazar.Infrastructure.JwtAuth.Services {
 
                 string accessToken = model.Key;
                 string refreshToken = model.RefreshKey;
-                var principal = _repositoryManager.TokenRepository.GetPrincipalFromExpiredToken(accessToken, _configuration.Key);
+                var principal = _authRepositoryManager.TokenRepository.GetPrincipalFromExpiredToken(accessToken, _configuration.Key);
                 var username = principal.Identity.Name; //this is mapped to the Name claim by default
 
-                var loginModel = await _repositoryManager.AuthRepository.GetLoginModelAsync(username);
+                var loginModel = await _authRepositoryManager.AuthRepository.GetLoginModelAsync(username);
                 if (loginModel is null || loginModel.RefreshToken != refreshToken || loginModel.RefreshTokenExpiryTime <= DateTime.Now)
                     throw new Exception("Invalid client request");
 
@@ -132,7 +132,7 @@ namespace Lazar.Infrastructure.JwtAuth.Services {
 
                 var tokenOptions = GetTokenOptions(GetClaims(user));
                 loginModel.Update(tokenOptions.RefreshToken, tokenOptions.ExpiredTime);
-                await _repositoryManager.AuthRepository.UpdateAsync(loginModel);
+                await _authRepositoryManager.AuthRepository.UpdateAsync(loginModel);
 
                 return new UserAuthDto(new TokensDto(tokenOptions.AccessToken, tokenOptions.RefreshToken, _configuration.Issuer, _configuration.Audience), loginModel.Login, user.Roles);
             } catch (Exception exp) {

@@ -2,11 +2,11 @@
 
 namespace Lazar.Domain.Core.EntityModels.Base {
     /// <summary>
-    /// Базовая модель сущностей системы  
+    /// Base model of named entity
     /// </summary>
     public abstract class NameEntity : ChangedByEntity, IName {
         /// <summary>
-        /// Наименование
+        /// Name of entity
         /// </summary>
         public string Name { get; set; }
         public NameEntity() : base() { }

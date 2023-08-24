@@ -1,12 +1,10 @@
-﻿using Lazar.Domain.Core.Interfaces;
-
-namespace Lazar.Domain.Core.SelectorModels.Base {
+﻿namespace Lazar.Domain.Core.SelectorModels.Base {
     /// <summary>
-    /// Базовая модель сущностей системы  
+    /// Base date change model for select from storage
     /// </summary>
     public abstract class DateChangeSelectorModel : BaseSelectorModel {
         /// <summary>
-        /// Дата изменения записи
+        /// Date change in UTC
         /// </summary>
         public readonly DateTime DateChange;
         public DateChangeSelectorModel() : base() { }

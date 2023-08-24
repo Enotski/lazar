@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Lazar.Domain.Core\Lazar.Domain.Core.csproj" />
     <ProjectReference Include="..\Lazar.Infrastructure.Data.Ef\Lazar.Infrastructure.Data.Ef.csproj" />
+    <ProjectReference Include="..\Lazar.Infrastructure.JwtAuth\Lazar.Infrastructure.JwtAuth.csproj" />
     <ProjectReference Include="..\Lazar.Services\Lazar.Services.csproj" />
     <ProjectReference Include="..\Lazar.Srevices.Iterfaces\Lazar.Srevices.Iterfaces.csproj" />
   </ItemGroup>

@@ -1,7 +1,10 @@
 using Lazar.Domain.Interfaces.Repositories.Common;
 using Lazar.Infrastructure.Data.Ef.Context;
 using Lazar.Infrastructure.Data.Ef.Repositories.Common;
+using Lazar.Infrastructure.JwtAuth.Common.Auth;
+using Lazar.Infrastructure.JwtAuth.Iterfaces.Auth;
 using Lazar.Infrastructure.JwtAuth.Models;
+using Lazar.Infrastructure.JwtAuth.Services;
 using Lazar.Infrastructure.Mapper;
 using Lazar.Services.Common;
 using Lazar.Srevices.Iterfaces.Common;
@@ -53,11 +56,10 @@ namespace Lazar.Presentation.WebApi {
                 });
             });
 
-            string connection = builder.Configuration.GetConnectionString("home");
+            string connection = builder.Configuration.GetConnectionString("wrk");
             builder.Services.AddDbContext<LazarContext>(options => options.UseSqlServer(connection));
 
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
                 options.SaveToken = true;
                 options.TokenValidationParameters = new TokenValidationParameters
@@ -75,7 +77,10 @@ namespace Lazar.Presentation.WebApi {
 
             builder.Services.AddHttpContextAccessor();
 
+            builder.Services.AddScoped<IAuthService, AuthService>();
+
             builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
+            builder.Services.AddScoped<IAuthRepositoryManager, AuthRepositoryManager>();
             builder.Services.AddScoped<IServiceManager, ServiceManager>();
             builder.Services.AddScoped<IModelMapper, AutoModelMapper>();
 

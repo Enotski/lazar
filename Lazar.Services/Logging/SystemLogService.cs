@@ -25,7 +25,7 @@ namespace Lazar.Services.Logging {
                 return new DataTableDto<SystemLogDto>(totalRecords,
                     _mapper.Mapper.Map<IReadOnlyList<SystemLogDto>>(records));
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Logging, EventType.Read, "Получение списка записей журнала системных событий", exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Logging, EventType.Read, "Получение списка записей журнала системных событий: " + exp.Format());
                 throw;
             }
         }
@@ -37,7 +37,7 @@ namespace Lazar.Services.Logging {
                 }
                 await _repositoryManager.SystemLogRepository.ClearAsync();
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Logging, EventType.Delete, "Очистка журнала системных событий", exp.Format(), login);
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Logging, EventType.Delete, "Очистка журнала системных событий: " + exp.Format(), login);
                 throw;
             }
         }
@@ -45,7 +45,7 @@ namespace Lazar.Services.Logging {
             try {
                 await _repositoryManager.SystemLogRepository.ClearAsync(days);
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Logging, EventType.Delete, "Очистка журнала системных событий", exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Logging, EventType.Delete, "Очистка журнала системных событий: " + exp.Format());
                 throw;
             }
         }
@@ -61,7 +61,7 @@ namespace Lazar.Services.Logging {
                 }
                 await _repositoryManager.SystemLogRepository.DeleteAsync(ids);
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Logging, EventType.Delete, "Удаление записей журнала системных событий", exp.Format(), login);
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Logging, EventType.Delete, "Удаление записей журнала системных событий: " + exp.Format(), login);
                 throw;
             }
         }

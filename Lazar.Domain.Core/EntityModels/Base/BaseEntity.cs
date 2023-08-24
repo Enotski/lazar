@@ -2,11 +2,11 @@
 
 namespace Lazar.Domain.Core.EntityModels.Base {
     /// <summary>
-    /// Базовая модель сущностей системы  
+    /// Base entity model
     /// </summary>
     public abstract class BaseEntity : IKey {
         /// <summary>
-        /// Первичный ключ
+        /// Primary key
         /// </summary>
         public Guid Id { get; set; }
         public BaseEntity() { }
