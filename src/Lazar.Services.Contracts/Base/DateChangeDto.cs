@@ -1,10 +1,10 @@
 ﻿namespace Lazar.Services.Contracts.Base {
     /// <summary>
-    /// Базовая модель сущностей системы  
+    /// Base changed date info dto model 
     /// </summary>
     public abstract class DateChangeDto : BaseDto {
         /// <summary>
-        /// Дата изменения записи
+        /// Record modification date
         /// </summary>
         public DateTime? DateChange { get; set; }
         public DateChangeDto() : base() { }

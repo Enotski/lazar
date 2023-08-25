@@ -1,10 +1,10 @@
 ﻿namespace Lazar.Services.Contracts.Base {
     /// <summary>
-    /// Базовая модель сущностей системы  
+    /// Base changed by info dto model
     /// </summary>
     public abstract class ChangedByDto : DateChangeDto {
         /// <summary>
-        /// Пользователь изменивший запись
+        /// The user who modified the entry
         /// </summary>
         public string? ChangedBy { get; set; }
         public ChangedByDto() : base() { }

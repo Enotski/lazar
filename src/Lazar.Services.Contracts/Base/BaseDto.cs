@@ -1,11 +1,11 @@
 ﻿
 namespace Lazar.Services.Contracts.Base {
     /// <summary>
-    /// Базовая модель сущностей системы  
+    /// Base dto model
     /// </summary>
     public abstract class BaseDto {
         /// <summary>
-        /// Первичный ключ
+        /// Primary key
         /// </summary>
         public Guid? Id { get; set; }
         public BaseDto() { }

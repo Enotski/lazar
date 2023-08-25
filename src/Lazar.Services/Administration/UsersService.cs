@@ -12,6 +12,9 @@ using Lazar.Srevices.Iterfaces.Administration;
 using System.Data;
 
 namespace Lazar.Services.Administration {
+    /// <summary>
+    /// Service of users
+    /// </summary>
     public class UsersService : IUsersService {
         private readonly IRepositoryManager _repositoryManager;
         private readonly IModelMapper _mapper;
@@ -20,7 +23,12 @@ namespace Lazar.Services.Administration {
             _repositoryManager = repositoryManager ?? throw new ArgumentNullException(nameof(repositoryManager));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
-
+        /// <summary>
+        /// Get a list of entity changes
+        /// </summary>
+        /// <param name="newModel">Updated entity</param>
+        /// <param name="model">Current entity</param>
+        /// <returns>List of entity changes</returns>
         private List<string> GetChangeFieldsList(UserSelectorModel model, UserSelectorModel newModel = null) {
             try {
                 var res = new List<string>();
@@ -46,10 +54,10 @@ namespace Lazar.Services.Administration {
             }
         }
         /// <summary>
-        /// Валидация операции редактирования
+        /// Validation of operation
         /// </summary>
-        /// <param name="model">Модель ДЦ</param>
-        /// <param name="login">Пользователь, инициировавший событие</param>
+        /// <param name="model">Model of record</param>
+        /// <param name="login">Login of the user who triggered the event</param>
         /// <returns></returns>
         private async Task ModelValidation(UserDto model, string login) {
             try {
@@ -71,6 +79,11 @@ namespace Lazar.Services.Administration {
                 throw;
             }
         }
+        /// <summary>
+        /// Records for presentation layer
+        /// </summary>
+        /// <param name="options">Filtering and search options</param>
+        /// <returns>List of records</returns>
         public async Task<DataTableDto<UserDto>> GetAsync(DataTableRequestDto options) {
             try {
                 int totalRecords = await _repositoryManager.UserRepository.CountAsync(options.Filters);
@@ -81,6 +94,11 @@ namespace Lazar.Services.Administration {
                 throw;
             }
         }
+        /// <summary>
+        /// Entity for presentation layer
+        /// </summary>
+        /// <param name="id">Primary key</param>
+        /// <returns>Entity dto</returns>
         public async Task<EntityResponseDto<UserDto>> GetAsync(Guid id) {
             try {
                 var data = await _repositoryManager.UserRepository.GetAsync(id);
@@ -93,6 +111,11 @@ namespace Lazar.Services.Administration {
                 throw;
             }
         }
+        /// <summary>
+        /// Get collection of key-names
+        /// </summary>
+        /// <param name="options">Selection parameters</param>
+        /// <returns>List of key-names</returns>
         public async Task<EntityResponseDto<IReadOnlyList<ListItemDto<Guid>>>> GetListAsync(KeyNameRequestDto options) {
             try {
                 var records = await _repositoryManager.UserRepository.GetKeyNameRecordsAsync(options.Search, options.Pagination);
@@ -103,6 +126,12 @@ namespace Lazar.Services.Administration {
                 throw;
             }
         }
+        /// <summary>
+        /// Create new entity
+        /// </summary>
+        /// <param name="model">Dto model</param>
+        /// <param name="login">Login of the user who triggered the event</param>
+        /// <returns></returns>
         public async Task CreateAsync(UserDto model, string login) {
             try {
                 await ModelValidation(model, login);
@@ -121,6 +150,12 @@ namespace Lazar.Services.Administration {
                 throw;
             }
         }
+        /// <summary>
+        /// Update exsisting entity
+        /// </summary>
+        /// <param name="model">Dto model</param>
+        /// <param name="login">Login of the user who triggered the event</param>
+        /// <returns></returns>
         public async Task UpdateAsync(UserDto model, string login) {
             try {
                 await ModelValidation(model, login);
@@ -147,6 +182,12 @@ namespace Lazar.Services.Administration {
                 throw;
             }
         }
+        /// <summary>
+        /// Remove entities
+        /// </summary>
+        /// <param name="ids">Primary keys</param>
+        /// <param name="login">Login of the user who triggered the event</param>
+        /// <returns></returns>
         public async Task DeleteAsync(IEnumerable<Guid> ids, string login) {
             try {
                 if (!ids.Any()) {
