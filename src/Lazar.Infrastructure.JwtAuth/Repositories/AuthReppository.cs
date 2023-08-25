@@ -1,6 +1,6 @@
 ﻿using Lazar.Domain.Core.Models.Administration;
 using Lazar.Infrastructure.Data.Ef.Context;
-using Lazar.Infrastructure.Data.Ef.Repositories.Administration;
+using Lazar.Infrastructure.Data.Ef.Repositories.Base;
 using Lazar.Infrastructure.JwtAuth.Iterfaces.Auth;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,7 +8,7 @@ namespace Lazar.Infrastructure.JwtAuth.Repositories {
     /// <summary>
     /// Authentication repository
     /// </summary>
-    public class AuthReppository : LoginRepository<AuthModel>, IAuthRepository {
+    public class AuthReppository : BaseRepository<AuthModel>, IAuthRepository {
         public AuthReppository(LazarContext context) : base(context) {
         }
         /// <summary>

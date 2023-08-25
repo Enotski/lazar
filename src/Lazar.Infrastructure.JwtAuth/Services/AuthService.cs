@@ -60,7 +60,7 @@ namespace Lazar.Infrastructure.JwtAuth.Services {
                 if (model is null) {
                     throw new Exception("Invalid client request");
                 }
-                var isExist = await _authRepositoryManager.AuthRepository.LoginExistsAsync(model.Login);
+                var isExist = await _repositoryManager.UserRepository.LoginExistsAsync(model.Login);
                 if (!isExist)
                     throw new Exception("User not found");
 
@@ -99,7 +99,7 @@ namespace Lazar.Infrastructure.JwtAuth.Services {
                 if (model is null) {
                     throw new Exception("Invalid client request");
                 }
-                var exist = await _authRepositoryManager.AuthRepository.LoginExistsAsync(model.Login);
+                var exist = await _repositoryManager.UserRepository.LoginExistsAsync(model.Login);
                 if (exist)
                     throw new Exception("Login already exist");
 

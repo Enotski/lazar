@@ -2,6 +2,7 @@
 using Lazar.Domain.Core.Enums;
 using Lazar.Domain.Core.Models.Administration;
 using Lazar.Domain.Core.SelectorModels.Administration;
+using Lazar.Domain.Core.SelectorModels.Base;
 using Lazar.Domain.Interfaces.Options;
 using Lazar.Domain.Interfaces.Repositories.Administration;
 using Lazar.Infrastructure.Data.Ef.Context;
@@ -18,8 +19,7 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
         /// Main constructor
         /// </summary>
         /// <param name="dbContext">Ef context</param>
-        public UserRepository(LazarContext context) : base(context) {
-        }
+        public UserRepository(LazarContext context) : base(context) { }
 
         #region private
         /// <summary>
@@ -40,32 +40,32 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
                 var column = opt.ColumnName.TrimToUpper();
                 switch (column) {
                     case "NAME": {
-                            predicate = predicate.And(m => m.Name.ToUpper().Contains(val));
-                            break;
-                        }
+                        predicate = predicate.And(m => m.Name.ToUpper().Contains(val));
+                        break;
+                    }
                     case "LOGIN": {
-                            predicate = predicate.And(m => m.Login.ToUpper().Contains(val));
-                            break;
-                        }
+                        predicate = predicate.And(m => m.Login.ToUpper().Contains(val));
+                        break;
+                    }
                     case "EMAIL": {
-                            predicate = predicate.And(m => m.Email.ToUpper().Contains(val));
-                            break;
-                        }
+                        predicate = predicate.And(m => m.Email.ToUpper().Contains(val));
+                        break;
+                    }
                     case "CHANGEDBY": {
-                            predicate = predicate.And(m => !string.IsNullOrEmpty(m.ChangedBy) && m.ChangedBy.ToUpper().Contains(val));
-                            break;
-                        }
+                        predicate = predicate.And(m => !string.IsNullOrEmpty(m.ChangedBy) && m.ChangedBy.ToUpper().Contains(val));
+                        break;
+                    }
                     case "ROLES": {
-                            predicate = predicate.And(m => !string.IsNullOrEmpty(m.ChangedBy) && m.ChangedBy.ToUpper().Contains(val));
-                            break;
-                        }
+                        predicate = predicate.And(m => !string.IsNullOrEmpty(m.ChangedBy) && m.ChangedBy.ToUpper().Contains(val));
+                        break;
+                    }
                     case "DATEOFCHANGE": {
-                            var interval = val.Split(';');
-                            if (interval.Length == 2) {
-                                predicate = predicate.WhereDateBetween(x => x.DateChange, interval[0], interval[1]);
-                            }
-                            break;
+                        var interval = val.Split(';');
+                        if (interval.Length == 2) {
+                            predicate = predicate.WhereDateBetween(x => x.DateChange, interval[0], interval[1]);
                         }
+                        break;
+                    }
                 }
             }
             return predicate;
@@ -85,25 +85,25 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
                 var column = opt.ColumnName.TrimToUpper();
                 switch (column) {
                     case "NAME": {
-                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.Name) : ordered.ThenByDescending(m => m.Name);
-                            break;
-                        }
+                        ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.Name) : ordered.ThenByDescending(m => m.Name);
+                        break;
+                    }
                     case "LOGIN": {
-                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.Login) : ordered.ThenByDescending(m => m.Login);
-                            break;
-                        }
+                        ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.Login) : ordered.ThenByDescending(m => m.Login);
+                        break;
+                    }
                     case "EMAIL": {
-                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.Email) : ordered.ThenByDescending(m => m.Email);
-                            break;
-                        }
+                        ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.Email) : ordered.ThenByDescending(m => m.Email);
+                        break;
+                    }
                     case "CHANGEDBY": {
-                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.ChangedBy) : ordered.ThenByDescending(m => m.ChangedBy);
-                            break;
-                        }
+                        ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.ChangedBy) : ordered.ThenByDescending(m => m.ChangedBy);
+                        break;
+                    }
                     default: {
-                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.DateChange) : ordered.ThenByDescending(m => m.DateChange);
-                            break;
-                        }
+                        ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.DateChange) : ordered.ThenByDescending(m => m.DateChange);
+                        break;
+                    }
                 }
             }
             return orb => ordered;
@@ -119,17 +119,17 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
             }
             switch (columnSelector.TrimToUpper()) {
                 case "NAME": {
-                        return x => x.Name;
-                    }
+                    return x => x.Name;
+                }
                 case "LOGIN": {
-                        return x => x.Login;
-                    }
+                    return x => x.Login;
+                }
                 case "EMAIL": {
-                        return x => x.Email;
-                    }
+                    return x => x.Email;
+                }
                 case "CHANGEDBY": {
-                        return x => x.ChangedBy;
-                    }
+                    return x => x.ChangedBy;
+                }
             }
             return null;
         }
@@ -210,6 +210,65 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
             try {
                 return true;
             } catch (Exception ex) {
+                throw;
+            }
+        }
+        // <summary>
+        /// Get login property of entity
+        /// </summary>
+        /// <param name="id">Primary key</param>
+        /// <returns>Login</returns>
+        public async Task<string> GetLoginByKeyAsync(Guid id) {
+            try {
+                return await _dbContext.Users.Where(m => m.Id == id).Select(m => m.Login).FirstOrDefaultAsync();
+            } catch { throw; }
+        }
+        /// <summary>
+        /// Return primary key of entity by login property
+        /// </summary>
+        /// <param name="login">Login property</param>
+        /// <returns>Primary key</returns>
+        public async Task<Guid> GetKeyByLoginAsync(string login) {
+            try {
+                if (string.IsNullOrEmpty(login)) {
+                    return Guid.Empty;
+                }
+                login = login.Trim().ToUpper();
+                return await _dbContext.Users.Where(m => m.Login.ToUpper() == login).Select(m => m.Id).FirstOrDefaultAsync();
+            } catch { throw; }
+        }
+        /// <summary>
+        /// Get list of key-login models
+        /// </summary>
+        /// <param name="term">Search term by login property</param>
+        /// <param name="paginationOption">Pagination</param>
+        /// <returns>List of key-login models</returns>
+        public async Task<IReadOnlyList<KeyNameSelectorModel>> GetKeyLoginRecordsAsync(string term, IPaginatedOption? paginationOption) {
+            try {
+                var predicate = PredicateBuilder.True<User>();
+                if (!string.IsNullOrWhiteSpace(term)) {
+                    term = term.Trim().ToUpper();
+                    predicate = predicate.And(m => !string.IsNullOrEmpty(m.Login) && m.Login.ToUpper().Contains(term));
+                }
+                return await BuildQuery(predicate, m => m.OrderBy(m => m.Login), paginationOption)
+                    .Select(m => new KeyNameSelectorModel(m.Id, m.Login)).ToListAsync();
+            } catch { throw; }
+        }
+        /// <summary>
+        /// Check login existance
+        /// </summary>
+        /// <param name="login">Login property</param>
+        /// <param name="id">Primary key</param>
+        /// <returns>Existance value</returns>
+        public async Task<bool> LoginExistsAsync(string login, Guid? id) {
+            try {
+                if (string.IsNullOrWhiteSpace(login)) {
+                    return true;
+                }
+                login = login.TrimToUpper();
+                var entityId = await _dbContext.Users.Where(m => m.Login.Trim().ToUpper() == login).Select(x => x.Id).FirstOrDefaultAsync();
+                return entityId != Guid.Empty;
+            } catch {
                 throw;
             }
         }

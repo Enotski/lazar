@@ -9,8 +9,9 @@ import './css/site.css'
 import store from "./store";
 
 import UsersPage from './components/AdministrationPages/UsersPage.vue'
+import RolesPage from './components/AdministrationPages/RolesPage.vue'
 import UserProfilePage from './components/AdministrationPages/UserProfilePage.vue'
-import EventLogPage from './components/AdministrationPages/EventLogPage.vue'
+import SystemLogPage from './components/AdministrationPages/SystemLogPage.vue'
 import DspPage from './components/DspPages/DspPage.vue'
 import FarrowPage from './components/DspPages/FarrowPage.vue'
 import FilterBanksPage from './components/DspPages/FilterBanksPage.vue'
@@ -27,13 +28,14 @@ import SpectrumPage from './components/DspPages/SpectrumPage.vue'
 import WaveletsPage from './components/DspPages/WaveletsPage.vue'
 import WindowsPage from './components/DspPages/WindowsPage.vue'
 import CorrelationPage from './components/DspPages/CorrelationPage.vue'
-
 import MainContainer from './components/MainComponents/MainContainer.vue'
+
 const routes = [
     { path: '/', component: MainContainer },
     { path: '/users', component: UsersPage },
+    { path: '/roles', component: RolesPage },
     { path: '/user-profile', component: UserProfilePage },
-    { path: '/event-log', component: EventLogPage },
+    { path: '/system-log', component: SystemLogPage },
     { path: '/correlation', component: CorrelationPage },
     { path: '/dsp', component: DspPage },
     { path: '/farrow', component: FarrowPage },

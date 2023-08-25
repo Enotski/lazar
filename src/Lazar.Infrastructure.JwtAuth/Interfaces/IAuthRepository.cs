@@ -1,11 +1,10 @@
 ﻿using Lazar.Domain.Core.Models.Administration;
-using Lazar.Domain.Interfaces.Repositories.Base;
 
 namespace Lazar.Infrastructure.JwtAuth.Iterfaces.Auth {
     /// <summary>
     /// Authentication repository
     /// </summary>
-    public interface IAuthRepository : ILoginRepository<AuthModel>{
+    public interface IAuthRepository{
         /// <summary>
         /// Get model by login
         /// </summary>

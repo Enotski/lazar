@@ -19,13 +19,18 @@
           >
         </div>
         <div class="col-auto">
+          <router-link to="/roles" class="nav nav-link text-secondary"
+            >Roles</router-link
+          >
+        </div>
+        <!-- <div class="col-auto">
           <router-link to="/user-profile" class="nav nav-link text-secondary"
             >Me</router-link
           >
-        </div>
+        </div> -->
         <div class="col-auto">
-          <router-link to="/event-log" class="nav nav-link text-secondary"
-            >logs</router-link
+          <router-link to="/system-log" class="nav nav-link text-secondary"
+            >System log</router-link
           >
         </div>
       </div>
