@@ -256,8 +256,12 @@ export default defineComponent({
     submit: async function () {
       this.showLoginModal = false;
       this.$store.dispatch("auth/login", this.form).then(
-        () => {
-          this.notify.success(`Hello ${this.form.login}`);
+        (resp) => {
+          if(resp.Result == 1){
+            this.notify.error(resp.Message);
+          }else{
+            this.notify.success(`Hello ${resp.Login}`);
+          }
         },
         (error) => {
           this.message =

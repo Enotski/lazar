@@ -7,8 +7,9 @@ namespace Lazar.Domain.Core.Models.Administration {
     /// </summary>
     public class AuthModel : BaseEntity, ILogin {
         public string Login { get; set; }
-        public string? RefreshToken { get; set; }
+        public string RefreshToken { get; set; }
         public DateTime RefreshTokenExpiryTime { get; set; }
+        public AuthModel() : base() { }
         public AuthModel(string login, string? refreshToken, DateTime refreshTokenExpiryTime) : base(Guid.NewGuid()) {
             Login = login;
             RefreshToken = refreshToken;

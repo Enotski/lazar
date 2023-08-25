@@ -23,7 +23,7 @@ namespace Lazar.Presentation.WebApi.Controllers.Auth {
                 return Ok(new ErrorResponseDto(exp));
             }
         }
-        [HttpGet, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Route("log-out")]
         public async Task<IActionResult> LogOut([FromBody] string login) {
             try {
@@ -44,7 +44,7 @@ namespace Lazar.Presentation.WebApi.Controllers.Auth {
         }
         [HttpPost, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Route("refresh")]
-        public async Task <IActionResult> Refresh(TokensDto tokenApiModel) {
+        public async Task <IActionResult> Refresh([FromBody] TokensDto tokenApiModel) {
             try {
                 return Ok(await _authService.RefreshTokenAsync(tokenApiModel));
             } catch (Exception exp) {

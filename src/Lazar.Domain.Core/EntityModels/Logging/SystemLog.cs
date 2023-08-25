@@ -10,7 +10,7 @@ namespace Lazar.Domain.Core.EntityModels.Logging {
         public string Description { get; set; }
         public string SubSystem { get; set; }
         public string EventType { get; set; }
-
+        public SystemLog() : base() { }
         public SystemLog(Guid id, string description, SubSystemType subSystem, EventType eventType, string changedBy, DateTime dateChange) : base(id, changedBy, dateChange) {
             Description = description;
             SubSystem = subSystem.GetDescription();

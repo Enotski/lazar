@@ -69,11 +69,11 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
                 }
                 login = login.TrimToUpper();
                 var predicate = PredicateBuilder.True<TEntity>();
-                predicate = predicate.And(m => !string.IsNullOrEmpty(m.Login) && m.Login.Trim().ToUpper().Contains(login));
+                predicate = predicate.And(m => m.Login.Trim().ToUpper() == login);
                 if (id.HasValue) {
                     predicate = predicate.And(m => m.Id != id);
                 }
-                var entityId = await BuildQuery(predicate).Select(x => x.Id).FirstOrDefaultAsync();
+                var entityId = await _dbContext.Users.Where(m => m.Login.Trim().ToUpper() == login).Select(x => x.Id).FirstOrDefaultAsync();
                 return entityId != Guid.Empty;
             } catch {
                 throw;

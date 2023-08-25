@@ -37,9 +37,9 @@ namespace LazarWebApi.Controllers.Administration {
                 return Ok(new ErrorResponseDto(exp));
             }
         }
-        [HttpGet]
+        [HttpPost]
         [Route("get/{id}")]
-        public async Task<IActionResult> GetRoleModel(Guid id) {
+        public async Task<IActionResult> GetRoleModel([FromBody] Guid id) {
             try {
                 return Ok(await _serviceManager.RoleService.GetAsync(id));
             } catch (Exception exp) {

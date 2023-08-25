@@ -34,9 +34,9 @@ namespace LazarWebApi.Controllers.Administration {
                 return Ok(new ErrorResponseDto(exp));
             }
         }
-        [HttpGet]
+        [HttpPost]
         [Route("get/{id}")]
-        public async Task<IActionResult> GetModel(Guid id) {
+        public async Task<IActionResult> GetModel([FromBody] Guid id) {
             try {
                 return Ok(await _serviceManager.UsersService.GetAsync(id));
             } catch (Exception exp) {
