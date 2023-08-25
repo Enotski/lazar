@@ -12,11 +12,13 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Base {
         public BaseRepository(LazarContext dbContext){
             _dbContext = dbContext;
         }
-
         /// <summary>
-        /// Удобное создание запроса на выборку сущностей
+        /// Creating a query to select entities
         /// </summary>
-        /// <param name="filter">Фильтр для выборки</param>
+        /// <param name="filter">Filter fo select</param>
+        /// <param name="ordered">Order predicate</param>
+        /// <param name="paginated">Pagination options</param>
+        /// <param name="includes">Included entities</param>
         /// <returns></returns>
         protected IQueryable<TEntity> BuildQuery(Expression<Func<TEntity, bool>>? filter = null,
              Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? ordered = null,
@@ -47,25 +49,47 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Base {
             }
             return query;
         }
+        /// <summary>
+        /// Get entity by key
+        /// </summary>
+        /// <param name="id">Primary key of entity</param>
+        /// <returns>Entity</returns>
         public async Task<TEntity> GetAsync(Guid? id) {
             return await BuildQuery(m => m.Id == id).FirstOrDefaultAsync();
         }
-        protected async Task<TEntity> GetAsync(Guid? id, params Expression<Func<TEntity, object>>[] includes) {
-            return await BuildQuery(m => m.Id == id, null, null, includes).FirstOrDefaultAsync();
-        }
+        /// <summary>
+        /// Get entities by key
+        /// </summary>
+        /// <param name="ids">Primary keys of entities</param>
+        /// <returns>Entity</returns>
         public async Task<IReadOnlyList<TEntity>> GetAsync(IEnumerable<Guid> ids) {
             if (!ids.Any()) {
                 return new List<TEntity>();
             }
             return await BuildQuery(m => ids.Contains(m.Id)).ToListAsync();
         }
-        protected async Task<int> CountAsync(Expression<Func<TEntity, bool>> filter = null) {
+        /// <summary>
+        /// Count of entities
+        /// </summary>
+        /// <param name="filter">Concrete filter</param>
+        /// <returns></returns>
+        protected async Task<int> CountAsync(Expression<Func<TEntity, bool>>? filter = null) {
             return await BuildQuery(filter).CountAsync();
         }
+        /// <summary>
+        /// Create entity
+        /// </summary>
+        /// <param name="entity">New entity</param>
+        /// <returns></returns>
         public async Task AddAsync(TEntity entity) {
             _dbContext.Set<TEntity>().Add(entity);
             await _dbContext.SaveChangesAsync();
         }
+        /// <summary>
+        /// Create entities
+        /// </summary>
+        /// <param name="entities">New entities</param>
+        /// <returns></returns>
         public async Task AddAsync(IEnumerable<TEntity> entities) {
             if (!entities.Any()) {
                 return;
@@ -73,29 +97,54 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Base {
             _dbContext.Set<TEntity>().AddRange(entities);
             await _dbContext.SaveChangesAsync();
         }
+        /// <summary>
+        /// Update entity
+        /// </summary>
+        /// <param name="entity">Changed entity</param>
+        /// <returns></returns>
         public async Task UpdateAsync(TEntity entity) {
-            _dbContext.Entry(entity).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            _dbContext.Entry(entity).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
         }
+        /// <summary>
+        /// Update entities
+        /// </summary>
+        /// <param name="entities">Changed entities</param>
+        /// <returns></returns>
         public async Task UpdateAsync(IEnumerable<TEntity> entities) {
             if (!entities.Any()) {
                 return;
             }
             foreach (var entity in entities) {
-                _dbContext.Entry(entity).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+                _dbContext.Entry(entity).State = EntityState.Modified;
             }
             await _dbContext.SaveChangesAsync();
         }
+        /// <summary>
+        /// Remove entity
+        /// </summary>
+        /// <param name="entity">Entity to remove</param>
+        /// <returns></returns>
         public async Task DeleteAsync(TEntity entity) {
             _dbContext.Set<TEntity>().Remove(entity);
             await _dbContext.SaveChangesAsync();
         }
+        /// <summary>
+        /// Remove entity by key
+        /// </summary>
+        /// <param name="id">Primary key of entity</param>
+        /// <returns></returns>
         public async Task DeleteAsync(Guid? id) {
             var entity = await GetAsync(id);
             if (entity is not null) {
                 await DeleteAsync(entity);
             }
         }
+        /// <summary>
+        /// Remove entities by keys
+        /// </summary>
+        /// <param name="ids">Primary keys of entities</param>
+        /// <returns></returns>
         public async Task DeleteAsync(IEnumerable<Guid> ids) {
             try {
                 if (!ids.Any()) {

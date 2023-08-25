@@ -2,6 +2,7 @@ using Lazar.Domain.Interfaces.Repositories.Common;
 using Lazar.Infrastructure.Data.Ef.Context;
 using Lazar.Infrastructure.Data.Ef.Repositories.Common;
 using Lazar.Infrastructure.JwtAuth.Common.Auth;
+using Lazar.Infrastructure.JwtAuth.Helpers;
 using Lazar.Infrastructure.JwtAuth.Iterfaces.Auth;
 using Lazar.Infrastructure.JwtAuth.Models;
 using Lazar.Infrastructure.JwtAuth.Services;
@@ -19,9 +20,10 @@ namespace Lazar.Presentation.WebApi {
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Get Jwt-Token configuration from appsettings
             builder.Services.Configure<AuthDto>(options => builder.Configuration.GetSection("Jwt").Bind(options));
+           
             builder.Services.AddCors();
-            // Add services to the container.
 
             builder.Services.AddControllers().AddJsonOptions(opts =>
             {
@@ -30,6 +32,7 @@ namespace Lazar.Presentation.WebApi {
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(option =>
             {
+                // Auth configuration for swagger
                 option.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
                 {
                     Name = "Authorization",
@@ -56,9 +59,11 @@ namespace Lazar.Presentation.WebApi {
                 });
             });
 
+            // Ef storage context configuration
             string connection = builder.Configuration.GetConnectionString("wrk");
             builder.Services.AddDbContext<LazarContext>(options => options.UseSqlServer(connection));
 
+            // JWT-token authentication configuration
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
                 options.SaveToken = true;
@@ -69,7 +74,7 @@ namespace Lazar.Presentation.WebApi {
                     ValidateAudience = true,
                     ValidAudience = builder.Configuration["Jwt:Audience"],
                     ValidateLifetime = true,
-                    IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(builder.Configuration["Jwt:Key"]),
+                    IssuerSigningKey = AuthHelper.GetSymmetricSecurityKey(builder.Configuration["Jwt:Key"]),
                     ValidateIssuerSigningKey = true,
                 };
             });
@@ -78,7 +83,6 @@ namespace Lazar.Presentation.WebApi {
             builder.Services.AddHttpContextAccessor();
 
             builder.Services.AddScoped<IAuthService, AuthService>();
-
             builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
             builder.Services.AddScoped<IAuthRepositoryManager, AuthRepositoryManager>();
             builder.Services.AddScoped<IServiceManager, ServiceManager>();

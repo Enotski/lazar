@@ -1,11 +1,8 @@
 ﻿namespace Lazar.Services.Contracts.Base {
     /// <summary>
-    /// Базовая модель сущностей системы  
+    /// Base named dto model
     /// </summary>
     public abstract class NameDto : ChangedByDto {
-        /// <summary>
-        /// Наименование
-        /// </summary>
         public string? Name { get; set; }
         public NameDto() : base() { }
         public NameDto(Guid id, string name, string changedBy, DateTime dateChange)

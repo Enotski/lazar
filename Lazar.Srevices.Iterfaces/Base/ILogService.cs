@@ -1,22 +1,25 @@
 ﻿namespace Lazar.Srevices.Iterfaces.Base {
+    /// <summary>
+    /// Base service of logging
+    /// </summary>
     public interface ILogService {
         /// <summary>
-        /// Удаление записей из журнала
+        /// Remove records
         /// </summary>
-        /// <param name="ids">Код записи</param>
-        /// <param name="login">Логин пользователя, инициирующего событие</param>
+        /// <param name="ids">Primary keys</param>
+        /// <param name="login">Login of the user who triggered the event</param>
         /// <returns></returns>
         Task DeleteRecordsAsync(IEnumerable<Guid> ids, string login);
         /// <summary>
-        /// Очистка журнала
+        /// Clear all log in storage
         /// </summary>
-        /// <param name="login">Логин пользователя, инициирующего событие</param>
+        /// <param name="login">Login of the user who triggered the event</param>
         /// <returns></returns>
         Task ClearLogAsync(string login);
         /// <summary>
-        /// Очистка устаревших данных
+        /// Remove all entities by days 
         /// </summary>
-        /// <param name="days">Количество дней, по прошествию которого данные считаются устаревшими</param>
+        /// <param name="days">The number of days before the current date after which records are deleted</param>
         /// <returns></returns>
         Task ClearLogAsync(int days);
     }

@@ -7,23 +7,27 @@ using Lazar.Infrastructure.Data.Ef.Context;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lazar.Infrastructure.Data.Ef.Repositories.Base {
+    /// <summary>
+    /// Repository of named entities
+    /// </summary>
+    /// <typeparam name="TEntity"></typeparam>
     public abstract class NameRepository<TEntity> : BaseRepository<TEntity>, INameRepository<TEntity> where TEntity : class, IKey, IName {
         public NameRepository(LazarContext dbContext) : base(dbContext) { }
         /// <summary>
-        /// Возвращает наименование сущности
+        /// Get name property of entity
         /// </summary>
-        /// <param name="id">Код сущности</param>
-        /// <returns></returns>
+        /// <param name="id">Primary key</param>
+        /// <returns>Name</returns>
         public async Task<string> GetNameByIdAsync(Guid id) {
             try {
                 return await _dbContext.Set<TEntity>().Where(m => m.Id == id).Select(m => m.Name).FirstOrDefaultAsync();
             } catch { throw; }
         }
         /// <summary>
-        /// Возвращает код сущности по наименованию
+        /// Get primary key of entity by name property
         /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
+        /// <param name="name">Name property</param>
+        /// <returns>Primary key</returns>
         public async Task<Guid> GetKeyByNameAsync(string name) {
             try {
                 if (string.IsNullOrEmpty(name)) {
@@ -34,22 +38,11 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Base {
             } catch { throw; }
         }
         /// <summary>
-        /// Возвращает все наименования
+        /// Get list of key-name models
         /// </summary>
-        /// <returns></returns>
-        public async Task<IReadOnlyList<string>> GetLowerNamesAsync() {
-            try {
-                return await _dbContext.Set<TEntity>().Where(m => !string.IsNullOrEmpty(m.Name)).Select(m => m.Name.Trim().ToLower()).ToListAsync();
-            } catch { throw; }
-        }
-        /// <summary>
-        /// Возвращает список пар Код-Наименование
-        /// </summary>
-        /// <returns></returns>
-        /// <summary>
-        /// Возвращает список пар Код-Наименование
-        /// </summary>
-        /// <returns></returns>
+        /// <param name="term">Search term by login property</param>
+        /// <param name="paginationOption">Pagination</param>
+        /// <returns>List of keys-names of models</returns>
         public async Task<IReadOnlyList<KeyNameSelectorModel>> GetKeyNameRecordsAsync(string term, IPaginatedOption paginationOption) {
             try {
                 var predicate = PredicateBuilder.True<TEntity>();
@@ -61,13 +54,12 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Base {
                     .Select(m => new KeyNameSelectorModel(m.Id, m.Name)).ToListAsync();
             } catch { throw; }
         }
-
         /// <summary>
-        /// Проверка существования записи по наименованию
+        /// Check name existance
         /// </summary>
-        /// <param name="name">Наименование</param>
-        /// <param name="id">Код записи, которая будет исключена из проверки</param>
-        /// <returns></returns>
+        /// <param name="name">Name property</param>
+        /// <param name="id">Primary key</param>
+        /// <returns>Existance value</returns>
         public async Task<bool> NameExistsAsync(string name, Guid? id) {
             try {
                 if (string.IsNullOrWhiteSpace(name)) {

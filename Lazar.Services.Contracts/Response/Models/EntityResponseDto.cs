@@ -2,10 +2,6 @@
 using Lazar.Services.Contracts.Response.Enums;
 
 namespace Lazar.Services.Contracts.Response.Models {
-    /// <summary>
-    /// Модель ответа для ссылочных типов данных
-    /// </summary>
-    /// <typeparam name="TModelDto"></typeparam>
     public class EntityResponseDto<TModelDto> : BaseResponseDto where TModelDto : class {
         public TModelDto Data { get; set; }
         public EntityResponseDto(TModelDto data) : base() {

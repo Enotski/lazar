@@ -2,8 +2,7 @@
 using Lazar.Services.Contracts.Response.Enums;
 
 namespace Lazar.Services.Contracts.Response.Models {
-    public class DataTableDto<TModelDto> : BaseResponseDto
-    {
+    public class DataTableDto<TModelDto> : BaseResponseDto {
         public int totalCount { get; set; } = 0;
         public IReadOnlyList<TModelDto> data { get; set; } = new List<TModelDto>();
         public DataTableDto() : base() {

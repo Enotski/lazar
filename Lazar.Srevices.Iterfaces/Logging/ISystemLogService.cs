@@ -4,9 +4,12 @@ using Lazar.Services.Contracts.Response.Models;
 using Lazar.Srevices.Iterfaces.Base;
 
 namespace Lazar.Srevices.Iterfaces.Logging {
+    /// <summary>
+    /// Service of system events logging
+    /// </summary>
     public interface ILoggingervice : ILogService {
         /// <summary>
-        /// Возвращает список записей журнала событий
+        /// System event records for presentation layer
         /// </summary>
         /// <param name="options">Параметры фильтрации и поиска</param>
         /// <returns></returns>

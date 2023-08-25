@@ -6,9 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Lazar.Services.Contracts.Response.Interfaces {
-    /// <summary>
-    /// Интерфейс модели ответа
-    /// </summary>
     public interface IResponse {
         ResponseResultState Result { get; set; }
     }

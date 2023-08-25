@@ -16,10 +16,10 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Logging {
         public SystemLogRepository(LazarContext dbContext) : base(dbContext) { }
         #region private
         /// <summary>
-        /// Задает дополнительные условия для выборки
+        /// Specifies additional conditions for the selection
         /// </summary>
-        /// <param name="options">Параметры выборки</param> 
-        /// <returns></returns>
+        /// <param name="options">Selection options</param> 
+        /// <returns>Conditional expression</returns>
         private Expression<Func<SystemLog, bool>> BuildWherePredicate(IEnumerable<ISearchOption> options) {
             if (options is null || !options.Any()) {
                 return null;
@@ -62,10 +62,10 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Logging {
             return predicate;
         }
         /// <summary>
-        /// Используется для сортировки результирующего набора в порядке возрастания или убывания
+        /// Sort selection
         /// </summary>
-        /// <param name="option">Параметры сортировки</param> 
-        /// <returns></returns>
+        /// <param name="options">Sorting options</param> 
+        /// <returns>Sort predicate</returns>
         private Func<IQueryable<SystemLog>, IOrderedQueryable<SystemLog>> BuildSortFunction(IEnumerable<ISortOption> options) {
             if (options is null || !options.Any()) {
                 return null;
@@ -105,10 +105,10 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Logging {
             return orb => ordered;
         }
         /// <summary>
-        /// Формирует предикат возвращаемого набора данных
+        /// Generates a predicate of the returned data
         /// </summary>
-        /// <param name="columnSelector"></param>
-        /// <returns></returns>
+        /// <param name="columnSelector">Property name</param>
+        /// <returns>Selector predicate</returns>
         private Expression<Func<SystemLog, string>> BuildSelectorPredicate(string columnSelector) {
             if (string.IsNullOrEmpty(columnSelector)) {
                 return null;
@@ -130,18 +130,46 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Logging {
             return null;
         }
         #endregion
+        /// <summary>
+        /// Adds an entry to the event log
+        /// </summary>
+        /// <param name="subSystem">Type of subsystem</param>
+        /// <param name="eventType">Type of event</param>
+        /// <param name="description">Description of event</param>
+        /// <param name="changedBy">Initiator of event</param>
+        /// <returns></returns>
         public async Task AddAsync(SubSystemType subSystem, EventType eventType, string description, string? changedBy = null) {
             await AddAsync(new SystemLog(description, subSystem, eventType, changedBy));
         }
+        /// <summary>
+        /// Get the count of records according to the search parameters
+        /// </summary>
+        /// <param name="options"></param> 
+        /// <returns>Count of records</returns>
         public async Task<int> CountAsync(IEnumerable<ISearchOption> options) {
             var filter = BuildWherePredicate(options);
             return await CountAsync(filter);
         }
+        /// <summary>
+        /// Get a list of log entries according to search and sort options
+        /// </summary>
+        /// <param name="searchOptions">Select parameters</param>
+        /// <param name="sortOptions">Sort parameters</param> 
+        /// <param name="paginationOption">Pagination parameters</param> 
+        /// <returns>List of entities</returns>
         public async Task<IReadOnlyList<SystemLog>> GetRecordsAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption) {
             var filter = BuildWherePredicate(searchOptions);
             var ordered = BuildSortFunction(sortOptions);
             return await BuildQuery(filter, ordered, paginationOption).ToListAsync();
         }
+        /// <summary>
+        /// Get a list of unique values ​​in a specific column
+        /// </summary>
+        /// <param name="searchOptions">Select parameters</param>
+        /// <param name="sortOptions">Sort parameters</param> 
+        /// <param name="paginationOption">Pagination parameters</param> 
+        /// <param name="columnSelector">Property for select</param> 
+        /// <returns>List of values ​​of a properties</returns>
         public async Task<IReadOnlyList<string>> GetRecordsBySelectorAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption, string columnSelector) {
             var selector = BuildSelectorPredicate(columnSelector);
             if (selector is null) {

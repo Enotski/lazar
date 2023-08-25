@@ -13,10 +13,7 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
     /// </summary>
     /// <typeparam name="TEntity">Type witch implement IKey and ILogin</typeparam>
     public abstract class LoginRepository<TEntity> : BaseRepository<TEntity>, ILoginRepository<TEntity> where TEntity : class, IKey, ILogin {
-        /// <summary>
-        /// Main constructor
-        /// </summary>
-        /// <param name="dbContext">Ef context</param>
+
         public LoginRepository(LazarContext dbContext) : base(dbContext) { }
         /// <summary>
         /// Get login property of entity

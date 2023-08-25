@@ -37,7 +37,7 @@ namespace Lazar.Presentation.WebApi.Controllers.Auth {
         [Route("sign-up")]
         public async Task<IActionResult> SignUp([FromBody] SignUpRequestDto signUpRequest) {
             try {
-                return Ok(await _authService.SignUpAsync(signUpRequest));
+                return Ok(await _authService.RegisterAsync(signUpRequest));
             } catch (Exception exp) {
                 return Ok(new ErrorResponseDto(exp));
             }
