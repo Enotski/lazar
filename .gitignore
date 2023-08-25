@@ -302,3 +302,5 @@ AutoTest.Net/
 
 # Web workbench (sass)
 .sass-cache/
+
+src/Lazar.Presentation.WebApi/appsettings.json
