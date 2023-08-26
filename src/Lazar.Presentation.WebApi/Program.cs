@@ -60,7 +60,7 @@ namespace Lazar.Presentation.WebApi {
             });
 
             // Ef storage context configuration
-            string connection = builder.Configuration.GetConnectionString("home");
+            string connection = builder.Configuration.GetConnectionString("home_first");
             builder.Services.AddDbContext<LazarContext>(options => options.UseSqlServer(connection));
 
             // JWT-token authentication configuration

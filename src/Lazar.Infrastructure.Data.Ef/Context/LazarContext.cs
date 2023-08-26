@@ -10,7 +10,6 @@ namespace Lazar.Infrastructure.Data.Ef.Context {
         internal DbSet<SystemLog> SystemLogs { get; set; }
         public DbSet<AuthModel> AuthModels { get; set; }
         public LazarContext(DbContextOptions<LazarContext> options) : base(options) {
-            Database.EnsureDeleted();
             Database.EnsureCreated();
         }
         private static DbContextOptions<LazarContext> ModifyOptions(DbContextOptions<LazarContext> options) {

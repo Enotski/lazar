@@ -1,4 +1,6 @@
-﻿using Lazar.Services.Contracts.Administration;
+﻿using Lazar.Domain.Core.SelectorModels.Base;
+using Lazar.Domain.Interfaces.Options;
+using Lazar.Services.Contracts.Administration;
 using Lazar.Services.Contracts.Request;
 using Lazar.Services.Contracts.Request.DataTable.Base;
 using Lazar.Services.Contracts.Response.Models;
@@ -15,6 +17,12 @@ namespace Lazar.Srevices.Iterfaces.Administration {
         /// <param name="options">Filtering and search options</param>
         /// <returns>List of records</returns>
         Task<DataTableDto<RoleDto>> GetAsync(DataTableRequestDto options);
+        /// <summary>
+        /// Records for presentation layer by user key
+        /// </summary>
+        /// <param name="options">Filtering and search options</param>
+        /// <returns>List of records by user key</returns>
+        Task<DataTableDto<RoleDto>> GetByUserAsync(RoleTableRequestDto options);
         /// <summary>
         /// Entity for presentation layer
         /// </summary>
@@ -41,5 +49,11 @@ namespace Lazar.Srevices.Iterfaces.Administration {
         /// <param name="options">Selection parameters</param>
         /// <returns>List of key-names</returns>
         Task<EntityResponseDto<IReadOnlyList<ListItemDto<Guid>>>> GetListAsync(KeyNameRequestDto options);
+        /// <summary>
+        /// Get list of key-name models of user's roles
+        /// </summary>
+        /// <param name="options">Selection parameters</param>
+        /// <returns>List of keys-names of models</returns>
+        Task<EntityResponseDto<IReadOnlyList<ListItemDto<Guid>>>> GetKeyNameByUserAsync(SelectRoleRequestDto options);
     }
 }

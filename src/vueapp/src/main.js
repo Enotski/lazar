@@ -9,7 +9,6 @@ import './css/site.css'
 import store from "./store";
 
 import UsersPage from './components/AdministrationPages/UsersPage.vue'
-import RolesPage from './components/AdministrationPages/RolesPage.vue'
 import UserProfilePage from './components/AdministrationPages/UserProfilePage.vue'
 import SystemLogPage from './components/AdministrationPages/SystemLogPage.vue'
 import DspPage from './components/DspPages/DspPage.vue'
@@ -33,7 +32,6 @@ import MainContainer from './components/MainComponents/MainContainer.vue'
 const routes = [
     { path: '/', component: MainContainer },
     { path: '/users', component: UsersPage },
-    { path: '/roles', component: RolesPage },
     { path: '/user-profile', component: UserProfilePage },
     { path: '/system-log', component: SystemLogPage },
     { path: '/correlation', component: CorrelationPage },

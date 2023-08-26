@@ -9,7 +9,7 @@ using Z.EntityFramework.Plus;
 namespace Lazar.Infrastructure.Data.Ef.Repositories.Base {
     public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class, IKey {
         protected readonly LazarContext _dbContext;
-        public BaseRepository(LazarContext dbContext){
+        public BaseRepository(LazarContext dbContext) {
             _dbContext = dbContext;
         }
         /// <summary>
@@ -23,31 +23,34 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Base {
         protected IQueryable<TEntity> BuildQuery(Expression<Func<TEntity, bool>>? filter = null,
              Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? ordered = null,
              IPaginatedOption? paginated = null, params Expression<Func<TEntity, object>>[] includes) {
+            try {
+                IQueryable<TEntity> query = _dbContext.Set<TEntity>();
 
-            IQueryable<TEntity> query = _dbContext.Set<TEntity>();
-
-            if (includes is not null && includes.Any()) {
-                query = includes.Aggregate(query, (current, include) => current.Include(include));
-            }
-
-            if (filter is not null) {
-                query = query.Where(filter);
-            }
-
-            if (ordered is not null) {
-                query = ordered(query);
-            }
-
-            if (paginated is not null) {
-                if (paginated.Skip >= 0) {
-                    query = query.Skip(paginated.Skip.Value);
+                if (includes is not null && includes.Any()) {
+                    query = includes.Aggregate(query, (current, include) => current.Include(include));
                 }
 
-                if (paginated.Take > 0) {
-                    query = query.Take(paginated.Take.Value);
+                if (filter is not null) {
+                    query = query.Where(filter);
                 }
+
+                if (ordered is not null) {
+                    query = ordered(query);
+                }
+
+                if (paginated is not null) {
+                    if (paginated.Skip >= 0) {
+                        query = query.Skip(paginated.Skip.Value);
+                    }
+
+                    if (paginated.Take > 0) {
+                        query = query.Take(paginated.Take.Value);
+                    }
+                }
+                return query;
+            } catch {
+                throw;
             }
-            return query;
         }
         /// <summary>
         /// Get entity by key
@@ -55,7 +58,11 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Base {
         /// <param name="id">Primary key of entity</param>
         /// <returns>Entity</returns>
         public async Task<TEntity> GetAsync(Guid? id) {
-            return await BuildQuery(m => m.Id == id).FirstOrDefaultAsync();
+            try {
+                return await BuildQuery(m => m.Id == id).FirstOrDefaultAsync();
+            } catch {
+                throw;
+            }
         }
         /// <summary>
         /// Get entities by key
@@ -63,10 +70,14 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Base {
         /// <param name="ids">Primary keys of entities</param>
         /// <returns>Entity</returns>
         public async Task<IReadOnlyList<TEntity>> GetAsync(IEnumerable<Guid> ids) {
-            if (!ids.Any()) {
-                return new List<TEntity>();
+            try {
+                if (!ids.Any()) {
+                    return new List<TEntity>();
+                }
+                return await BuildQuery(m => ids.Contains(m.Id)).ToListAsync();
+            } catch {
+                throw;
             }
-            return await BuildQuery(m => ids.Contains(m.Id)).ToListAsync();
         }
         /// <summary>
         /// Count of entities
@@ -74,7 +85,11 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Base {
         /// <param name="filter">Concrete filter</param>
         /// <returns></returns>
         protected async Task<int> CountAsync(Expression<Func<TEntity, bool>>? filter = null) {
-            return await BuildQuery(filter).CountAsync();
+            try {
+                return await BuildQuery(filter).CountAsync();
+            } catch {
+                throw;
+            }
         }
         /// <summary>
         /// Create entity
@@ -82,8 +97,12 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Base {
         /// <param name="entity">New entity</param>
         /// <returns></returns>
         public async Task AddAsync(TEntity entity) {
-            _dbContext.Set<TEntity>().Add(entity);
-            await _dbContext.SaveChangesAsync();
+            try {
+                _dbContext.Set<TEntity>().Add(entity);
+                await _dbContext.SaveChangesAsync();
+            } catch {
+                throw;
+            }
         }
         /// <summary>
         /// Create entities
@@ -91,11 +110,15 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Base {
         /// <param name="entities">New entities</param>
         /// <returns></returns>
         public async Task AddAsync(IEnumerable<TEntity> entities) {
-            if (!entities.Any()) {
-                return;
+            try {
+                if (!entities.Any()) {
+                    return;
+                }
+                _dbContext.Set<TEntity>().AddRange(entities);
+                await _dbContext.SaveChangesAsync();
+            } catch {
+                throw;
             }
-            _dbContext.Set<TEntity>().AddRange(entities);
-            await _dbContext.SaveChangesAsync();
         }
         /// <summary>
         /// Update entity
@@ -103,8 +126,12 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Base {
         /// <param name="entity">Changed entity</param>
         /// <returns></returns>
         public async Task UpdateAsync(TEntity entity) {
-            _dbContext.Entry(entity).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
+            try {
+                _dbContext.Entry(entity).State = EntityState.Modified;
+                await _dbContext.SaveChangesAsync();
+            } catch {
+                throw;
+            }
         }
         /// <summary>
         /// Update entities
@@ -112,13 +139,17 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Base {
         /// <param name="entities">Changed entities</param>
         /// <returns></returns>
         public async Task UpdateAsync(IEnumerable<TEntity> entities) {
-            if (!entities.Any()) {
-                return;
+            try {
+                if (!entities.Any()) {
+                    return;
+                }
+                foreach (var entity in entities) {
+                    _dbContext.Entry(entity).State = EntityState.Modified;
+                }
+                await _dbContext.SaveChangesAsync();
+            } catch {
+                throw;
             }
-            foreach (var entity in entities) {
-                _dbContext.Entry(entity).State = EntityState.Modified;
-            }
-            await _dbContext.SaveChangesAsync();
         }
         /// <summary>
         /// Remove entity
@@ -126,8 +157,12 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Base {
         /// <param name="entity">Entity to remove</param>
         /// <returns></returns>
         public async Task DeleteAsync(TEntity entity) {
-            _dbContext.Set<TEntity>().Remove(entity);
-            await _dbContext.SaveChangesAsync();
+            try {
+                _dbContext.Set<TEntity>().Remove(entity);
+                await _dbContext.SaveChangesAsync();
+            } catch {
+                throw;
+            }
         }
         /// <summary>
         /// Remove entity by key
@@ -135,9 +170,13 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Base {
         /// <param name="id">Primary key of entity</param>
         /// <returns></returns>
         public async Task DeleteAsync(Guid? id) {
-            var entity = await GetAsync(id);
-            if (entity is not null) {
-                await DeleteAsync(entity);
+            try {
+                var entity = await GetAsync(id);
+                if (entity is not null) {
+                    await DeleteAsync(entity);
+                }
+            } catch {
+                throw;
             }
         }
         /// <summary>

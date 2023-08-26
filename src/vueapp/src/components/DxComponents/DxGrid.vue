@@ -34,8 +34,7 @@
     v-on:option-changed="onOptionChanged"
     v-on:context-menu-preparing="onContextMenuPreparing"
     v-on:cell-click="onCellClick"
-    v-on:content-ready="onContentReady"
-  >
+    v-on:content-ready="onContentReady">
   </DxDataGrid>
 </template>
 
@@ -48,7 +47,7 @@ import DxDataGrid from "devextreme-vue/data-grid";
 import CustomStore from "devextreme/data/custom_store";
 
 import {sendRequest} from "../../../utils/requestUtils";
-import {DataGrid}from "../../../utils/DxGridHelpers";
+import {DataGrid}from "../../../utils/DxGridUtils";
 
 let gridDataSource = [];
 

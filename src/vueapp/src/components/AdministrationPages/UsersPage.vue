@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid content-container">
-    <div class="row">
-      <div class="col">
+    <div class="d-flex">
+      <div class="col-7">
           <DxGrid
             :ref="usersGridRef"
             :data-url="urlGetUsers"
@@ -9,27 +9,25 @@
             :events="userEvents"
             :height="usersTableHeight"
             :editing="usersGridEditing"
-            :width="1000"
             :data-edit-functions="usersEditFunctions"
           />
       </div>
-      <div class="col">
+      <div class="col-5">
         <div class="row ml-5 pt-0">
-          <div class="row mb-3">
-            <div class="col-auto">
+          <div class="d-flex mb-3 px-0">
+            <div class="col-auto me-3">
               <n-button
                 @click="setRoleToUser = true"
                 type="success"
                 ghost
-                icon-placement="left"
-              >
+                icon-placement="left">
                 <template #icon>
                   <n-icon><add-icon /></n-icon>
                 </template>
                 Set Role
               </n-button>
             </div>
-            <div class="col">
+            <div class="flex-grow-1">
               <DxSelect
                 :ref="rolesSelectRef"
                 :data-url="urlGetRolesList"
@@ -38,7 +36,6 @@
               />
             </div>
           </div>
-          <div class="row">
             <DxGrid
               :ref="rolesGridRef"
               :data-url="urlGetRoles"
@@ -48,7 +45,6 @@
               :editing="rolesGridEditing"
               :data-edit-functions="rolesEditFunctions"
             />
-          </div>
         </div>
       </div>
     </div>
@@ -83,9 +79,9 @@ export default {
   },
   data() {
     return {
-      urlGetUsers: `${apiUrl}/users/get-users-data-grid`,
-      urlGetRoles: `${apiUrl}/roles/get-data-grid`,
-      urlGetRolesList: `${apiUrl}/roles/get-roles`,
+      urlGetUsers: `${apiUrl}/users/get-all`,
+      urlGetRoles: `${apiUrl}/roles/get-by-user`,
+      urlGetRolesList: `${apiUrl}/roles/get-list`,
       urlSetRoleToUser: `${apiUrl}/user-profile/set-role-to-user`,
       usersGridRef: "users_grid",
       rolesGridRef: "roles_grid",
@@ -106,8 +102,8 @@ export default {
         refreshMode: "full",
       },
       usersGridEditing: {
-        allowAdding: true,
-        allowUpdating: true,
+        allowAdding: false,
+        allowUpdating: false,
         allowDeleting: true,
         confirmDelete: true,
         useIcons: true,
@@ -115,14 +111,6 @@ export default {
         refreshMode: "full",
       },
       usersEditFunctions: {
-        insert: async (values) =>
-          await sendRequest(`${apiUrl}/users/add-user`, "POST", values),
-        update: async (key, values) =>
-          await sendRequest(`${apiUrl}/users/update-user`, "POST", {
-            id: key,
-            email: values.Email,
-            login: values.Login,
-          }),
         remove: async (key) =>
           await sendRequest(`${apiUrl}/users/delete-user`, "POST", {
             id: key,
@@ -163,35 +151,31 @@ export default {
       },
       userColumns: [
         {
-          caption: "№ п/п",
+          caption: "№",
           dataField: "Num",
           allowSorting: false,
           allowFiltering: false,
           width: 60,
         },
         {
-          caption: "Логин",
           dataField: "Login",
         },
         {
-          caption: "Эл.почта",
           dataField: "Email",
         },
         {
-          caption: "Роли",
           dataField: "Roles",
         },
       ],
       roleColumns: [
         {
-          caption: "№ п/п",
+          caption: "№",
           dataField: "Num",
           allowSorting: false,
           allowFiltering: false,
           width: 60,
         },
         {
-          caption: "Наименование",
           dataField: "Name",
         },
       ],

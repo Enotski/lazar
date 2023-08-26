@@ -14,7 +14,7 @@ namespace LazarWebApi.Controllers.Administration {
     /// Controller of roles
     /// </summary>
     [ApiController]
-    [Route("api/roles"), Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Route("api/roles")/*, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)*/]
     public class RolesController : BaseController {
         public RolesController(IServiceManager serviceManager, IModelMapper mapper)
             : base(serviceManager, mapper) {
@@ -29,10 +29,28 @@ namespace LazarWebApi.Controllers.Administration {
             }
         }
         [HttpPost]
+        [Route("get-by-user")]
+        public async Task<IActionResult> GetByUser([FromBody] DataTableRequestDto options) {
+            try {
+                return Ok(await _serviceManager.RoleService.GetAsync(options));
+            } catch (Exception exp) {
+                return Ok(new ErrorResponseDto(exp));
+            }
+        }
+        [HttpPost]
         [Route("get-list")]
         public async Task<IActionResult> GetRolesList([FromBody] KeyNameRequestDto options) {
             try {
                 return Ok(await _serviceManager.RoleService.GetListAsync(options));
+            } catch (Exception exp) {
+                return Ok(new ErrorResponseDto(exp));
+            }
+        }
+        [HttpPost]
+        [Route("get-list-by-user")]
+        public async Task<IActionResult> GetRolesByUserList([FromBody] SelectRoleRequestDto options) {
+            try {
+                return Ok(await _serviceManager.RoleService.GetKeyNameByUserAsync(options));
             } catch (Exception exp) {
                 return Ok(new ErrorResponseDto(exp));
             }

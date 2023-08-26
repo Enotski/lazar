@@ -139,7 +139,11 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Logging {
         /// <param name="changedBy">Initiator of event</param>
         /// <returns></returns>
         public async Task AddAsync(SubSystemType subSystem, EventType eventType, string description, string? changedBy = null) {
-            await AddAsync(new SystemLog(description, subSystem, eventType, changedBy));
+            try {
+                await AddAsync(new SystemLog(description, subSystem, eventType, changedBy));
+            } catch {
+                throw;
+            }
         }
         /// <summary>
         /// Get the count of records according to the search parameters
@@ -147,8 +151,12 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Logging {
         /// <param name="options"></param> 
         /// <returns>Count of records</returns>
         public async Task<int> CountAsync(IEnumerable<ISearchOption> options) {
-            var filter = BuildWherePredicate(options);
-            return await CountAsync(filter);
+            try {
+                var filter = BuildWherePredicate(options);
+                return await CountAsync(filter);
+            } catch {
+                throw;
+            }
         }
         /// <summary>
         /// Get a list of log entries according to search and sort options
@@ -158,9 +166,13 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Logging {
         /// <param name="paginationOption">Pagination parameters</param> 
         /// <returns>List of entities</returns>
         public async Task<IReadOnlyList<SystemLog>> GetRecordsAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption) {
-            var filter = BuildWherePredicate(searchOptions);
-            var ordered = BuildSortFunction(sortOptions);
-            return await BuildQuery(filter, ordered, paginationOption).ToListAsync();
+            try {
+                var filter = BuildWherePredicate(searchOptions);
+                var ordered = BuildSortFunction(sortOptions);
+                return await BuildQuery(filter, ordered, paginationOption).ToListAsync();
+            } catch {
+                throw;
+            }
         }
         /// <summary>
         /// Get a list of unique values ​​in a specific column
@@ -171,13 +183,17 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Logging {
         /// <param name="columnSelector">Property for select</param> 
         /// <returns>List of values ​​of a properties</returns>
         public async Task<IReadOnlyList<string>> GetRecordsBySelectorAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption, string columnSelector) {
-            var selector = BuildSelectorPredicate(columnSelector);
-            if (selector is null) {
-                return new List<string>();
+            try {
+                var selector = BuildSelectorPredicate(columnSelector);
+                if (selector is null) {
+                    return new List<string>();
+                }
+                var filter = BuildWherePredicate(searchOptions);
+                var ordered = BuildSortFunction(sortOptions);
+                return await BuildQuery(filter, ordered, paginationOption).Select(selector).Distinct().ToListAsync();
+            } catch {
+                throw;
             }
-            var filter = BuildWherePredicate(searchOptions);
-            var ordered = BuildSortFunction(sortOptions);
-            return await BuildQuery(filter, ordered, paginationOption).Select(selector).Distinct().ToListAsync();
         }
     }
 }

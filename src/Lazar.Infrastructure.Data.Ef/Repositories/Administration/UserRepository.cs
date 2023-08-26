@@ -40,32 +40,32 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
                 var column = opt.ColumnName.TrimToUpper();
                 switch (column) {
                     case "NAME": {
-                        predicate = predicate.And(m => m.Name.ToUpper().Contains(val));
-                        break;
-                    }
-                    case "LOGIN": {
-                        predicate = predicate.And(m => m.Login.ToUpper().Contains(val));
-                        break;
-                    }
-                    case "EMAIL": {
-                        predicate = predicate.And(m => m.Email.ToUpper().Contains(val));
-                        break;
-                    }
-                    case "CHANGEDBY": {
-                        predicate = predicate.And(m => !string.IsNullOrEmpty(m.ChangedBy) && m.ChangedBy.ToUpper().Contains(val));
-                        break;
-                    }
-                    case "ROLES": {
-                        predicate = predicate.And(m => !string.IsNullOrEmpty(m.ChangedBy) && m.ChangedBy.ToUpper().Contains(val));
-                        break;
-                    }
-                    case "DATEOFCHANGE": {
-                        var interval = val.Split(';');
-                        if (interval.Length == 2) {
-                            predicate = predicate.WhereDateBetween(x => x.DateChange, interval[0], interval[1]);
+                            predicate = predicate.And(m => m.Name.ToUpper().Contains(val));
+                            break;
                         }
-                        break;
-                    }
+                    case "LOGIN": {
+                            predicate = predicate.And(m => m.Login.ToUpper().Contains(val));
+                            break;
+                        }
+                    case "EMAIL": {
+                            predicate = predicate.And(m => m.Email.ToUpper().Contains(val));
+                            break;
+                        }
+                    case "CHANGEDBY": {
+                            predicate = predicate.And(m => !string.IsNullOrEmpty(m.ChangedBy) && m.ChangedBy.ToUpper().Contains(val));
+                            break;
+                        }
+                    case "ROLES": {
+                            predicate = predicate.And(m => !string.IsNullOrEmpty(m.ChangedBy) && m.ChangedBy.ToUpper().Contains(val));
+                            break;
+                        }
+                    case "DATEOFCHANGE": {
+                            var interval = val.Split(';');
+                            if (interval.Length == 2) {
+                                predicate = predicate.WhereDateBetween(x => x.DateChange, interval[0], interval[1]);
+                            }
+                            break;
+                        }
                 }
             }
             return predicate;
@@ -85,25 +85,25 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
                 var column = opt.ColumnName.TrimToUpper();
                 switch (column) {
                     case "NAME": {
-                        ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.Name) : ordered.ThenByDescending(m => m.Name);
-                        break;
-                    }
+                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.Name) : ordered.ThenByDescending(m => m.Name);
+                            break;
+                        }
                     case "LOGIN": {
-                        ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.Login) : ordered.ThenByDescending(m => m.Login);
-                        break;
-                    }
+                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.Login) : ordered.ThenByDescending(m => m.Login);
+                            break;
+                        }
                     case "EMAIL": {
-                        ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.Email) : ordered.ThenByDescending(m => m.Email);
-                        break;
-                    }
+                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.Email) : ordered.ThenByDescending(m => m.Email);
+                            break;
+                        }
                     case "CHANGEDBY": {
-                        ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.ChangedBy) : ordered.ThenByDescending(m => m.ChangedBy);
-                        break;
-                    }
+                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.ChangedBy) : ordered.ThenByDescending(m => m.ChangedBy);
+                            break;
+                        }
                     default: {
-                        ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.DateChange) : ordered.ThenByDescending(m => m.DateChange);
-                        break;
-                    }
+                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.DateChange) : ordered.ThenByDescending(m => m.DateChange);
+                            break;
+                        }
                 }
             }
             return orb => ordered;
@@ -119,17 +119,17 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
             }
             switch (columnSelector.TrimToUpper()) {
                 case "NAME": {
-                    return x => x.Name;
-                }
+                        return x => x.Name;
+                    }
                 case "LOGIN": {
-                    return x => x.Login;
-                }
+                        return x => x.Login;
+                    }
                 case "EMAIL": {
-                    return x => x.Email;
-                }
+                        return x => x.Email;
+                    }
                 case "CHANGEDBY": {
-                    return x => x.ChangedBy;
-                }
+                        return x => x.ChangedBy;
+                    }
             }
             return null;
         }
@@ -140,7 +140,11 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
         /// <param name="ids">List of Keys</param>
         /// <returns>List of entities selector models</returns>
         public async Task<IReadOnlyList<UserSelectorModel>> GetRecordsAsync(IEnumerable<Guid> ids) {
-            return await BuildQuery(x => ids.Contains(x.Id), null, null).Select(x => new UserSelectorModel(x.Id, x.Roles.Select(r => r.Name), x.Roles.Select(r => r.Id), x.Name, x.Login, x.Password, x.Email, x.ChangedBy, x.DateChange)).ToListAsync();
+            try {
+                return await BuildQuery(x => ids.Contains(x.Id), null, null).Select(x => new UserSelectorModel(x.Id, x.Roles.Select(r => r.Name), x.Roles.Select(r => r.Id), x.Name, x.Login, x.Password, x.Email, x.ChangedBy, x.DateChange)).ToListAsync();
+            } catch {
+                throw;
+            }
         }
         /// <summary>
         /// Return record by key
@@ -148,8 +152,12 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
         /// <param name="id">Key of record</param>
         /// <returns>Entity selector model</returns>
         public async Task<UserSelectorModel> GetRecordAsync(Guid? id) {
-            var entity = await GetAsync(id);
-            return new UserSelectorModel(entity.Id, entity.Roles.Select(r => r.Name), entity.Roles.Select(r => r.Id), entity.Name, entity.Login, entity.Password, entity.Email, entity.ChangedBy, entity.DateChange);
+            try {
+                var entity = await GetAsync(id);
+                return new UserSelectorModel(entity.Id, entity.Roles.Select(r => r.Name), entity.Roles.Select(r => r.Id), entity.Name, entity.Login, entity.Password, entity.Email, entity.ChangedBy, entity.DateChange);
+            } catch {
+                throw;
+            }
         }
         /// <summary>
         /// Return user by login
@@ -157,11 +165,15 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
         /// <param name="login">Login of user</param>
         /// <returns>Entity selector model</returns>
         public async Task<UserSelectorModel> GetByLoginAsync(string login) {
-            if (string.IsNullOrEmpty(login)) {
-                return null;
+            try {
+                if (string.IsNullOrEmpty(login)) {
+                    return null;
+                }
+                var entity = await _dbContext.Users.FirstOrDefaultAsync(m => m.Login == login);
+                return new UserSelectorModel(entity.Id, entity.Roles.Select(r => r.Name), entity.Roles.Select(r => r.Id), entity.Name, entity.Login, entity.Password, entity.Email, entity.ChangedBy, entity.DateChange);
+            } catch {
+                throw;
             }
-            var entity = await _dbContext.Users.FirstOrDefaultAsync(m => m.Login == login);
-            return new UserSelectorModel(entity.Id, entity.Roles.Select(r => r.Name), entity.Roles.Select(r => r.Id), entity.Name, entity.Login, entity.Password, entity.Email, entity.ChangedBy, entity.DateChange);
         }
         /// <summary>
         /// Returns the number of records according to the search parameters
@@ -169,8 +181,10 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
         /// <param name="options">Filtration</param> 
         /// <returns>Number of entities</returns>
         public async Task<int> CountAsync(IEnumerable<ISearchOption> options) {
-            var filter = BuildWherePredicate(options);
-            return await CountAsync(filter);
+            try {
+                var filter = BuildWherePredicate(options);
+                return await CountAsync(filter);
+            } catch { throw; }
         }
         /// <summary>
         /// Returns a list of records according to the search and sort options
@@ -180,9 +194,11 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
         /// <param name="paginationOption">Pagination</param> 
         /// <returns>Entity selector model</returns>
         public async Task<IReadOnlyList<UserSelectorModel>> GetRecordsAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption) {
-            var filter = BuildWherePredicate(searchOptions);
-            var ordered = BuildSortFunction(sortOptions);
-            return await BuildQuery(filter, ordered, paginationOption).Select(x => new UserSelectorModel(x.Id, x.Roles.Select(r => r.Name), x.Roles.Select(r => r.Id), x.Name, x.Login, x.Password, x.Email, x.ChangedBy, x.DateChange)).ToListAsync();
+            try {
+                var filter = BuildWherePredicate(searchOptions);
+                var ordered = BuildSortFunction(sortOptions);
+                return await BuildQuery(filter, ordered, paginationOption).Select(x => new UserSelectorModel(x.Id, x.Roles.Select(r => r.Name), x.Roles.Select(r => r.Id), x.Name, x.Login, x.Password, x.Email, x.ChangedBy, x.DateChange)).ToListAsync();
+            } catch { throw; }
         }
         /// <summary>
         /// Returns a list of unique values ​​in a specific column
@@ -193,13 +209,17 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
         /// <param name="columnSelector">Name of specific column</param> 
         /// <returns>List of entities specific property values</returns>
         public async Task<IReadOnlyList<string>> GetRecordsBySelectorAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption, string columnSelector) {
-            var selector = BuildSelectorPredicate(columnSelector);
-            if (selector is null) {
-                return new List<string>();
+            try {
+                var selector = BuildSelectorPredicate(columnSelector);
+                if (selector is null) {
+                    return new List<string>();
+                }
+                var filter = BuildWherePredicate(searchOptions);
+                var ordered = BuildSortFunction(sortOptions);
+                return await BuildQuery(filter, ordered, paginationOption).Select(selector).Distinct().ToListAsync();
+            } catch {
+                throw;
             }
-            var filter = BuildWherePredicate(searchOptions);
-            var ordered = BuildSortFunction(sortOptions);
-            return await BuildQuery(filter, ordered, paginationOption).Select(selector).Distinct().ToListAsync();
         }
         /// <summary>
         /// Operation Permissions

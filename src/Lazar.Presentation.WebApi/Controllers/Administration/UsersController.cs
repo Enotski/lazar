@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LazarWebApi.Controllers.Administration {
     [ApiController]
-    [Route("api/users"), Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Route("api/users")/*, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)*/]
     public class UsersController : BaseController {
         public UsersController(IServiceManager serviceManager, IModelMapper mapper)
             : base(serviceManager, mapper) {

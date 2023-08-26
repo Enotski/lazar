@@ -27,7 +27,7 @@ import DxGrid from "../DxComponents/DxGrid.vue";
 import DxDateRangeBox from "devextreme-vue/date-range-box";
 import { NButton } from "naive-ui";
 
-import { DataGrid } from "../../../utils/DxGridHelpers";
+import { DataGrid } from "../../../utils/DxGridUtils";
 import { sendRequest, apiUrl } from "../../../utils/requestUtils";
 
 const msInDay = 1000 * 60 * 60 * 24;

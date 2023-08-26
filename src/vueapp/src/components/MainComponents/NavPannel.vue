@@ -1,7 +1,6 @@
 <template>
   <nav
-    class="navbar d-flex fixed-top bg-light justify-content-between box-shadow mb-3 shadow p-3 py-2"
-  >
+    class="navbar d-flex fixed-top bg-light justify-content-between box-shadow mb-3 shadow p-3 py-2">
     <div>
       <router-link
         to="/"
@@ -11,7 +10,7 @@
         ></router-link
       >
     </div>
-    <div v-if="loggedIn">
+    <!-- <div v-if="loggedIn"> -->
       <div class="row">
         <div class="col-auto">
           <router-link to="/users" class="nav nav-link text-secondary"
@@ -19,22 +18,11 @@
           >
         </div>
         <div class="col-auto">
-          <router-link to="/roles" class="nav nav-link text-secondary"
-            >Roles</router-link
-          >
-        </div>
-        <!-- <div class="col-auto">
-          <router-link to="/user-profile" class="nav nav-link text-secondary"
-            >Me</router-link
-          >
-        </div> -->
-        <div class="col-auto">
           <router-link to="/system-log" class="nav nav-link text-secondary"
             >System log</router-link
           >
         </div>
       </div>
-    </div>
     <div class="d-flex">
       <div class="col me-5">
         <n-dropdown trigger="hover" :options="items" @select="handleNavSelec">
