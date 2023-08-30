@@ -2,6 +2,6 @@
 
 namespace Lazar.Services.Contracts.Administration {
     public class RoleTableRequestDto : DataTableRequestDto {
-        public Guid? SelectedUserId { get; set; }
+        public string? SelectedUserId { get; set; }
     }
 }

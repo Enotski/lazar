@@ -11,7 +11,7 @@ namespace Lazar.Domain.Core.SelectorModels.Administration {
         /// <summary>
         /// List of roles names
         /// </summary>
-        public readonly IEnumerable<string> Roles;
+        public readonly IEnumerable<string> RoleNames;
         /// <summary>
         /// Keys of roles
         /// </summary>
@@ -19,14 +19,14 @@ namespace Lazar.Domain.Core.SelectorModels.Administration {
         /// <summary>
         /// List of roles names in raw string
         /// </summary>
-        public readonly string RoleNames;
+        public readonly string Roles;
         public UserSelectorModel(Guid id, IEnumerable<string> roles, IEnumerable<Guid> roleIds, string name, string login, string password, string email, string changedBy, DateTime dateChange)
             : base(id, name, changedBy, dateChange) {
             Login = login;
             Email = email;
             Password = password;
-            Roles = roles;
-            RoleNames = roles != null ? string.Join("; ", roles) : "";
+            RoleNames = roles;
+            Roles = roles != null ? string.Join("; ", roles) : "";
             RoleIds = roleIds;
         }
     }

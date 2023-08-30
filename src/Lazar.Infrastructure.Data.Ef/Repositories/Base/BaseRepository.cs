@@ -69,7 +69,7 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Base {
         /// </summary>
         /// <param name="ids">Primary keys of entities</param>
         /// <returns>Entity</returns>
-        public async Task<IReadOnlyList<TEntity>> GetAsync(IEnumerable<Guid> ids) {
+        public async Task<IEnumerable<TEntity>> GetAsync(IEnumerable<Guid> ids) {
             try {
                 if (!ids.Any()) {
                     return new List<TEntity>();

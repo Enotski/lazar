@@ -110,17 +110,23 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
         /// </summary>
         /// <param name="ids">List of Keys</param>
         /// <returns>List of entities</returns>
-        public async Task<IReadOnlyList<Role>> GetRecordsAsync(IEnumerable<Guid> ids) {
+        public async Task<IEnumerable<Role>> GetRecordsAsync(IEnumerable<Guid> ids) {
             return await BuildQuery(x => ids.Contains(x.Id)).ToListAsync();
         }
         /// <summary>
         /// Returns the number of records according to the search parameters
         /// </summary>
         /// <param name="options">Filtration</param> 
+        /// <param name="userId">Primary key of user</param>
         /// <returns>Count of entities</returns>
-        public async Task<int> CountAsync(IEnumerable<ISearchOption> options) {
+        public async Task<int> CountAsync(IEnumerable<ISearchOption> options, Guid? userId = null) {
             try {
                 var filter = BuildWherePredicate(options);
+                if (userId.HasValue) {
+                    Expression<Func<Role, bool>> userPredicate = x => x.Users.Select(u => u.Id).Contains(userId.Value);
+                    filter = filter != null ? filter.And(userPredicate) : userPredicate;
+                }
+
                 return await CountAsync(filter);
             } catch {
                 throw;
@@ -133,7 +139,7 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
         /// <param name="sortOptions">Sorting</param> 
         /// <param name="paginationOption">Pagination</param> 
         /// <returns>List of entities</returns>
-        public async Task<IReadOnlyList<Role>> GetRecordsAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption) {
+        public async Task<IEnumerable<Role>> GetRecordsAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption) {
             try {
                 var filter = BuildWherePredicate(searchOptions);
                 var ordered = BuildSortFunction(sortOptions);
@@ -142,13 +148,23 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
                 throw;
             }
         }
-        public async Task<IReadOnlyList<Role>> GetRecordsAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption, Guid? userId = null) {
+        /// <summary>
+        /// Returns a list of entities according to the search and sort options
+        /// </summary>
+        /// <param name="searchOptions">Filtration</param>
+        /// <param name="sortOptions">Sorting</param> 
+        /// <param name="paginationOption">Pagination</param> 
+        /// <param name="userId">Primary key of user</param>
+        /// <returns>List of entities</returns>
+        public async Task<IEnumerable<Role>> GetRecordsAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption, Guid? userId = null) {
             try {
                 var filter = BuildWherePredicate(searchOptions);
                 var ordered = BuildSortFunction(sortOptions);
-                if (userId.HasValue)
-                    filter = filter.And(x => x.Users.Select(u => u.Id).Contains(userId.Value));
-
+                if (userId.HasValue) {
+                    Expression<Func<Role, bool>> userPredicate = x => x.Users.Select(u => u.Id).Contains(userId.Value);
+                    filter = filter != null ? filter.And(userPredicate) : userPredicate;
+                }
+           
                 return await BuildQuery(filter, ordered, paginationOption).ToListAsync();
             } catch {
                 throw;
@@ -162,7 +178,7 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
         /// <param name="paginationOption">Pagination</param> 
         /// <param name="columnSelector">Name of specific column</param> 
         /// <returns>List of entities specific property values</returns>
-        public async Task<IReadOnlyList<string>> GetRecordsBySelectorAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption, string columnSelector) {
+        public async Task<IEnumerable<string>> GetRecordsBySelectorAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption, string columnSelector) {
             try {
                 var selector = BuildSelectorPredicate(columnSelector);
                 if (selector is null) {
@@ -176,17 +192,17 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
             }
         }
         /// <summary>
-        /// Get list of key-name models of user's roles
+        /// Get list of key-name models of not user's roles
         /// </summary>
         /// <param name="term">Search term by login property</param>
         /// <param name="userId">Primary key of user</param>
         /// <param name="paginationOption">Pagination</param>
-        /// <returns>List of roles</returns>
-        public async Task<IReadOnlyList<Role>> GetRecordsByUserAsync(string term, Guid? userId = null, IPaginatedOption? paginationOption = null) {
+        /// <returns>List of not user's roles</returns>
+        public async Task<IEnumerable<Role>> GetNotUserAsync(string term, Guid? userId = null, IPaginatedOption? paginationOption = null) {
             try {
                 var predicate = PredicateBuilder.True<Role>();
                 if (userId.HasValue)
-                    predicate = predicate.And(x => x.Users.Select(u => u.Id).Contains(userId.Value));
+                    predicate = predicate.And(x => !x.Users.Select(u => u.Id).Contains(userId.Value));
                 if (!string.IsNullOrWhiteSpace(term)) {
                     term = term.Trim().ToUpper();
                     predicate = predicate.And(m => !string.IsNullOrEmpty(m.Name) && m.Name.ToUpper().Contains(term));
@@ -194,75 +210,5 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
                 return await BuildQuery(predicate, m => m.OrderBy(m => m.Name), paginationOption).ToListAsync();
             } catch { throw; }
         }
-        //public static void FilterData(ref IEnumerable<Role> source, IEnumerable<DataGridFilter> filters)
-        //{
-        //    if (filters == null || !filters.Any() || source == null) return;
-        //    foreach (var filter in filters)
-        //    {
-        //        filter.Value = filter.Value.Trim().ToLower();
-        //        switch (filter.ColumnName)
-        //        {
-        //            case "Name":
-        //                {
-        //                    switch (filter.Type)
-        //                    {
-        //                        case FilterType.Contains:
-        //                            {
-        //                                source = source.Where(x => x.Name.ToLower().Contains(filter.Value));
-        //                                break;
-        //                            }
-
-        //                        case FilterType.NotContains:
-        //                            {
-        //                                source = source.Where(x => !x.Name.ToLower().Contains(filter.Value));
-        //                                break;
-        //                            }
-
-        //                        case FilterType.StartsWith:
-        //                            {
-        //                                source = source.Where(x => x.Name.ToLower().StartsWith(filter.Value));
-        //                                break;
-        //                            }
-
-        //                        case FilterType.EndsWith:
-        //                            {
-        //                                source = source.Where(x => x.Name.ToLower().EndsWith(filter.Value));
-        //                                break;
-        //                            }
-
-        //                        case FilterType.Equals:
-        //                            {
-        //                                source = source.Where(x => x.Name.ToLower() == filter.Value);
-        //                                break;
-        //                            }
-        //                        case FilterType.NotEquals:
-        //                            {
-        //                                source = source.Where(x => x.Name.ToLower() != filter.Value);
-        //                                break;
-        //                            }
-        //                    }
-        //                    break;
-        //                }
-        //        }
-        //    }
-        //}
-
-        //public static void SortData(ref IOrderedEnumerable<Role> source, IEnumerable<DataGridSort> sorts)
-        //{
-        //    if (sorts == null || !sorts.Any() || source == null) return;
-        //    foreach (var sort in sorts)
-        //    {
-        //        switch (sort.ColumnName)
-        //        {
-        //            case "Name":
-        //                {
-        //                    source = sort.Type == SortType.Descending
-        //                        ? source.ThenByDescending(x => x.Name)
-        //                        : source.ThenBy(x => x.Name);
-        //                    break;
-        //                }
-        //        }
-        //    }
-        //}
     }
 }

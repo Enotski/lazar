@@ -30,7 +30,7 @@ namespace Lazar.Services.Logging {
                 int totalRecords = await _repositoryManager.SystemLogRepository.CountAsync(options.Filters);
                 var records = await _repositoryManager.SystemLogRepository.GetRecordsAsync(options.Filters, options.Sorts, options.Pagination);
                 return new DataTableDto<SystemLogDto>(totalRecords,
-                    _mapper.Mapper.Map<IReadOnlyList<SystemLogDto>>(records));
+                    _mapper.Mapper.Map<IEnumerable<SystemLogDto>>(records));
             } catch (Exception exp) {
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Logging, EventType.Read, "Получение списка записей журнала системных событий: " + exp.Format());
                 throw;

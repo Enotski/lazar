@@ -36,13 +36,13 @@ namespace Lazar.Domain.Interfaces.Repositories.Administration {
         /// <param name="sortOptions">Sorting</param> 
         /// <param name="paginationOption">Pagination</param> 
         /// <returns>Entity selector model</returns>
-        Task<IReadOnlyList<UserSelectorModel>> GetRecordsAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption);
+        Task<IEnumerable<UserSelectorModel>> GetRecordsAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption);
         /// <summary>
         /// Return records by keys
         /// </summary>
         /// <param name="ids">List of Keys</param>
         /// <returns>List of entities selector models</returns>
-        Task<IReadOnlyList<UserSelectorModel>> GetRecordsAsync(IEnumerable<Guid> ids);
+        Task<IEnumerable<UserSelectorModel>> GetRecordsAsync(IEnumerable<Guid> ids);
         /// <summary>
         /// Returns a list of unique values ​​in a specific column
         /// </summary>
@@ -51,6 +51,12 @@ namespace Lazar.Domain.Interfaces.Repositories.Administration {
         /// <param name="paginationOption">Pagination</param> 
         /// <param name="columnSelector">Name of specific column</param> 
         /// <returns>List of entities specific property values</returns>
-        Task<IReadOnlyList<string>> GetRecordsBySelectorAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption, string columnSelector);
+        Task<IEnumerable<string>> GetRecordsBySelectorAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption, string columnSelector);
+        /// <summary>
+        /// Return with roles include
+        /// </summary>
+        /// <param name="id">Primary key</param>
+        /// <returns>User entity</returns>
+        Task<User> GetWithRolesAsync(Guid? id);
     }
 }

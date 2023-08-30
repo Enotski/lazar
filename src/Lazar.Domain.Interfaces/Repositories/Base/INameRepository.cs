@@ -33,6 +33,6 @@ namespace Lazar.Domain.Interfaces.Repositories.Base {
         /// <param name="term">Search term by login property</param>
         /// <param name="paginationOption">Pagination</param>
         /// <returns>List of keys-names of models</returns>
-        Task<IReadOnlyList<KeyNameSelectorModel>> GetKeyNameRecordsAsync(string term, IPaginatedOption? paginationOption = null);
+        Task<IEnumerable<KeyNameSelectorModel>> GetKeyNameRecordsAsync(string term, IPaginatedOption? paginationOption = null);
     }
 }

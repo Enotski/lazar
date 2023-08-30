@@ -30,9 +30,9 @@ namespace LazarWebApi.Controllers.Administration {
         }
         [HttpPost]
         [Route("get-by-user")]
-        public async Task<IActionResult> GetByUser([FromBody] DataTableRequestDto options) {
+        public async Task<IActionResult> GetByUser([FromBody] RoleTableRequestDto options) {
             try {
-                return Ok(await _serviceManager.RoleService.GetAsync(options));
+                return Ok(await _serviceManager.RoleService.GetByUserAsync(options));
             } catch (Exception exp) {
                 return Ok(new ErrorResponseDto(exp));
             }
@@ -56,7 +56,7 @@ namespace LazarWebApi.Controllers.Administration {
             }
         }
         [HttpPost]
-        [Route("get/{id}")]
+        [Route("get")]
         public async Task<IActionResult> GetRoleModel([FromBody] Guid id) {
             try {
                 return Ok(await _serviceManager.RoleService.GetAsync(id));

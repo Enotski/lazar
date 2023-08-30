@@ -6,7 +6,7 @@ namespace Lazar.Domain.Core.Models.Administration {
         public string Login { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public IEnumerable<Role> Roles { get; set; } = new List<Role>();
+        public List<Role> Roles { get; set; } = new List<Role>();
         public User(Guid id, string name, string login, string password, string email, string changedBy, DateTime dateChange)
             : base(id, name, changedBy, dateChange) {
             Login = login;
@@ -20,11 +20,11 @@ namespace Lazar.Domain.Core.Models.Administration {
             Login = login;
             Email = email;
             Password = password;
-            Roles = roles;
+            Roles = roles.ToList();
             base.Update(name, changedBy);
         }
         public void Update(IEnumerable<Role> roles, string changedBy) {
-            Roles = roles;
+            Roles = roles.ToList();
             base.Update(changedBy);
         }
     }

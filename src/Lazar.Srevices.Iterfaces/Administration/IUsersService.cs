@@ -40,6 +40,20 @@ namespace Lazar.Srevices.Iterfaces.Administration {
         /// </summary>
         /// <param name="options">Selection parameters</param>
         /// <returns>List of key-names</returns>
-        Task<EntityResponseDto<IReadOnlyList<ListItemDto<Guid>>>> GetListAsync(KeyNameRequestDto options);
+        Task<EntityResponseDto<IEnumerable<ListItemDto<Guid>>>> GetListAsync(KeyNameRequestDto options);
+        /// <summary>
+        /// Add role to user
+        /// </summary>
+        /// <param name="model">Dto model</param>
+        /// <param name="login">Login of the user who triggered the event</param>
+        /// <returns></returns>
+        Task SetRoleToUser(UserRoleDto model, string login);
+        /// <summary>
+        /// Remove role from user
+        /// </summary>
+        /// <param name="model">Dto model</param>
+        /// <param name="login">Login of the user who triggered the event</param>
+        /// <returns></returns>
+        Task RemoveRoleFromUser(UserRoleDto model, string login);
     }
 }

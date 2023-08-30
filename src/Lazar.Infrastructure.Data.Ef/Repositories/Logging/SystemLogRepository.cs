@@ -165,7 +165,7 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Logging {
         /// <param name="sortOptions">Sort parameters</param> 
         /// <param name="paginationOption">Pagination parameters</param> 
         /// <returns>List of entities</returns>
-        public async Task<IReadOnlyList<SystemLog>> GetRecordsAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption) {
+        public async Task<IEnumerable<SystemLog>> GetRecordsAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption) {
             try {
                 var filter = BuildWherePredicate(searchOptions);
                 var ordered = BuildSortFunction(sortOptions);
@@ -182,7 +182,7 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Logging {
         /// <param name="paginationOption">Pagination parameters</param> 
         /// <param name="columnSelector">Property for select</param> 
         /// <returns>List of values ​​of a properties</returns>
-        public async Task<IReadOnlyList<string>> GetRecordsBySelectorAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption, string columnSelector) {
+        public async Task<IEnumerable<string>> GetRecordsBySelectorAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption, string columnSelector) {
             try {
                 var selector = BuildSelectorPredicate(columnSelector);
                 if (selector is null) {

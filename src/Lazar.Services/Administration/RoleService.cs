@@ -79,7 +79,7 @@ namespace Lazar.Services.Administration {
             try {
                 int totalRecords = await _repositoryManager.RoleRepository.CountAsync(options.Filters);
                 var records = await _repositoryManager.RoleRepository.GetRecordsAsync(options.Filters, options.Sorts, options.Pagination);
-                return new DataTableDto<RoleDto>(totalRecords, _mapper.Mapper.Map<IReadOnlyList<RoleDto>>(records));
+                return new DataTableDto<RoleDto>(totalRecords, _mapper.Mapper.Map<IEnumerable<RoleDto>>(records));
             } catch (Exception exp) {
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Read, "Получение списка ролей", exp.Format());
                 throw;
@@ -93,8 +93,8 @@ namespace Lazar.Services.Administration {
         public async Task<DataTableDto<RoleDto>> GetByUserAsync(RoleTableRequestDto options) {
             try {
                 int totalRecords = await _repositoryManager.RoleRepository.CountAsync(options.Filters);
-                var records = await _repositoryManager.RoleRepository.GetRecordsAsync(options.Filters, options.Sorts, options.Pagination, options.SelectedUserId);
-                return new DataTableDto<RoleDto>(totalRecords, _mapper.Mapper.Map<IReadOnlyList<RoleDto>>(records));
+                var records = await _repositoryManager.RoleRepository.GetRecordsAsync(options.Filters, options.Sorts, options.Pagination, Guid.TryParse(options.SelectedUserId, out Guid userId) ? userId : null);
+                return new DataTableDto<RoleDto>(totalRecords, _mapper.Mapper.Map<IEnumerable<RoleDto>>(records));
             } catch (Exception exp) {
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Read, "Получение списка ролей", exp.Format());
                 throw;
@@ -122,11 +122,11 @@ namespace Lazar.Services.Administration {
         /// </summary>
         /// <param name="options">Selection parameters</param>
         /// <returns>List of key-names</returns>
-        public async Task<EntityResponseDto<IReadOnlyList<ListItemDto<Guid>>>> GetListAsync(KeyNameRequestDto options) {
+        public async Task<EntityResponseDto<IEnumerable<ListItemDto<Guid>>>> GetListAsync(KeyNameRequestDto options) {
             try {
                 var records = await _repositoryManager.RoleRepository.GetKeyNameRecordsAsync(options.Search, options.Pagination);
-                return new EntityResponseDto<IReadOnlyList<ListItemDto<Guid>>>(
-                     _mapper.Mapper.Map<IReadOnlyList<ListItemDto<Guid>>>(records));
+                return new EntityResponseDto<IEnumerable<ListItemDto<Guid>>>(
+                     _mapper.Mapper.Map<IEnumerable<ListItemDto<Guid>>>(records));
             } catch (Exception exp) {
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Read, "Получение списка пар ключ-наименование ролей", exp.Format());
                 throw;
@@ -139,13 +139,13 @@ namespace Lazar.Services.Administration {
         /// <param name="userId">Primary key of user</param>
         /// <param name="paginationOption">Pagination</param>
         /// <returns>List of keys-names of models</returns>
-        public async Task<EntityResponseDto<IReadOnlyList<ListItemDto<Guid>>>> GetKeyNameByUserAsync(SelectRoleRequestDto options) {
+        public async Task<EntityResponseDto<IEnumerable<ListItemDto<Guid>>>> GetKeyNameByUserAsync(SelectRoleRequestDto options) {
             try {
-                var roles = await _repositoryManager.RoleRepository.GetRecordsByUserAsync(options.Search, options.SelectedUserId, options.Pagination);
+                var roles = await _repositoryManager.RoleRepository.GetNotUserAsync(options.Search, Guid.TryParse(options.SelectedUserId, out Guid userId) ? userId : null, options.Pagination);
                 var records = roles.Select(x => new KeyNameSelectorModel(x.Id, x.Name));
 
-                return new EntityResponseDto<IReadOnlyList<ListItemDto<Guid>>>(
-                     _mapper.Mapper.Map<IReadOnlyList<ListItemDto<Guid>>>(records));
+                return new EntityResponseDto<IEnumerable<ListItemDto<Guid>>>(
+                     _mapper.Mapper.Map<IEnumerable<ListItemDto<Guid>>>(records));
             } catch (Exception exp) {
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Read, "Получение списка пар ключ-наименование ролей", exp.Format());
                 throw;

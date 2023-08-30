@@ -27,7 +27,7 @@ namespace Lazar.Domain.Interfaces.Repositories.Logging {
         /// <param name="sortOptions">Sort parameters</param> 
         /// <param name="paginationOption">Pagination parameters</param> 
         /// <returns>List of entities</returns>
-        Task<IReadOnlyList<SystemLog>> GetRecordsAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption);
+        Task<IEnumerable<SystemLog>> GetRecordsAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption);
         /// <summary>
         /// Get a list of unique values ​​in a specific column
         /// </summary>
@@ -36,6 +36,6 @@ namespace Lazar.Domain.Interfaces.Repositories.Logging {
         /// <param name="paginationOption">Pagination parameters</param> 
         /// <param name="columnSelector">Property for select</param> 
         /// <returns>List of values ​​of a properties</returns>
-        Task<IReadOnlyList<string>> GetRecordsBySelectorAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption, string columnSelector);
+        Task<IEnumerable<string>> GetRecordsBySelectorAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption, string columnSelector);
     }
 }

@@ -17,7 +17,7 @@
           <div class="col-12 d-flex mb-3">
             <div class="col-auto me-3">
               <n-button
-                @click="setRoleToUser = true"
+                @click="setRoleToUser"
                 type="success"
                 ghost
                 icon-placement="left"
@@ -83,9 +83,9 @@ export default {
   data() {
     return {
       urlGetUsers: `${apiUrl}/users/get-all`,
-      urlGetRoles: `${apiUrl}/roles/get-all`,
-      urlGetRolesList: `${apiUrl}/roles/get-list`,
-      urlSetRoleToUser: `${apiUrl}`,
+      urlGetRoles: `${apiUrl}/roles/get-by-user`,
+      urlGetRolesList: `${apiUrl}/roles/get-list-by-user`,
+      urlSetRoleToUser: `${apiUrl}/users/set-role`,
       usersGridRef: "users_grid",
       rolesGridRef: "roles_grid",
       rolesSelectRef: "roles_select",
@@ -151,8 +151,8 @@ export default {
               this.updateRolesSelect();
             });
           else
-            await sendRequest(`${apiUrl}/users/delete`, "POST", {
-              id: this.paramsData.selectedUserId,
+            await sendRequest(`${apiUrl}/users/remove-role`, "POST", {
+              userId: this.paramsData.selectedUserId,
               roleId: key,
             }).then(() => {
               this.dxUsersGrid.refresh();
@@ -162,35 +162,29 @@ export default {
       },
       userColumns: [
         {
-          caption: "№ п/п",
           dataField: "Num",
           allowSorting: false,
           allowFiltering: false,
           width: 60,
         },
         {
-          caption: "Логин",
           dataField: "Login",
         },
         {
-          caption: "Эл.почта",
           dataField: "Email",
         },
         {
-          caption: "Роли",
           dataField: "Roles",
         },
       ],
       roleColumns: [
         {
-          caption: "№ п/п",
           dataField: "Num",
           allowSorting: false,
           allowFiltering: false,
           width: 60,
         },
         {
-          caption: "Наименование",
           dataField: "Name",
         },
       ],
@@ -227,7 +221,7 @@ export default {
 
       if (role !== undefined && role !== null) {
         let args = {
-          id: this.paramsData.selectedUserId,
+          userId: this.paramsData.selectedUserId,
           roleId: role.Id,
         };
         await sendRequest(this.urlSetRoleToUser, "POST", args)

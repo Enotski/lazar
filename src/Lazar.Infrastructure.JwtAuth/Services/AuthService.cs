@@ -33,7 +33,7 @@ namespace Lazar.Infrastructure.JwtAuth.Services {
             var claims = new List<Claim> {
                     new Claim(ClaimTypes.Name, user.Login),
                 };
-            foreach (var role in user.Roles) {
+            foreach (var role in user.RoleNames) {
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
             return claims;
@@ -83,7 +83,7 @@ namespace Lazar.Infrastructure.JwtAuth.Services {
 
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.LogIn, "", $"{user.Login}");
 
-                return new UserAuthDto(new TokensDto(tokenOptions.AccessToken, tokenOptions.RefreshToken, _configuration.Issuer, _configuration.Audience), user.Login, user.Roles);
+                return new UserAuthDto(new TokensDto(tokenOptions.AccessToken, tokenOptions.RefreshToken, _configuration.Issuer, _configuration.Audience), user.Login, user.RoleNames);
             } catch (Exception exp) {
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Read, "Получение списка пользователей", exp.Format());
                 throw;
@@ -118,7 +118,7 @@ namespace Lazar.Infrastructure.JwtAuth.Services {
 
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Registration, "", $"{user.Login}");
 
-                return new UserAuthDto(new TokensDto(tokenOptions.AccessToken, tokenOptions.RefreshToken, _configuration.Issuer, _configuration.Audience), user.Login, user.Roles);
+                return new UserAuthDto(new TokensDto(tokenOptions.AccessToken, tokenOptions.RefreshToken, _configuration.Issuer, _configuration.Audience), user.Login, user.RoleNames);
             } catch (Exception exp) {
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Read, "Получение списка пользователей", exp.Format());
                 throw;
@@ -165,7 +165,7 @@ namespace Lazar.Infrastructure.JwtAuth.Services {
                 loginModel.Update(tokenOptions.RefreshToken, tokenOptions.ExpiredTime);
                 await _authRepositoryManager.AuthRepository.UpdateAsync(loginModel);
 
-                return new UserAuthDto(new TokensDto(tokenOptions.AccessToken, tokenOptions.RefreshToken, _configuration.Issuer, _configuration.Audience), loginModel.Login, user.Roles);
+                return new UserAuthDto(new TokensDto(tokenOptions.AccessToken, tokenOptions.RefreshToken, _configuration.Issuer, _configuration.Audience), loginModel.Login, user.RoleNames);
             } catch (Exception exp) {
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Read, "Получение списка пользователей", exp.Format());
                 throw;

@@ -139,7 +139,7 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
         /// </summary>
         /// <param name="ids">List of Keys</param>
         /// <returns>List of entities selector models</returns>
-        public async Task<IReadOnlyList<UserSelectorModel>> GetRecordsAsync(IEnumerable<Guid> ids) {
+        public async Task<IEnumerable<UserSelectorModel>> GetRecordsAsync(IEnumerable<Guid> ids) {
             try {
                 return await BuildQuery(x => ids.Contains(x.Id), null, null).Select(x => new UserSelectorModel(x.Id, x.Roles.Select(r => r.Name), x.Roles.Select(r => r.Id), x.Name, x.Login, x.Password, x.Email, x.ChangedBy, x.DateChange)).ToListAsync();
             } catch {
@@ -153,8 +153,14 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
         /// <returns>Entity selector model</returns>
         public async Task<UserSelectorModel> GetRecordAsync(Guid? id) {
             try {
-                var entity = await GetAsync(id);
-                return new UserSelectorModel(entity.Id, entity.Roles.Select(r => r.Name), entity.Roles.Select(r => r.Id), entity.Name, entity.Login, entity.Password, entity.Email, entity.ChangedBy, entity.DateChange);
+                return await BuildQuery(x => x.Id == id, null, null).Select(x => new UserSelectorModel(x.Id, x.Roles.Select(r => r.Name), x.Roles.Select(r => r.Id), x.Name, x.Login, x.Password, x.Email, x.ChangedBy, x.DateChange)).FirstOrDefaultAsync();
+            } catch {
+                throw;
+            }
+        }
+        public async Task<User> GetWithRolesAsync(Guid? id) {
+            try {
+                return await BuildQuery(x => x.Id == id, null, null, x => x.Roles).FirstOrDefaultAsync();
             } catch {
                 throw;
             }
@@ -193,7 +199,7 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
         /// <param name="sortOptions">Sorting</param> 
         /// <param name="paginationOption">Pagination</param> 
         /// <returns>Entity selector model</returns>
-        public async Task<IReadOnlyList<UserSelectorModel>> GetRecordsAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption) {
+        public async Task<IEnumerable<UserSelectorModel>> GetRecordsAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption) {
             try {
                 var filter = BuildWherePredicate(searchOptions);
                 var ordered = BuildSortFunction(sortOptions);
@@ -208,7 +214,7 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
         /// <param name="paginationOption">Pagination</param> 
         /// <param name="columnSelector">Name of specific column</param> 
         /// <returns>List of entities specific property values</returns>
-        public async Task<IReadOnlyList<string>> GetRecordsBySelectorAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption, string columnSelector) {
+        public async Task<IEnumerable<string>> GetRecordsBySelectorAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption, string columnSelector) {
             try {
                 var selector = BuildSelectorPredicate(columnSelector);
                 if (selector is null) {
@@ -263,7 +269,7 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
         /// <param name="term">Search term by login property</param>
         /// <param name="paginationOption">Pagination</param>
         /// <returns>List of key-login models</returns>
-        public async Task<IReadOnlyList<KeyNameSelectorModel>> GetKeyLoginRecordsAsync(string term, IPaginatedOption? paginationOption) {
+        public async Task<IEnumerable<KeyNameSelectorModel>> GetKeyLoginRecordsAsync(string term, IPaginatedOption? paginationOption) {
             try {
                 var predicate = PredicateBuilder.True<User>();
                 if (!string.IsNullOrWhiteSpace(term)) {

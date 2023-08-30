@@ -48,12 +48,12 @@ namespace Lazar.Srevices.Iterfaces.Administration {
         /// </summary>
         /// <param name="options">Selection parameters</param>
         /// <returns>List of key-names</returns>
-        Task<EntityResponseDto<IReadOnlyList<ListItemDto<Guid>>>> GetListAsync(KeyNameRequestDto options);
+        Task<EntityResponseDto<IEnumerable<ListItemDto<Guid>>>> GetListAsync(KeyNameRequestDto options);
         /// <summary>
         /// Get list of key-name models of user's roles
         /// </summary>
         /// <param name="options">Selection parameters</param>
         /// <returns>List of keys-names of models</returns>
-        Task<EntityResponseDto<IReadOnlyList<ListItemDto<Guid>>>> GetKeyNameByUserAsync(SelectRoleRequestDto options);
+        Task<EntityResponseDto<IEnumerable<ListItemDto<Guid>>>> GetKeyNameByUserAsync(SelectRoleRequestDto options);
     }
 }

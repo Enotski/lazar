@@ -13,7 +13,7 @@ namespace Lazar.Domain.Interfaces.Repositories.Base {
         /// </summary>
         /// <param name="ids">Primary keys of entities</param>
         /// <returns>List of entities</returns>
-        Task<IReadOnlyList<TEntity>> GetAsync(IEnumerable<Guid> ids);
+        Task<IEnumerable<TEntity>> GetAsync(IEnumerable<Guid> ids);
         /// <summary>
         /// Create entity
         /// </summary>

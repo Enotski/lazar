@@ -5,8 +5,6 @@ using Lazar.Services.Contracts.Request;
 using Lazar.Services.Contracts.Request.DataTable.Base;
 using Lazar.Services.Contracts.Response.Base;
 using Lazar.Srevices.Iterfaces.Common;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LazarWebApi.Controllers.Administration {
@@ -35,7 +33,7 @@ namespace LazarWebApi.Controllers.Administration {
             }
         }
         [HttpPost]
-        [Route("get/{id}")]
+        [Route("get")]
         public async Task<IActionResult> GetModel([FromBody] Guid id) {
             try {
                 return Ok(await _serviceManager.UsersService.GetAsync(id));
@@ -67,7 +65,27 @@ namespace LazarWebApi.Controllers.Administration {
         [Route("delete")]
         public async Task<IActionResult> Delete([FromBody] IEnumerable<Guid> ids) {
             try {
-                await _serviceManager.RoleService.DeleteAsync(ids, UserIdentityName);
+                await _serviceManager.UsersService.DeleteAsync(ids, UserIdentityName);
+                return Ok(new SuccessResponseDto());
+            } catch (Exception exp) {
+                return Ok(new ErrorResponseDto(exp));
+            }
+        }
+        [HttpPost]
+        [Route("set-role")]
+        public async Task<IActionResult> SetRoleToUser([FromBody] UserRoleDto data) {
+            try {
+                await _serviceManager.UsersService.SetRoleToUser(data, UserIdentityName);
+                return Ok(new SuccessResponseDto());
+            } catch (Exception exp) {
+                return Ok(new ErrorResponseDto(exp));
+            }
+        }
+        [HttpPost]
+        [Route("remove-role")]
+        public async Task<IActionResult> RemoveRoleFromUser([FromBody] UserRoleDto data) {
+            try {
+                await _serviceManager.UsersService.RemoveRoleFromUser(data, UserIdentityName);
                 return Ok(new SuccessResponseDto());
             } catch (Exception exp) {
                 return Ok(new ErrorResponseDto(exp));

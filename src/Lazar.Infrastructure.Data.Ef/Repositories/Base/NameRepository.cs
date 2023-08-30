@@ -43,7 +43,7 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Base {
         /// <param name="term">Search term by login property</param>
         /// <param name="paginationOption">Pagination</param>
         /// <returns>List of keys-names of models</returns>
-        public async Task<IReadOnlyList<KeyNameSelectorModel>> GetKeyNameRecordsAsync(string term, IPaginatedOption paginationOption) {
+        public async Task<IEnumerable<KeyNameSelectorModel>> GetKeyNameRecordsAsync(string term, IPaginatedOption paginationOption) {
             try {
                 var predicate = PredicateBuilder.True<TEntity>();
                 if (!string.IsNullOrWhiteSpace(term)) {

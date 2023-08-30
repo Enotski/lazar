@@ -140,7 +140,7 @@ export default {
             }
           }
           return await sendRequest(data_url, "POST", args)
-            .then((data) => data.Result)
+            .then((data) => data.Data)
             .catch(() => {
               throw new Error("Data Loading Error");
             });
