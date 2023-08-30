@@ -1,33 +1,34 @@
 <template>
   <div class="container-fluid content-container">
-    <div class="d-flex">
-      <div class="col-7">
-          <DxGrid
+    <div class="row">
+      <div class="col-6">
+        <DxGrid
             :ref="usersGridRef"
             :data-url="urlGetUsers"
             :columns="userColumns"
             :events="userEvents"
             :height="usersTableHeight"
             :editing="usersGridEditing"
+            width="100%"
             :data-edit-functions="usersEditFunctions"
           />
       </div>
-      <div class="col-5">
-        <div class="row ml-5 pt-0">
-          <div class="d-flex mb-3 px-0">
+      <div class="col-6 pt-0">
+          <div class="col-12 d-flex mb-3">
             <div class="col-auto me-3">
               <n-button
                 @click="setRoleToUser = true"
                 type="success"
                 ghost
-                icon-placement="left">
+                icon-placement="left"
+              >
                 <template #icon>
                   <n-icon><add-icon /></n-icon>
                 </template>
                 Set Role
               </n-button>
             </div>
-            <div class="flex-grow-1">
+            <div class="col">
               <DxSelect
                 :ref="rolesSelectRef"
                 :data-url="urlGetRolesList"
@@ -36,6 +37,7 @@
               />
             </div>
           </div>
+          <div class="col-12">
             <DxGrid
               :ref="rolesGridRef"
               :data-url="urlGetRoles"
@@ -43,10 +45,11 @@
               :height="rolesTableHeight"
               :params-data="paramsData"
               :editing="rolesGridEditing"
+              width="100%"
               :data-edit-functions="rolesEditFunctions"
             />
+          </div>
         </div>
-      </div>
     </div>
   </div>
 </template>
@@ -80,9 +83,9 @@ export default {
   data() {
     return {
       urlGetUsers: `${apiUrl}/users/get-all`,
-      urlGetRoles: `${apiUrl}/roles/get-by-user`,
+      urlGetRoles: `${apiUrl}/roles/get-all`,
       urlGetRolesList: `${apiUrl}/roles/get-list`,
-      urlSetRoleToUser: `${apiUrl}/user-profile/set-role-to-user`,
+      urlSetRoleToUser: `${apiUrl}`,
       usersGridRef: "users_grid",
       rolesGridRef: "roles_grid",
       rolesSelectRef: "roles_select",
@@ -102,8 +105,8 @@ export default {
         refreshMode: "full",
       },
       usersGridEditing: {
-        allowAdding: false,
-        allowUpdating: false,
+        allowAdding: true,
+        allowUpdating: true,
         allowDeleting: true,
         confirmDelete: true,
         useIcons: true,
@@ -111,20 +114,28 @@ export default {
         refreshMode: "full",
       },
       usersEditFunctions: {
+        insert: async (values) =>
+          await sendRequest(`${apiUrl}/users/create`, "POST", values),
+        update: async (key, values) =>
+          await sendRequest(`${apiUrl}/users/update`, "POST", {
+            id: key,
+            email: values.Email,
+            login: values.Login,
+          }),
         remove: async (key) =>
-          await sendRequest(`${apiUrl}/users/delete-user`, "POST", {
+          await sendRequest(`${apiUrl}/users/delete`, "POST", {
             id: key,
           }),
       },
       rolesEditFunctions: {
         insert: async (values) =>
-          await sendRequest(`${apiUrl}/roles/add-role`, "POST", values).then(
+          await sendRequest(`${apiUrl}/roles/create`, "POST", values).then(
             () => {
               this.updateRolesSelect();
             }
           ),
         update: async (key, values) =>
-          await sendRequest(`${apiUrl}/roles/update-role`, "POST", {
+          await sendRequest(`${apiUrl}/roles/update`, "POST", {
             id: key,
             name: values.Name,
           }).then(() => {
@@ -133,14 +144,14 @@ export default {
           }),
         remove: async (key) => {
           if (this.paramsData.selectedUserId === "")
-            await sendRequest(`${apiUrl}/roles/delete-role`, "POST", {
+            await sendRequest(`${apiUrl}/roles/delete`, "POST", {
               id: key,
             }).then(() => {
               this.dxUsersGrid.refresh();
               this.updateRolesSelect();
             });
           else
-            await sendRequest(`${apiUrl}/users/remove-role-from-user`, "POST", {
+            await sendRequest(`${apiUrl}/users/delete`, "POST", {
               id: this.paramsData.selectedUserId,
               roleId: key,
             }).then(() => {
@@ -151,31 +162,35 @@ export default {
       },
       userColumns: [
         {
-          caption: "№",
+          caption: "№ п/п",
           dataField: "Num",
           allowSorting: false,
           allowFiltering: false,
           width: 60,
         },
         {
+          caption: "Логин",
           dataField: "Login",
         },
         {
+          caption: "Эл.почта",
           dataField: "Email",
         },
         {
+          caption: "Роли",
           dataField: "Roles",
         },
       ],
       roleColumns: [
         {
-          caption: "№",
+          caption: "№ п/п",
           dataField: "Num",
           allowSorting: false,
           allowFiltering: false,
           width: 60,
         },
         {
+          caption: "Наименование",
           dataField: "Name",
         },
       ],
