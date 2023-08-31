@@ -32,11 +32,11 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Logging {
                 var val = opt.Value.Trim().ToUpper();
                 var column = opt.ColumnName.Trim().ToUpper();
                 switch (column) {
-                    case "SUBSYSTEM": {
+                    case "SUBSYSTEMNAME": {
                             predicate = predicate.And(m => !string.IsNullOrEmpty(m.SubSystem) && m.SubSystem.ToUpper().Contains(val));
                             break;
                         }
-                    case "EVENTTYPE": {
+                    case "EVENTTYPENAME": {
                             predicate = predicate.And(m => !string.IsNullOrEmpty(m.EventType) && m.EventType.ToUpper().Contains(val));
                             break;
                         }
@@ -75,12 +75,12 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Logging {
             foreach (var opt in options) {
                 var column = opt.ColumnName.TrimToUpper();
                 switch (column) {
-                    case "SUBSYSTEM": {
+                    case "SUBSYSTEMNAME": {
                             ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.SubSystem)
                                 : ordered.ThenByDescending(m => m.SubSystem);
                             break;
                         }
-                    case "EVENTTYPE": {
+                    case "EVENTTYPENAME": {
                             ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.EventType)
                                 : ordered.ThenByDescending(m => m.EventType);
                             break;

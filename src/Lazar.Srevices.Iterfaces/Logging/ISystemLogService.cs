@@ -13,6 +13,6 @@ namespace Lazar.Srevices.Iterfaces.Logging {
         /// </summary>
         /// <param name="options">Параметры фильтрации и поиска</param>
         /// <returns></returns>
-        Task<DataTableDto<SystemLogDto>> GetRecordsAsync(DataTableRequestDto options);
+        Task<DataTableDto<SystemLogTableDto>> GetRecordsAsync(DataTableRequestDto options);
     }
 }

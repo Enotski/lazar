@@ -1,6 +1,4 @@
-﻿using Lazar.Domain.Core.SelectorModels.Base;
-using Lazar.Domain.Interfaces.Options;
-using Lazar.Services.Contracts.Administration;
+﻿using Lazar.Services.Contracts.Administration;
 using Lazar.Services.Contracts.Request;
 using Lazar.Services.Contracts.Request.DataTable.Base;
 using Lazar.Services.Contracts.Response.Models;
@@ -16,13 +14,13 @@ namespace Lazar.Srevices.Iterfaces.Administration {
         /// </summary>
         /// <param name="options">Filtering and search options</param>
         /// <returns>List of records</returns>
-        Task<DataTableDto<RoleDto>> GetAsync(DataTableRequestDto options);
+        Task<DataTableDto<RoleTableDto>> GetAsync(DataTableRequestDto options);
         /// <summary>
         /// Records for presentation layer by user key
         /// </summary>
         /// <param name="options">Filtering and search options</param>
         /// <returns>List of records by user key</returns>
-        Task<DataTableDto<RoleDto>> GetByUserAsync(RoleTableRequestDto options);
+        Task<DataTableDto<RoleTableDto>> GetByUserAsync(RoleTableRequestDto options);
         /// <summary>
         /// Entity for presentation layer
         /// </summary>

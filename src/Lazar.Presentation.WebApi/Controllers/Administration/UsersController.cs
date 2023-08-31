@@ -63,7 +63,7 @@ namespace LazarWebApi.Controllers.Administration {
         }
         [HttpPost]
         [Route("delete")]
-        public async Task<IActionResult> Delete([FromBody] IEnumerable<Guid> ids) {
+        public async Task<IActionResult> Delete([FromBody] List<Guid> ids) {
             try {
                 await _serviceManager.UsersService.DeleteAsync(ids, UserIdentityName);
                 return Ok(new SuccessResponseDto());

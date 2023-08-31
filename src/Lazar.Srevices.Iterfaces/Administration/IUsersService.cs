@@ -14,7 +14,7 @@ namespace Lazar.Srevices.Iterfaces.Administration {
         /// </summary>
         /// <param name="options">Filtering and search options</param>
         /// <returns>List of records</returns>
-        Task<DataTableDto<UserDto>> GetAsync(DataTableRequestDto options);
+        Task<DataTableDto<UserTableDto>> GetAsync(DataTableRequestDto options);
         /// <summary>
         /// Entity for presentation layer
         /// </summary>

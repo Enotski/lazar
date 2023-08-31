@@ -1,4 +1,6 @@
-﻿namespace Lazar.Srevices.Iterfaces.Base {
+﻿using Lazar.Services.Contracts.Request;
+
+namespace Lazar.Srevices.Iterfaces.Base {
     /// <summary>
     /// Base service of logging
     /// </summary>
@@ -17,10 +19,11 @@
         /// <returns></returns>
         Task ClearLogAsync(string login);
         /// <summary>
-        /// Remove all entities by days 
+        /// Remove all entities by period 
         /// </summary>
-        /// <param name="days">The number of days before the current date after which records are deleted</param>
+        /// <param name="period">Period of dates to clear log</param>
+        /// <param name="login">Login of the user who triggered the event</param>
         /// <returns></returns>
-        Task ClearLogAsync(int days);
+        Task RemoveByPeriodAsync(PeriodDto period, string login);
     }
 }

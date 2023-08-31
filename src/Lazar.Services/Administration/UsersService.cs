@@ -61,16 +61,13 @@ namespace Lazar.Services.Administration {
         /// <returns></returns>
         private async Task ModelValidation(UserDto model, string login) {
             try {
-                // Проверка на наличие прав для редактирования
                 bool IsHaveRight = await _repositoryManager.UserRepository.PermissionToPerformOperation(login);
                 if (!IsHaveRight) {
                     throw new Exception("У вас недостаточно прав для выполнения данной операции");
                 }
-                // Валидация наименования
                 if (string.IsNullOrWhiteSpace(model.Name)) {
                     throw new Exception("Наименование не заполнено");
                 }
-                // Запрет на создание дубликата наименования
                 bool isExist = await _repositoryManager.UserRepository.NameExistsAsync(model.Name, model.Id);
                 if (isExist) {
                     throw new Exception("Запись с таким наименованием уже существует");
@@ -84,11 +81,11 @@ namespace Lazar.Services.Administration {
         /// </summary>
         /// <param name="options">Filtering and search options</param>
         /// <returns>List of records</returns>
-        public async Task<DataTableDto<UserDto>> GetAsync(DataTableRequestDto options) {
+        public async Task<DataTableDto<UserTableDto>> GetAsync(DataTableRequestDto options) {
             try {
                 int totalRecords = await _repositoryManager.UserRepository.CountAsync(options.Filters);
                 var records = await _repositoryManager.UserRepository.GetRecordsAsync(options.Filters, options.Sorts, options.Pagination);
-                return new DataTableDto<UserDto>(totalRecords, _mapper.Mapper.Map<IEnumerable<UserDto>>(records));
+                return new DataTableDto<UserTableDto>(totalRecords, _mapper.Mapper.Map<IEnumerable<UserTableDto>>(records).Select((x, i) => { x.Num = ++i; return x; }));
             } catch (Exception exp) {
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Read, "Получение списка пользователей" + exp.Format());
                 throw;
@@ -164,15 +161,12 @@ namespace Lazar.Services.Administration {
                 if (entity is null) {
                     throw new Exception("Запись не найдена");
                 }
-                // Запись до измемнений
                 var old = await _repositoryManager.UserRepository.GetRecordAsync(model.Id);
 
-                // Обновление записи
                 var roles = await _repositoryManager.RoleRepository.GetAsync(model.RoleIds);
                 entity.Update(model.Name, model.Login, model.Password, model.Email, roles, login);
                 await _repositoryManager.UserRepository.UpdateAsync(entity);
 
-                // Обновленная запись
                 var newEnt = await _repositoryManager.UserRepository.GetRecordAsync(model.Id);
                 var changes = GetChangeFieldsList(old, newEnt);
 
@@ -218,21 +212,7 @@ namespace Lazar.Services.Administration {
         /// <returns></returns>
         public async Task RemoveRoleFromUser(UserRoleDto model, string login) {
             try {
-                var entity = await _repositoryManager.UserRepository.GetWithRolesAsync(model.UserId);
-                if (entity is null) {
-                    throw new Exception("User not found");
-                }
-                // Запись до измемнений
-                var old = await _repositoryManager.UserRepository.GetRecordAsync(model.UserId);
-                var role = await _repositoryManager.RoleRepository.GetAsync(model.RoleId);
-                entity.Roles.Remove(role);
-                entity.Update(login);
-                await _repositoryManager.UserRepository.UpdateAsync(entity);
-
-                // Обновленная запись
-                var newEnt = await _repositoryManager.UserRepository.GetRecordAsync(model.UserId);
-                var changes = GetChangeFieldsList(old, newEnt);
-
+                var changes = ChangetUserRoles(model, login, true);
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, $"{string.Join("; ", changes)}", login);
             } catch (Exception exp) {
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, "Обновление роли" + exp.Format());
@@ -247,24 +227,40 @@ namespace Lazar.Services.Administration {
         /// <returns></returns>
         public async Task SetRoleToUser(UserRoleDto model, string login) {
             try {
+                var changes = ChangetUserRoles(model, login);
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, $"{string.Join("; ", changes)}", login);
+            } catch (Exception exp) {
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, "Обновление роли" + exp.Format());
+                throw;
+            }
+        }
+        /// <summary>
+        /// Update user roles
+        /// </summary>
+        /// <param name="model">User-Role dto</param>
+        /// <param name="initiator">Initiator of operation</param>
+        /// <param name="removeRole">Flag to remove role from user</param>
+        /// <returns></returns>
+        private async Task<List<string>> ChangetUserRoles(UserRoleDto model, string initiator, bool removeRole = false) {
+            try {
                 var entity = await _repositoryManager.UserRepository.GetAsync(model.UserId);
                 if (entity is null) {
                     throw new Exception("User not found");
                 }
-                // Запись до измемнений
+                
                 var old = await _repositoryManager.UserRepository.GetRecordAsync(model.UserId);
                 var role = await _repositoryManager.RoleRepository.GetAsync(model.RoleId);
-                entity.Roles.Add(role);
-                entity.Update(login);
+                if (removeRole) {
+                    entity.Roles.Remove(role);
+                } else {
+                    entity.Roles.Add(role);
+                }
+                entity.Update(initiator);
                 await _repositoryManager.UserRepository.UpdateAsync(entity);
 
-                // Обновленная запись
                 var newEnt = await _repositoryManager.UserRepository.GetRecordAsync(model.UserId);
-                var changes = GetChangeFieldsList(old, newEnt);
-
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, $"{string.Join("; ", changes)}", login);
-            } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, "Обновление роли" + exp.Format());
+                return GetChangeFieldsList(old, newEnt);
+            } catch {
                 throw;
             }
         }

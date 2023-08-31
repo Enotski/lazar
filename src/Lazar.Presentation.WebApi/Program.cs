@@ -12,29 +12,26 @@ using Lazar.Srevices.Iterfaces.Common;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace Lazar.Presentation.WebApi {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
+    public class Program {
+        public static void Main(string[] args) {
             var builder = WebApplication.CreateBuilder(args);
 
             // Get Jwt-Token configuration from appsettings
             builder.Services.Configure<AuthDto>(options => builder.Configuration.GetSection("Jwt").Bind(options));
-           
+
             builder.Services.AddCors();
 
-            builder.Services.AddControllers().AddJsonOptions(opts =>
-            {
+            builder.Services.AddControllers().AddJsonOptions(opts => {
                 opts.JsonSerializerOptions.PropertyNamingPolicy = null;
             });
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen(option =>
-            {
+            builder.Services.AddSwaggerGen(option => {
                 // Auth configuration for swagger
-                option.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-                {
+                option.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme {
                     Name = "Authorization",
                     In = Microsoft.OpenApi.Models.ParameterLocation.Header,
                     Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
@@ -64,11 +61,9 @@ namespace Lazar.Presentation.WebApi {
             builder.Services.AddDbContext<LazarContext>(options => options.UseSqlServer(connection));
 
             // JWT-token authentication configuration
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-            {
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
                 options.SaveToken = true;
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
+                options.TokenValidationParameters = new TokenValidationParameters {
                     ValidateIssuer = true,
                     ValidIssuer = builder.Configuration["Jwt:Issuer"],
                     ValidateAudience = true,
@@ -91,8 +86,7 @@ namespace Lazar.Presentation.WebApi {
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
+            if (app.Environment.IsDevelopment()) {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }

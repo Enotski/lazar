@@ -13,10 +13,9 @@
     </div>
     <div class="d-flex flex-row">
       <DxGrid
-        :ref="eventLogGridRef"
+        :ref="systemLogGridRef"
         :data-url="getEventLogUrl"
-        :columns="eventLogColumns"
-        :height="eventLogGridHeight"
+        :columns="systemLogColumns"
       />
     </div>
   </div>
@@ -32,7 +31,7 @@ import { sendRequest, apiUrl } from "../../../utils/requestUtils";
 
 const msInDay = 1000 * 60 * 60 * 24;
 const now = new Date();
-const subSystemTypeUrl = `${apiUrl}/types/get-subsystem-type`;
+const subSystemTypeUrl = `${apiUrl}/types/get-subsystem-types`;
 const eventTypeUrl = `${apiUrl}/types/get-event-types`;
 
 export default {
@@ -46,7 +45,7 @@ export default {
       return this.$refs[this.dateRangeRef].instance;
     },
     dxEventLogGrid: function () {
-      return this.$refs[this.eventLogGridRef].getDxGrid();
+      return this.$refs[this.systemLogGridRef].getDxGrid();
     },
   },
   data() {
@@ -55,38 +54,39 @@ export default {
         new Date(now.getTime() - msInDay * 3),
         new Date(now.getTime() + msInDay * 3),
       ],
-      getEventLogUrl: `${apiUrl}/event-logs/get-data-grid`,
-      removeEventLogByPeriodUrl: `${apiUrl}/event-logs/remove-by-period`,
-      eventLogGridRef: "event_log_grid",
+      getEventLogUrl: `${apiUrl}/system-log/get-all`,
+      removesystemLogByPeriodUrl: `${apiUrl}/system-log/remove-by-period`,
+      systemLogGridRef: "system_log_grid",
       dateRangeRef: "log_period",
-      eventLogGridHeight: 500,
-      eventLogColumns: [
+      systemLogColumns: [
         {
-          caption: "№ п/п",
           dataField: "Num",
           allowSorting: false,
           allowFiltering: false,
           width: 60,
         },
         {
-          caption: "Подсистема",
+          caption: "Subsystem",
           dataField: "SubSystemName",
           alignment: "center",
           filterOperations: ["=", "<>"],
           lookup: DataGrid.getColumnLookup(subSystemTypeUrl, "GET"),
         },
         {
-          caption: "Тип",
+          caption: "Event", 
           dataField: "EventTypeName",
           filterOperations: ["=", "<>"],
           lookup: DataGrid.getColumnLookup(eventTypeUrl, "GET"),
         },
         {
-          caption: "Пользователь",
-          dataField: "UserName",
+          dataField: "Description",
         },
         {
-          caption: "Дата Создания",
+          caption: "Initiator",
+          dataField: "ChangedBy",
+        },
+        {
+          caption: "Date",
           dataField: "DateChange",
           dataType: "date",
           format: DataGrid.getFullDateTimeFormat(),

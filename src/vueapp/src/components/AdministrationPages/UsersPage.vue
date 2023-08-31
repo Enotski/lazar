@@ -1,20 +1,7 @@
 <template>
   <div class="container-fluid content-container">
     <div class="row">
-      <div class="col-6">
-        <DxGrid
-            :ref="usersGridRef"
-            :data-url="urlGetUsers"
-            :columns="userColumns"
-            :events="userEvents"
-            :height="usersTableHeight"
-            :editing="usersGridEditing"
-            width="100%"
-            :data-edit-functions="usersEditFunctions"
-          />
-      </div>
-      <div class="col-6 pt-0">
-          <div class="col-12 d-flex mb-3">
+      <div class="col-6 d-flex mb-3">
             <div class="col-auto me-3">
               <n-button
                 @click="setRoleToUser"
@@ -37,19 +24,30 @@
               />
             </div>
           </div>
-          <div class="col-12">
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <DxGrid
+            :ref="usersGridRef"
+            :data-url="urlGetUsers"
+            :columns="userColumns"
+            :events="userEvents"
+            :editing="usersGridEditing"
+            width="100%"
+            :data-edit-functions="usersEditFunctions"
+          />
+      </div>
+      <div class="col-6 pt-0">
             <DxGrid
               :ref="rolesGridRef"
               :data-url="urlGetRoles"
               :columns="roleColumns"
-              :height="rolesTableHeight"
               :params-data="paramsData"
               :editing="rolesGridEditing"
               width="100%"
               :data-edit-functions="rolesEditFunctions"
             />
           </div>
-        </div>
     </div>
   </div>
 </template>
@@ -93,8 +91,6 @@ export default {
       paramsData: {
         selectedUserId: "",
       },
-      usersTableHeight: 600,
-      rolesTableHeight: 544,
       rolesGridEditing: {
         allowAdding: true,
         allowUpdating: true,
@@ -105,8 +101,8 @@ export default {
         refreshMode: "full",
       },
       usersGridEditing: {
-        allowAdding: true,
-        allowUpdating: true,
+        allowAdding: false,
+        allowUpdating: false,
         allowDeleting: true,
         confirmDelete: true,
         useIcons: true,
@@ -114,18 +110,10 @@ export default {
         refreshMode: "full",
       },
       usersEditFunctions: {
-        insert: async (values) =>
-          await sendRequest(`${apiUrl}/users/create`, "POST", values),
-        update: async (key, values) =>
-          await sendRequest(`${apiUrl}/users/update`, "POST", {
-            id: key,
-            email: values.Email,
-            login: values.Login,
-          }),
         remove: async (key) =>
-          await sendRequest(`${apiUrl}/users/delete`, "POST", {
-            id: key,
-          }),
+          await sendRequest(`${apiUrl}/users/delete`, "POST", 
+            [key]
+          ),
       },
       rolesEditFunctions: {
         insert: async (values) =>
@@ -144,9 +132,9 @@ export default {
           }),
         remove: async (key) => {
           if (this.paramsData.selectedUserId === "")
-            await sendRequest(`${apiUrl}/roles/delete`, "POST", {
-              id: key,
-            }).then(() => {
+            await sendRequest(`${apiUrl}/roles/delete`, "POST", 
+              [key]
+            ).then(() => {
               this.dxUsersGrid.refresh();
               this.updateRolesSelect();
             });
@@ -165,6 +153,7 @@ export default {
           dataField: "Num",
           allowSorting: false,
           allowFiltering: false,
+          allowEditing: false,
           width: 60,
         },
         {
@@ -175,6 +164,7 @@ export default {
         },
         {
           dataField: "Roles",
+          allowEditing: false
         },
       ],
       roleColumns: [
@@ -182,6 +172,7 @@ export default {
           dataField: "Num",
           allowSorting: false,
           allowFiltering: false,
+          allowEditing: false,
           width: 60,
         },
         {

@@ -1,5 +1,6 @@
 using Lazar.Infrastructure.Mapper;
 using Lazar.Presentation.WebApi.Controllers.Base;
+using Lazar.Services.Contracts.Request;
 using Lazar.Services.Contracts.Request.DataTable.Base;
 using Lazar.Services.Contracts.Response.Base;
 using Lazar.Srevices.Iterfaces.Common;
@@ -9,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Lazar.Presentation.WebApi.Controllers.Logging {
     [ApiController]
-    [Route("api/system-log"), Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Route("api/system-log")/*, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)*/]
     public class SystemLogController : BaseController {
         public SystemLogController(IServiceManager serviceManager, IModelMapper mapper)
             : base(serviceManager, mapper) {
@@ -38,6 +39,16 @@ namespace Lazar.Presentation.WebApi.Controllers.Logging {
         public async Task<IActionResult> Clear() {
             try {
                 await _serviceManager.LoggingService.ClearLogAsync(UserIdentityName);
+                return Ok(new SuccessResponseDto());
+            } catch (Exception exp) {
+                return Ok(new ErrorResponseDto(exp));
+            }
+        }
+        [HttpPost]
+        [Route("remove-by-period")]
+        public async Task<IActionResult> RemoveByPeriod([FromBody] PeriodDto period) {
+            try {
+                await _serviceManager.LoggingService.RemoveByPeriodAsync(period, UserIdentityName);
                 return Ok(new SuccessResponseDto());
             } catch (Exception exp) {
                 return Ok(new ErrorResponseDto(exp));

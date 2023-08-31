@@ -29,6 +29,10 @@ namespace Lazar.Infrastructure.Mapper {
             CreateMap<UserSelectorModel, UserDto>().ReverseMap();
             CreateMap<User, UserDto>().ReverseMap();
             CreateMap<KeyNameSelectorModel, ListItemDto<Guid>>().ReverseMap();
+
+            CreateMap<UserSelectorModel, UserTableDto>().ReverseMap();
+            CreateMap<Role, RoleTableDto>().ReverseMap();
+            CreateMap<SystemLog, SystemLogTableDto>().ReverseMap();
         }
     }
 }

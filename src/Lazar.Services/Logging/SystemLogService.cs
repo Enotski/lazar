@@ -25,12 +25,12 @@ namespace Lazar.Services.Logging {
         /// </summary>
         /// <param name="options">Параметры фильтрации и поиска</param>
         /// <returns></returns>
-        public async Task<DataTableDto<SystemLogDto>> GetRecordsAsync(DataTableRequestDto options) {
+        public async Task<DataTableDto<SystemLogTableDto>> GetRecordsAsync(DataTableRequestDto options) {
             try {
                 int totalRecords = await _repositoryManager.SystemLogRepository.CountAsync(options.Filters);
                 var records = await _repositoryManager.SystemLogRepository.GetRecordsAsync(options.Filters, options.Sorts, options.Pagination);
-                return new DataTableDto<SystemLogDto>(totalRecords,
-                    _mapper.Mapper.Map<IEnumerable<SystemLogDto>>(records));
+                return new DataTableDto<SystemLogTableDto>(totalRecords,
+                    _mapper.Mapper.Map<IEnumerable<SystemLogTableDto>>(records).Select((x, i) => { x.Num = ++i; return x; }));
             } catch (Exception exp) {
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Logging, EventType.Read, "Получение списка записей журнала системных событий: " + exp.Format());
                 throw;
@@ -58,7 +58,7 @@ namespace Lazar.Services.Logging {
         /// </summary>
         /// <param name="days">The number of days before the current date after which records are deleted</param>
         /// <returns></returns>
-        public async Task ClearLogAsync(int days) {
+        public async Task RemoveByPeriodAsync(int days) {
             try {
                 await _repositoryManager.SystemLogRepository.ClearAsync(days);
             } catch (Exception exp) {

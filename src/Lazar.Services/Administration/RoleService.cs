@@ -75,11 +75,11 @@ namespace Lazar.Services.Administration {
         /// </summary>
         /// <param name="options">Filtering and search options</param>
         /// <returns>List of records</returns>
-        public async Task<DataTableDto<RoleDto>> GetAsync(DataTableRequestDto options) {
+        public async Task<DataTableDto<RoleTableDto>> GetAsync(DataTableRequestDto options) {
             try {
                 int totalRecords = await _repositoryManager.RoleRepository.CountAsync(options.Filters);
                 var records = await _repositoryManager.RoleRepository.GetRecordsAsync(options.Filters, options.Sorts, options.Pagination);
-                return new DataTableDto<RoleDto>(totalRecords, _mapper.Mapper.Map<IEnumerable<RoleDto>>(records));
+                return new DataTableDto<RoleTableDto>(totalRecords, _mapper.Mapper.Map<IEnumerable<RoleTableDto>>(records).Select((x, i) => { x.Num = ++i; return x; }));
             } catch (Exception exp) {
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Read, "Получение списка ролей", exp.Format());
                 throw;
@@ -90,11 +90,11 @@ namespace Lazar.Services.Administration {
         /// </summary>
         /// <param name="options">Filtering and search options</param>
         /// <returns>List of records</returns>
-        public async Task<DataTableDto<RoleDto>> GetByUserAsync(RoleTableRequestDto options) {
+        public async Task<DataTableDto<RoleTableDto>> GetByUserAsync(RoleTableRequestDto options) {
             try {
                 int totalRecords = await _repositoryManager.RoleRepository.CountAsync(options.Filters);
                 var records = await _repositoryManager.RoleRepository.GetRecordsAsync(options.Filters, options.Sorts, options.Pagination, Guid.TryParse(options.SelectedUserId, out Guid userId) ? userId : null);
-                return new DataTableDto<RoleDto>(totalRecords, _mapper.Mapper.Map<IEnumerable<RoleDto>>(records));
+                return new DataTableDto<RoleTableDto>(totalRecords, _mapper.Mapper.Map<IEnumerable<RoleTableDto>>(records).Select((x, i) => { x.Num = ++i; return x; }));
             } catch (Exception exp) {
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Read, "Получение списка ролей", exp.Format());
                 throw;

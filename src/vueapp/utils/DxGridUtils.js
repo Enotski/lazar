@@ -181,10 +181,10 @@ export const DataGrid = {
                 load: async function() {
                     type = type !== null ? type : 'POST';
                     return await sendRequest(url, type, params)
-                        .then(async function(data) {
+                        .then(async function(response) {
                             let options = [];
-                            data.forEach(function(item) {
-                                options.push(item.Text);
+                            response.data.Data.forEach(function(item) {
+                                options.push(item.Name);
                             });
                             return options;
                         })
