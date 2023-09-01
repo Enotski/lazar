@@ -55,7 +55,7 @@ export default {
         new Date(now.getTime() + msInDay * 3),
       ],
       getEventLogUrl: `${apiUrl}/system-log/get-all`,
-      removesystemLogByPeriodUrl: `${apiUrl}/system-log/remove-by-period`,
+      removeSystemLogByPeriodUrl: `${apiUrl}/system-log/remove-by-period`,
       systemLogGridRef: "system_log_grid",
       dateRangeRef: "log_period",
       systemLogColumns: [
@@ -101,10 +101,10 @@ export default {
       let el = this;
       let value = this.dxDateRange.option("value");
       let period = {
-        startDate: value[0],
-        endDate: value[1],
+        startDate: value[0].toLocaleString('ru-Ru'),
+        endDate: value[1].toLocaleString('ru-Ru'),
       };
-      await sendRequest(this.removeEventLogByPeriodUrl, "POST", period).then(
+      await sendRequest(this.removeSystemLogByPeriodUrl, "POST", period).then(
         () => {
           el.dxEventLogGrid.refresh();
         }

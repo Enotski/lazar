@@ -3,6 +3,7 @@ using Lazar.Domain.Core.Enums;
 using Lazar.Domain.Interfaces.Repositories.Common;
 using Lazar.Infrastructure.Mapper;
 using Lazar.Services.Contracts.Logging;
+using Lazar.Services.Contracts.Request;
 using Lazar.Services.Contracts.Request.DataTable.Base;
 using Lazar.Services.Contracts.Response.Models;
 using Lazar.Srevices.Iterfaces.Logging;
@@ -54,19 +55,6 @@ namespace Lazar.Services.Logging {
             }
         }
         /// <summary>
-        /// Remove all entities by days 
-        /// </summary>
-        /// <param name="days">The number of days before the current date after which records are deleted</param>
-        /// <returns></returns>
-        public async Task RemoveByPeriodAsync(int days) {
-            try {
-                await _repositoryManager.SystemLogRepository.ClearAsync(days);
-            } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Logging, EventType.Delete, "Очистка журнала системных событий: " + exp.Format());
-                throw;
-            }
-        }
-        /// <summary>
         /// Remove records
         /// </summary>
         /// <param name="ids">Primary keys</param>
@@ -82,6 +70,27 @@ namespace Lazar.Services.Logging {
                     throw new Exception("У вас недостаточно прав для выполнения данной операции");
                 }
                 await _repositoryManager.SystemLogRepository.DeleteAsync(ids);
+            } catch (Exception exp) {
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Logging, EventType.Delete, "Удаление записей журнала системных событий: " + exp.Format(), login);
+                throw;
+            }
+        }
+        /// <summary>
+        /// Remove all entities by period 
+        /// </summary>
+        /// <param name="period">Period of dates to clear log</param>
+        /// <param name="login">Login of the user who triggered the event</param>
+        /// <returns></returns>
+        public async Task ClearByPeriodAsync(PeriodDto period, string login) {
+            try {
+                bool IsHaveRight = await _repositoryManager.UserRepository.PermissionToPerformOperation(login);
+                if (!IsHaveRight) {
+                    throw new Exception("У вас недостаточно прав для выполнения данной операции");
+                }
+                if(!DateTime.TryParse(period.StartDate, out DateTime start) & !DateTime.TryParse(period.EndDate, out DateTime end))
+                    throw new Exception("Invalid date format");
+
+                await _repositoryManager.SystemLogRepository.ClearByPeriodAsync(start, end);
             } catch (Exception exp) {
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Logging, EventType.Delete, "Удаление записей журнала системных событий: " + exp.Format(), login);
                 throw;

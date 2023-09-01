@@ -48,7 +48,7 @@ namespace Lazar.Presentation.WebApi.Controllers.Logging {
         [Route("remove-by-period")]
         public async Task<IActionResult> RemoveByPeriod([FromBody] PeriodDto period) {
             try {
-                await _serviceManager.LoggingService.RemoveByPeriodAsync(period, UserIdentityName);
+                await _serviceManager.LoggingService.ClearByPeriodAsync(period, UserIdentityName);
                 return Ok(new SuccessResponseDto());
             } catch (Exception exp) {
                 return Ok(new ErrorResponseDto(exp));

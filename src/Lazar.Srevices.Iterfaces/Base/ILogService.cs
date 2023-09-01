@@ -24,6 +24,6 @@ namespace Lazar.Srevices.Iterfaces.Base {
         /// <param name="period">Period of dates to clear log</param>
         /// <param name="login">Login of the user who triggered the event</param>
         /// <returns></returns>
-        Task RemoveByPeriodAsync(PeriodDto period, string login);
+        Task ClearByPeriodAsync(PeriodDto period, string login);
     }
 }

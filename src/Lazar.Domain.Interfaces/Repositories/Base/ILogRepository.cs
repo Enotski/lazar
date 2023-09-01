@@ -7,11 +7,12 @@ namespace Lazar.Domain.Interfaces.Repositories.Base {
     /// <typeparam name="TEntity">Type witch implement IKey and IDateChange</typeparam>
     public interface ILogRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class, IKey, IDateChange {
         /// <summary>
-        /// Remove all entities by days 
+        /// Remove all entities by period 
         /// </summary>
-        /// <param name="days">The number of days before the current date after which records are deleted</param>
+        /// <param name="star">Lower bound of period</param>
+        /// <param name="end">Upper bound of period</param>
         /// <returns></returns>
-        Task ClearAsync(int days);
+        Task ClearByPeriodAsync(DateTime star, DateTime end);
         /// <summary>
         /// Remove all entities
         /// </summary>

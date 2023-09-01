@@ -11,15 +11,14 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Base {
     internal abstract class LogRepository<TEntity> : BaseRepository<TEntity>, ILogRepository<TEntity> where TEntity : class, IKey, IDateChange {
         public LogRepository(LazarContext dbContext) : base(dbContext) { }
         /// <summary>
-        /// Remove all entities by days 
+        /// Remove all entities by period 
         /// </summary>
-        /// <param name="days">The number of days before the current date after which records are deleted</param>
+        /// <param name="star">Lower bound of period</param>
+        /// <param name="end">Upper bound of period</param>
         /// <returns></returns>
-        public async Task ClearAsync(int days) {
+        public async Task ClearByPeriodAsync(DateTime start, DateTime end) {
             try {
-                days = days < 1 ? 1 : days;
-                var cutoffDate = DateTime.UtcNow.AddDays(-days);
-                await _dbContext.Set<TEntity>().Where(x => x.DateChange < cutoffDate).DeleteAsync();
+                await _dbContext.Set<TEntity>().Where(x =>x.DateChange >= start && x.DateChange <= end).DeleteAsync();
             } catch { throw; }
         }
         /// <summary>
