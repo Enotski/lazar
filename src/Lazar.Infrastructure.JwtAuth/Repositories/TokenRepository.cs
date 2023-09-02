@@ -20,12 +20,12 @@ namespace Lazar.Infrastructure.JwtAuth.Repositories {
         /// <param name="key">Secret key</param>
         /// <param name="expirationTime">Expiration time of a token</param>
         /// <returns>Generated token</returns>
-        public string GenerateAccessToken(IEnumerable<Claim> claims, string issuer, string audience, string key, int expirationTime = 1) {
+        public string GenerateAccessToken(IEnumerable<Claim> claims, string issuer, string audience, string key, DateTime expires) {
             var tokeOptions = new JwtSecurityToken(
                 issuer: issuer,
                 audience: audience,
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(expirationTime),
+                expires: expires,
                 signingCredentials: new SigningCredentials(AuthHelper.GetSymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
             );
             var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
@@ -50,11 +50,11 @@ namespace Lazar.Infrastructure.JwtAuth.Repositories {
         /// <returns>Claims</returns>
         public ClaimsPrincipal GetPrincipalFromExpiredToken(string token, string key) {
             var tokenValidationParameters = new TokenValidationParameters {
-                ValidateAudience = true,
-                ValidateIssuer = true,
+                ValidateAudience = false,
+                ValidateIssuer = false,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = AuthHelper.GetSymmetricSecurityKey(key),
-                ValidateLifetime = true
+                ValidateLifetime = false
             };
             var tokenHandler = new JwtSecurityTokenHandler();
             SecurityToken securityToken;

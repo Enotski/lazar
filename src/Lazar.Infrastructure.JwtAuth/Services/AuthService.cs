@@ -5,10 +5,12 @@ using Lazar.Domain.Core.SelectorModels.Administration;
 using Lazar.Domain.Interfaces.Repositories.Common;
 using Lazar.Infrastructure.JwtAuth.Iterfaces.Auth;
 using Lazar.Infrastructure.JwtAuth.Models;
+using Lazar.Infrastructure.JwtAuth.Models.Dto;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
 
-namespace Lazar.Infrastructure.JwtAuth.Services {
+namespace Lazar.Infrastructure.JwtAuth.Services
+{
     /// <summary>
     /// Authentication service
     /// </summary>
@@ -16,8 +18,8 @@ namespace Lazar.Infrastructure.JwtAuth.Services {
         private readonly IRepositoryManager _repositoryManager;
         private readonly IAuthRepositoryManager _authRepositoryManager;
 
-        private readonly AuthDto _configuration;
-        public AuthService(IRepositoryManager repositoryManager, IAuthRepositoryManager authRepositoryManager, IOptions<AuthDto> options) {
+        private readonly AuthConfiguration _configuration;
+        public AuthService(IRepositoryManager repositoryManager, IAuthRepositoryManager authRepositoryManager, IOptions<AuthConfiguration> options) {
             _repositoryManager = repositoryManager;
             _authRepositoryManager = authRepositoryManager;
             _configuration = options.Value;
@@ -44,9 +46,9 @@ namespace Lazar.Infrastructure.JwtAuth.Services {
         /// <param name="claims">Claims of user</param>
         /// <returns>Access and refresh tokens</returns>
         private TokenOptions GetTokenOptions(List<Claim> claims) {
-            var accessToken = _authRepositoryManager.TokenRepository.GenerateAccessToken(claims, _configuration.Issuer, _configuration.Audience, _configuration.Key);
+            var expiredTime = DateTime.Now.AddMinutes(1);
+            var accessToken = _authRepositoryManager.TokenRepository.GenerateAccessToken(claims, _configuration.Issuer, _configuration.Audience, _configuration.Key, expiredTime);
             var refreshToken = _authRepositoryManager.TokenRepository.GenerateRefreshToken();
-            var expiredTime = DateTime.Now.AddDays(7);
 
             return new TokenOptions(accessToken, refreshToken, expiredTime);
         }
@@ -94,7 +96,7 @@ namespace Lazar.Infrastructure.JwtAuth.Services {
         /// </summary>
         /// <param name="model">Registration model</param>
         /// <returns>User authentication model with generated tokens</returns>
-        public async Task<UserAuthDto> RegisterAsync(SignUpRequestDto model) {
+        public async Task<UserAuthDto> RegisterAsync(UserRegisterRequestDto model) {
             try {
                 if (model is null) {
                     throw new Exception("Invalid client request");
@@ -127,11 +129,11 @@ namespace Lazar.Infrastructure.JwtAuth.Services {
         /// <summary>
         /// LogOut from system
         /// </summary>
-        /// <param name="login">Login of authentication model</param>
+        /// <param name="model">Logout model</param>
         /// <returns></returns>
-        public async Task LogOutAsync(string login) {
+        public async Task LogOutAsync(LogOutRequestDto model) {
             try {
-                var loginModel = await _authRepositoryManager.AuthRepository.GetAuthModelAsync(login);
+                var loginModel = await _authRepositoryManager.AuthRepository.GetAuthModelAsync(model.Login);
                 if (loginModel != null) {
                     await _authRepositoryManager.AuthRepository.DeleteAsync(loginModel);
                 }
@@ -150,13 +152,11 @@ namespace Lazar.Infrastructure.JwtAuth.Services {
                 if (model is null)
                     throw new Exception("Invalid client request");
 
-                string accessToken = model.Key;
-                string refreshToken = model.RefreshKey;
-                var principal = _authRepositoryManager.TokenRepository.GetPrincipalFromExpiredToken(accessToken, _configuration.Key);
+                var principal = _authRepositoryManager.TokenRepository.GetPrincipalFromExpiredToken(model.AccessToken, _configuration.Key);
                 var username = principal.Identity.Name; //this is mapped to the Name claim by default
 
                 var loginModel = await _authRepositoryManager.AuthRepository.GetAuthModelAsync(username);
-                if (loginModel is null || loginModel.RefreshToken != refreshToken || loginModel.RefreshTokenExpiryTime <= DateTime.Now)
+                if (loginModel is null || loginModel.RefreshToken != model.RefreshToken)
                     throw new Exception("Invalid client request");
 
                 var user = await _repositoryManager.UserRepository.GetByLoginAsync(loginModel.Login);

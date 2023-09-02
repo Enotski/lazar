@@ -6,8 +6,6 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'devextreme/dist/css/dx.light.css'
 import './css/site.css'
 
-import store from "./store";
-
 import UsersPage from './components/AdministrationPages/UsersPage.vue'
 import UserProfilePage from './components/AdministrationPages/UserProfilePage.vue'
 import SystemLogPage from './components/AdministrationPages/SystemLogPage.vue'
@@ -57,4 +55,4 @@ const router = createRouter({
     history: createWebHistory()
 })
 
-createApp(App).use(router).use(store).mount('#app')
+createApp(App).use(router).mount('#app')

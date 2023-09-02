@@ -153,7 +153,8 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
         /// <returns>Entity selector model</returns>
         public async Task<UserSelectorModel> GetRecordAsync(Guid? id) {
             try {
-                return await BuildQuery(x => x.Id == id, null, null).Select(x => new UserSelectorModel(x.Id, x.Roles.Select(r => r.Name), x.Roles.Select(r => r.Id), x.Name, x.Login, x.Password, x.Email, x.ChangedBy, x.DateChange)).FirstOrDefaultAsync();
+                return await BuildQuery(x => x.Id == id, null, null)
+                    .Select(x => new UserSelectorModel(x.Id, x.Roles.Select(r => r.Name), x.Roles.Select(r => r.Id), x.Name, x.Login, x.Password, x.Email, x.ChangedBy, x.DateChange)).FirstOrDefaultAsync();
             } catch {
                 throw;
             }

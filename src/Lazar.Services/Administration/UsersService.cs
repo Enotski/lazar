@@ -212,7 +212,7 @@ namespace Lazar.Services.Administration {
         /// <returns></returns>
         public async Task RemoveRoleFromUser(UserRoleDto model, string login) {
             try {
-                var changes = ChangetUserRoles(model, login, true);
+                var changes = await ChangetUserRoles(model, login, true);
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, $"{string.Join("; ", changes)}", login);
             } catch (Exception exp) {
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, "Обновление роли" + exp.Format());
@@ -227,7 +227,7 @@ namespace Lazar.Services.Administration {
         /// <returns></returns>
         public async Task SetRoleToUser(UserRoleDto model, string login) {
             try {
-                var changes = ChangetUserRoles(model, login);
+                var changes = await ChangetUserRoles(model, login);
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, $"{string.Join("; ", changes)}", login);
             } catch (Exception exp) {
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, "Обновление роли" + exp.Format());
@@ -243,7 +243,7 @@ namespace Lazar.Services.Administration {
         /// <returns></returns>
         private async Task<List<string>> ChangetUserRoles(UserRoleDto model, string initiator, bool removeRole = false) {
             try {
-                var entity = await _repositoryManager.UserRepository.GetAsync(model.UserId);
+                var entity = await _repositoryManager.UserRepository.GetWithRolesAsync(model.UserId);
                 if (entity is null) {
                     throw new Exception("User not found");
                 }

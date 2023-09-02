@@ -14,7 +14,7 @@ namespace LazarWebApi.Controllers.Administration {
     /// Controller of roles
     /// </summary>
     [ApiController]
-    [Route("api/roles")/*, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)*/]
+    [Route("api/roles"), Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class RolesController : BaseController {
         public RolesController(IServiceManager serviceManager, IModelMapper mapper)
             : base(serviceManager, mapper) {

@@ -1,6 +1,7 @@
-﻿using Lazar.Infrastructure.JwtAuth.Models;
+﻿using Lazar.Infrastructure.JwtAuth.Models.Dto;
 
-namespace Lazar.Infrastructure.JwtAuth.Iterfaces.Auth {
+namespace Lazar.Infrastructure.JwtAuth.Iterfaces.Auth
+{
     /// <summary>
     /// Authentication service
     /// </summary>
@@ -8,21 +9,21 @@ namespace Lazar.Infrastructure.JwtAuth.Iterfaces.Auth {
         /// <summary>
         /// Login to system
         /// </summary>
-        /// <param name="model">Login reques model</param>
+        /// <param name="model">Login model</param>
         /// <returns>User authentication model with generated tokens</returns>
         Task<UserAuthDto> LogInAsync(LogInRequestDto model);
         /// <summary>
         /// LogOut from system
         /// </summary>
-        /// <param name="login">Login of authentication model</param>
+        /// <param name="model">Logout model</param>
         /// <returns></returns>
-        Task LogOutAsync(string login);
+        Task LogOutAsync(LogOutRequestDto model);
         /// <summary>
         /// Register new user in system
         /// </summary>
         /// <param name="model">Registration model</param>
         /// <returns>User authentication model with generated tokens</returns>
-        Task<UserAuthDto> RegisterAsync(SignUpRequestDto model);
+        Task<UserAuthDto> RegisterAsync(UserRegisterRequestDto model);
         /// <summary>
         /// Update token of authenticated user
         /// </summary>

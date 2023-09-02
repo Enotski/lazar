@@ -14,9 +14,9 @@ namespace Lazar.Infrastructure.JwtAuth.Iterfaces.Auth {
         /// <param name="issuer">Token issuer</param>
         /// <param name="audience">Token audience</param>
         /// <param name="key">Secret key</param>
-        /// <param name="expirationTime">Expiration time of a token</param>
+        /// <param name="expires">Expiration time of a token</param>
         /// <returns>Generated token</returns>
-        string GenerateAccessToken(IEnumerable<Claim> claims, string issuer, string audience, string key, int expirationTime = 1);
+        string GenerateAccessToken(IEnumerable<Claim> claims, string issuer, string audience, string key, DateTime expires);
         /// <summary>
         /// Create refresh token
         /// </summary>

@@ -10,7 +10,7 @@
         ></router-link
       >
     </div>
-    <!-- <div v-if="loggedIn"> -->
+    <div v-if="loggedIn">
       <div class="row">
         <div class="col-auto">
           <router-link to="/users" class="nav nav-link text-secondary"
@@ -23,6 +23,7 @@
           >
         </div>
       </div>
+    </div>
     <div class="d-flex">
       <div class="col me-5">
         <n-dropdown trigger="hover" :options="items" @select="handleNavSelec">
@@ -121,6 +122,7 @@ import {
   useDialog,
   useMessage
 } from "naive-ui";
+import AuthService from "../../services/authService";
 
 export default defineComponent({
   components: {
@@ -144,6 +146,7 @@ export default defineComponent({
       options: [],
       notify: null,
       dialog: null,
+      user: null,
       registerFormRadioGroup: [
         { key: 0, label: "Log in" },
         { key: 1, label: "Register" },
@@ -195,10 +198,14 @@ export default defineComponent({
       return this.registerRadio === 1;
     },
     loggedIn() {
-      return this.$store.state.auth.status.loggedIn;
+      return  this.currentUser !== undefined && this.currentUser !== null;
     },
     currentUser() {
-      return this.$store.state.auth.user;
+      if(this.user == null || this.user == undefined){
+        return JSON.parse(window.localStorage.getItem("user"));
+      }
+        
+      return this.user;
     },
     showAdminBoard() {
       if (this.currentUser && this.currentUser["roles"]) {
@@ -221,9 +228,7 @@ export default defineComponent({
   created() {
     this.dialog = useDialog();
     this.notify = useMessage();
-    if (this.loggedIn) {
-      this.$router.push("/user-profile");
-    }
+    this.user = JSON.parse(window.localStorage.getItem("user"));
   },
   methods: {
     handleNavSelec(key) {
@@ -242,29 +247,24 @@ export default defineComponent({
         },
       });
     },
-    logOut() {
-      this.$store.dispatch("auth/logout");
-      this.$router.push("/");
+    async logOut(){
+      await AuthService.logout()
+      .then(()=>{
+        this.user = null;
+        this.$router.push("/");
+      });      
     },
-    submit: async function () {
+    async submit(){
       this.showLoginModal = false;
-      this.$store.dispatch("auth/login", this.form).then(
-        (resp) => {
-          if(resp.Result == 1){
-            this.notify.error(resp.Message);
+      await AuthService.login(this.form)
+      .then((response) => {
+        if(response.Result == 1) {
+            this.notify.error(response.Message);
           }else{
-            this.notify.success(`Hello ${resp.Login}`);
+            this.user = response;
+            this.notify.success(`Hello ${this.currentUser.Login}`);
           }
-        },
-        (error) => {
-          this.message =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            this.notify.error(error.toString());
-        }
-      );
+      });
     },
   },
 });

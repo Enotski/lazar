@@ -14,18 +14,22 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
+using Lazar.Infrastructure.JwtAuth.Models.Dto;
+using System.Net;
+using System.Web.Http;
 
-namespace Lazar.Presentation.WebApi {
+namespace Lazar.Presentation.WebApi
+{
     public class Program {
         public static void Main(string[] args) {
             var builder = WebApplication.CreateBuilder(args);
 
             // Get Jwt-Token configuration from appsettings
-            builder.Services.Configure<AuthDto>(options => builder.Configuration.GetSection("Jwt").Bind(options));
+            builder.Services.Configure<AuthConfiguration>(options => builder.Configuration.GetSection("Jwt").Bind(options));
 
             builder.Services.AddCors();
 
-            builder.Services.AddControllers().AddJsonOptions(opts => {
+            builder.Services.AddControllers(opts => opts.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true).AddJsonOptions(opts => {
                 opts.JsonSerializerOptions.PropertyNamingPolicy = null;
             });
             builder.Services.AddEndpointsApiExplorer();
@@ -71,6 +75,11 @@ namespace Lazar.Presentation.WebApi {
                     ValidateLifetime = true,
                     IssuerSigningKey = AuthHelper.GetSymmetricSecurityKey(builder.Configuration["Jwt:Key"]),
                     ValidateIssuerSigningKey = true,
+                    LifetimeValidator = (DateTime? notBefore, DateTime? expires, SecurityToken securityToken, TokenValidationParameters validationParameters) => {
+                        if(expires <= DateTime.UtcNow)
+                            throw new HttpResponseException(HttpStatusCode.Unauthorized);
+                        return true;
+                    }
                 };
             });
             builder.Services.AddAuthorization();

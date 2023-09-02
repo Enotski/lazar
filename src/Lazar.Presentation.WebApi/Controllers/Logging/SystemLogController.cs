@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Lazar.Presentation.WebApi.Controllers.Logging {
     [ApiController]
-    [Route("api/system-log")/*, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)*/]
+    [Route("api/system-log"), Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class SystemLogController : BaseController {
         public SystemLogController(IServiceManager serviceManager, IModelMapper mapper)
             : base(serviceManager, mapper) {

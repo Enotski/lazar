@@ -1,8 +1,6 @@
 ﻿using Lazar.Infrastructure.JwtAuth.Iterfaces.Auth;
-using Lazar.Infrastructure.JwtAuth.Models;
+using Lazar.Infrastructure.JwtAuth.Models.Dto;
 using Lazar.Services.Contracts.Response.Base;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lazar.Presentation.WebApi.Controllers.Auth {
@@ -23,11 +21,11 @@ namespace Lazar.Presentation.WebApi.Controllers.Auth {
                 return Ok(new ErrorResponseDto(exp));
             }
         }
-        [HttpPost, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost]
         [Route("log-out")]
-        public async Task<IActionResult> LogOut([FromBody] string login) {
+        public async Task<IActionResult> LogOut([FromBody] LogOutRequestDto model) {
             try {
-                await _authService.LogOutAsync(login);
+                await _authService.LogOutAsync(model);
                 return Ok(new SuccessResponseDto());
             } catch (Exception exp) {
                 return Ok(new ErrorResponseDto(exp));
@@ -35,14 +33,14 @@ namespace Lazar.Presentation.WebApi.Controllers.Auth {
         }
         [HttpPost]
         [Route("sign-up")]
-        public async Task<IActionResult> SignUp([FromBody] SignUpRequestDto signUpRequest) {
+        public async Task<IActionResult> SignUp([FromBody] UserRegisterRequestDto signUpRequest) {
             try {
                 return Ok(await _authService.RegisterAsync(signUpRequest));
             } catch (Exception exp) {
                 return Ok(new ErrorResponseDto(exp));
             }
         }
-        [HttpPost, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost]
         [Route("refresh")]
         public async Task <IActionResult> Refresh([FromBody] TokensDto tokenApiModel) {
             try {

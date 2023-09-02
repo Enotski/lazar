@@ -5,11 +5,13 @@ using Lazar.Services.Contracts.Request;
 using Lazar.Services.Contracts.Request.DataTable.Base;
 using Lazar.Services.Contracts.Response.Base;
 using Lazar.Srevices.Iterfaces.Common;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LazarWebApi.Controllers.Administration {
     [ApiController]
-    [Route("api/users")/*, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)*/]
+    [Route("api/users"), Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class UsersController : BaseController {
         public UsersController(IServiceManager serviceManager, IModelMapper mapper)
             : base(serviceManager, mapper) {

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LazarWebApi.Controllers.Common {
     [ApiController]
-    [Route("api/types")/*, Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)*/]
+    [Route("api/types"), Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class TypesController : ControllerBase{
         [HttpGet]
         [Route("get-subsystem-types")]
