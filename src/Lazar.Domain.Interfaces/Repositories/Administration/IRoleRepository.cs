@@ -2,8 +2,10 @@
 using Lazar.Domain.Interfaces.Options;
 using Lazar.Domain.Interfaces.Repositories.Base;
 
-namespace Lazar.Domain.Interfaces.Repositories.Administration
-{
+namespace Lazar.Domain.Interfaces.Repositories.Administration {
+    /// <summary>
+    /// Roles repository
+    /// </summary>
     public interface IRoleRepository : INameRepository<Role> {
         /// <summary>
         /// Returns the number of records according to the search parameters

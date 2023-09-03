@@ -9,16 +9,22 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Common {
     /// <summary>
     /// Main repository manager
     /// </summary>
-    public class RepositoryManager : IRepositoryManager
-    {
-        private Lazy<IRoleRepository> _lazyRoleRepository;
+    public class RepositoryManager : IRepositoryManager {
+        /// <summary>
+        /// Roles repository
+        /// </summary>
         public IRoleRepository RoleRepository => _lazyRoleRepository.Value;
-
-        private Lazy<IUserRepository> _lazyUsersRepository;
+        private Lazy<IRoleRepository> _lazyRoleRepository;
+        /// <summary>
+        /// Users repository
+        /// </summary>
         public IUserRepository UserRepository => _lazyUsersRepository.Value;
-
-        private Lazy<ISystemLogRepository> _lazyLoggingRepository;
+        private Lazy<IUserRepository> _lazyUsersRepository;
+        /// <summary>
+        /// System logs repository
+        /// </summary>
         public ISystemLogRepository SystemLogRepository => _lazyLoggingRepository.Value;
+        private Lazy<ISystemLogRepository> _lazyLoggingRepository;
 
         public RepositoryManager(LazarContext context) {
             _lazyRoleRepository = new Lazy<IRoleRepository>(() => new RoleRepository(context));

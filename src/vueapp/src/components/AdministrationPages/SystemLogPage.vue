@@ -8,7 +8,9 @@
         display-format="dd.MM.yyyy"
       />
       <div class="ms-5 pt-2">
-        <n-button @click="clearEventLog" type="error" ghost >Remove logs</n-button>
+        <n-button @click="clearEventLog" type="error" ghost
+          >Remove logs</n-button
+        >
       </div>
     </div>
     <div class="d-flex flex-row">
@@ -26,8 +28,8 @@ import DxGrid from "../DxComponents/DxGrid.vue";
 import DxDateRangeBox from "devextreme-vue/date-range-box";
 import { NButton } from "naive-ui";
 
-import { DataGrid } from "../../../utils/DxGridUtils";
-import { sendRequest, apiUrl } from "../../../utils/requestUtils";
+import { DataGrid } from "@/utils/DxGridUtils";
+import { sendRequest, apiUrl } from "@/utils/requestUtils";
 
 const msInDay = 1000 * 60 * 60 * 24;
 const now = new Date();
@@ -73,7 +75,7 @@ export default {
           lookup: DataGrid.getColumnLookup(subSystemTypeUrl, "GET"),
         },
         {
-          caption: "Event", 
+          caption: "Event",
           dataField: "EventTypeName",
           filterOperations: ["=", "<>"],
           lookup: DataGrid.getColumnLookup(eventTypeUrl, "GET"),
@@ -101,8 +103,8 @@ export default {
       let el = this;
       let value = this.dxDateRange.option("value");
       let period = {
-        startDate: value[0].toLocaleString('ru-Ru'),
-        endDate: value[1].toLocaleString('ru-Ru'),
+        startDate: value[0].toLocaleString("ru-Ru"),
+        endDate: value[1].toLocaleString("ru-Ru"),
       };
       await sendRequest(this.removeSystemLogByPeriodUrl, "POST", period).then(
         () => {

@@ -16,7 +16,6 @@
     "jest": "^29.5.0",
     "jest-editor-support": "^31.0.1",
     "moment": "^2.29.4",
-    "pinia": "^2.1.6",
     "vee-validate": "^4.9.6",
     "vue": "^3.2.13",
     "vue-router": "^4.2.2"

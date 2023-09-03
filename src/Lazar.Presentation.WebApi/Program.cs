@@ -12,14 +12,10 @@ using Lazar.Srevices.Iterfaces.Common;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json.Serialization;
-using Newtonsoft.Json;
-using Lazar.Infrastructure.JwtAuth.Models.Dto;
 using System.Net;
 using System.Web.Http;
 
-namespace Lazar.Presentation.WebApi
-{
+namespace Lazar.Presentation.WebApi {
     public class Program {
         public static void Main(string[] args) {
             var builder = WebApplication.CreateBuilder(args);

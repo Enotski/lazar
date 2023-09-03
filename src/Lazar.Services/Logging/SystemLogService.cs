@@ -24,7 +24,7 @@ namespace Lazar.Services.Logging {
         /// <summary>
         /// System event records for presentation layer
         /// </summary>
-        /// <param name="options">Параметры фильтрации и поиска</param>
+        /// <param name="options">Search options</param>
         /// <returns></returns>
         public async Task<DataTableDto<SystemLogTableDto>> GetRecordsAsync(DataTableRequestDto options) {
             try {
@@ -33,7 +33,7 @@ namespace Lazar.Services.Logging {
                 return new DataTableDto<SystemLogTableDto>(totalRecords,
                     _mapper.Mapper.Map<IEnumerable<SystemLogTableDto>>(records).Select((x, i) => { x.Num = ++i; return x; }));
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Logging, EventType.Read, "Получение списка записей журнала системных событий: " + exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Logging, EventType.Read, "Getting a list of system events: " + exp.Format());
                 throw;
             }
         }
@@ -46,32 +46,11 @@ namespace Lazar.Services.Logging {
             try {
                 bool IsHaveRight = await _repositoryManager.UserRepository.PermissionToPerformOperation(login);
                 if (!IsHaveRight) {
-                    throw new Exception("У вас недостаточно прав для выполнения данной операции");
+                    throw new Exception("You do not have sufficient rights to perform this operation");
                 }
                 await _repositoryManager.SystemLogRepository.ClearAsync();
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Logging, EventType.Delete, "Очистка журнала системных событий: " + exp.Format(), login);
-                throw;
-            }
-        }
-        /// <summary>
-        /// Remove records
-        /// </summary>
-        /// <param name="ids">Primary keys</param>
-        /// <param name="login">Login of the user who triggered the event</param>
-        /// <returns></returns>
-        public async Task DeleteRecordsAsync(IEnumerable<Guid> ids, string login) {
-            try {
-                if (!ids.Any()) {
-                    throw new Exception("Полученный список ключей пуст");
-                }
-                bool IsHaveRight = await _repositoryManager.UserRepository.PermissionToPerformOperation(login);
-                if (!IsHaveRight) {
-                    throw new Exception("У вас недостаточно прав для выполнения данной операции");
-                }
-                await _repositoryManager.SystemLogRepository.DeleteAsync(ids);
-            } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Logging, EventType.Delete, "Удаление записей журнала системных событий: " + exp.Format(), login);
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Logging, EventType.Delete, "Clearing a system events journal: " + exp.Format(), login);
                 throw;
             }
         }
@@ -85,14 +64,14 @@ namespace Lazar.Services.Logging {
             try {
                 bool IsHaveRight = await _repositoryManager.UserRepository.PermissionToPerformOperation(login);
                 if (!IsHaveRight) {
-                    throw new Exception("У вас недостаточно прав для выполнения данной операции");
+                    throw new Exception("You do not have sufficient rights to perform this operation");
                 }
                 if(!DateTime.TryParse(period.StartDate, out DateTime start) & !DateTime.TryParse(period.EndDate, out DateTime end))
                     throw new Exception("Invalid date format");
 
                 await _repositoryManager.SystemLogRepository.ClearByPeriodAsync(start, end);
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Logging, EventType.Delete, "Удаление записей журнала системных событий: " + exp.Format(), login);
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Logging, EventType.Delete, "Clearing a system events journal by period: " + exp.Format(), login);
                 throw;
             }
         }

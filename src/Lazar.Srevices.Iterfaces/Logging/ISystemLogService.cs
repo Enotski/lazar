@@ -11,7 +11,7 @@ namespace Lazar.Srevices.Iterfaces.Logging {
         /// <summary>
         /// System event records for presentation layer
         /// </summary>
-        /// <param name="options">Параметры фильтрации и поиска</param>
+        /// <param name="options">Search options</param>
         /// <returns></returns>
         Task<DataTableDto<SystemLogTableDto>> GetRecordsAsync(DataTableRequestDto options);
     }

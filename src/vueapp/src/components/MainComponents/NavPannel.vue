@@ -1,6 +1,7 @@
 <template>
   <nav
-    class="navbar d-flex fixed-top bg-light justify-content-between box-shadow mb-3 shadow p-3 py-2">
+    class="navbar d-flex fixed-top bg-light justify-content-between box-shadow mb-3 shadow p-3 py-2"
+  >
     <div>
       <router-link
         to="/"
@@ -107,7 +108,10 @@
 
 <script>
 import { defineComponent } from "vue";
-import { AccountCircleOutlined as AccountIcon, NoAccountsOutlined as NoAccountIcon } from "@vicons/material";
+import {
+  AccountCircleOutlined as AccountIcon,
+  NoAccountsOutlined as NoAccountIcon,
+} from "@vicons/material";
 import {
   NButton,
   NDropdown,
@@ -120,9 +124,9 @@ import {
   NRadioGroup,
   NRadioButton,
   useDialog,
-  useMessage
+  useMessage,
 } from "naive-ui";
-import AuthService from "../../services/authService";
+import AuthService from "@/services/authService";
 
 export default defineComponent({
   components: {
@@ -170,9 +174,9 @@ export default defineComponent({
         { key: "windows", label: "Windows" },
       ],
       formValue: {
-        login: this.login,
-        email: this.email,
-        password: this.password,
+        login: "",
+        email: "",
+        password: "",
       },
       rules: {
         login: {
@@ -198,25 +202,25 @@ export default defineComponent({
       return this.registerRadio === 1;
     },
     loggedIn() {
-      return  this.currentUser !== undefined && this.currentUser !== null;
+      return this.currentUser !== undefined && this.currentUser !== null;
     },
     currentUser() {
-      if(this.user == null || this.user == undefined){
+      if (this.user == null || this.user == undefined) {
         return JSON.parse(window.localStorage.getItem("user"));
       }
-        
+
       return this.user;
     },
     showAdminBoard() {
       if (this.currentUser && this.currentUser["roles"]) {
-        return this.currentUser["roles"].includes("admin");
+        return this.currentUser["Roles"].includes("admin");
       }
 
       return false;
     },
     showModeratorBoard() {
       if (this.currentUser && this.currentUser["roles"]) {
-        return this.currentUser["roles"].includes("moderator");
+        return this.currentUser["Roles"].includes("moderator");
       }
 
       return false;
@@ -243,28 +247,44 @@ export default defineComponent({
         onPositiveClick: () => {
           this.logOut();
         },
-        onNegativeClick: () => {
-        },
+        onNegativeClick: () => {},
       });
     },
-    async logOut(){
-      await AuthService.logout()
-      .then(()=>{
+    async logOut() {
+      await AuthService.logout().then(() => {
         this.user = null;
         this.$router.push("/");
-      });      
+      });
     },
-    async submit(){
+    async submit() {
       this.showLoginModal = false;
-      await AuthService.login(this.form)
-      .then((response) => {
-        if(response.Result == 1) {
-            this.notify.error(response.Message);
-          }else{
+      if (this.isRegisterForm) {
+        await AuthService.register(this.form)
+          .then((response) => {
             this.user = response;
             this.notify.success(`Hello ${this.currentUser.Login}`);
-          }
-      });
+          })
+          .catch((ex) => {
+            this.notify.error(ex);
+          });
+      } else {
+        await AuthService.login(this.form)
+          .then((response) => {
+            this.user = response;
+            this.notify.success(`Hello ${this.currentUser.Login}`);
+          })
+          .catch((ex) => {
+            this.notify.error(ex);
+          });
+      }
+      this.clearForm();
+    },
+    clearForm() {
+      this.formValue = {
+        login: "",
+        email: "",
+        password: "",
+      };
     },
   },
 });

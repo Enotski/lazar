@@ -4,6 +4,9 @@ using Lazar.Domain.Interfaces.Options;
 using Lazar.Domain.Interfaces.Repositories.Base;
 
 namespace Lazar.Domain.Interfaces.Repositories.Administration {
+    /// <summary>
+    /// Users repository
+    /// </summary>
     public interface IUserRepository : INameRepository<User>, ILoginRepository<User> {
         /// <summary>
         /// Operation Permissions

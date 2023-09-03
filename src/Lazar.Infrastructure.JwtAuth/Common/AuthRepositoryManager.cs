@@ -3,13 +3,20 @@ using Lazar.Infrastructure.JwtAuth.Iterfaces.Auth;
 using Lazar.Infrastructure.JwtAuth.Repositories;
 
 namespace Lazar.Infrastructure.JwtAuth.Common.Auth {
-    public class AuthRepositoryManager : IAuthRepositoryManager
-    {
-        private Lazy<ITokenRepository> _lazyTokenRepository;
+    /// <summary>
+    /// Repository manager of auth repositories
+    /// </summary>
+    public class AuthRepositoryManager : IAuthRepositoryManager {
+        /// <summary>
+        /// Repository for operations with authentication tokens
+        /// </summary>
         public ITokenRepository TokenRepository => _lazyTokenRepository.Value;
-
-        private Lazy<IAuthRepository> _lazyAuthRepository;
+        private Lazy<ITokenRepository> _lazyTokenRepository;
+        /// <summary>
+        /// Authentication repository
+        /// </summary>
         public IAuthRepository AuthRepository => _lazyAuthRepository.Value;
+        private Lazy<IAuthRepository> _lazyAuthRepository;
 
         public AuthRepositoryManager(LazarContext context) {
             _lazyTokenRepository = new Lazy<ITokenRepository>(() => new TokenRepository());

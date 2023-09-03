@@ -32,7 +32,7 @@ namespace Lazar.Presentation.WebApi.Controllers.Auth {
             }
         }
         [HttpPost]
-        [Route("sign-up")]
+        [Route("register")]
         public async Task<IActionResult> SignUp([FromBody] UserRegisterRequestDto signUpRequest) {
             try {
                 return Ok(await _authService.RegisterAsync(signUpRequest));

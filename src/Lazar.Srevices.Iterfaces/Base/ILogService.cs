@@ -6,13 +6,6 @@ namespace Lazar.Srevices.Iterfaces.Base {
     /// </summary>
     public interface ILogService {
         /// <summary>
-        /// Remove records
-        /// </summary>
-        /// <param name="ids">Primary keys</param>
-        /// <param name="login">Login of the user who triggered the event</param>
-        /// <returns></returns>
-        Task DeleteRecordsAsync(IEnumerable<Guid> ids, string login);
-        /// <summary>
         /// Clear all log in storage
         /// </summary>
         /// <param name="login">Login of the user who triggered the event</param>

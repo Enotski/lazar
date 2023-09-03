@@ -7,15 +7,25 @@ using Lazar.Srevices.Iterfaces.Common;
 using Lazar.Srevices.Iterfaces.Logging;
 
 namespace Lazar.Services.Common {
+    /// <summary>
+    /// Manager of services
+    /// </summary>
     public class ServiceManager : IServiceManager {
-        private Lazy<IRoleService> _lazyRoleService;
+        /// <summary>
+        /// Service of roles
+        /// </summary>
         public IRoleService RoleService => _lazyRoleService.Value;
-
-        private Lazy<IUsersService> _lazyUsersService;
+        private Lazy<IRoleService> _lazyRoleService;
+        /// <summary>
+        /// Service of users
+        /// </summary>
         public IUsersService UsersService => _lazyUsersService.Value;
-
-        private Lazy<ILoggingervice> _lazyLoggingervice;
+        private Lazy<IUsersService> _lazyUsersService;
+        /// <summary>
+        /// Service of system events logging
+        /// </summary>
         public ILoggingervice LoggingService => _lazyLoggingervice.Value;
+        private Lazy<ILoggingervice> _lazyLoggingervice;
 
         public ServiceManager(IRepositoryManager repositoryManager, IModelMapper mapper) {
             _lazyRoleService = new Lazy<IRoleService>(() => new RoleService(repositoryManager, mapper));

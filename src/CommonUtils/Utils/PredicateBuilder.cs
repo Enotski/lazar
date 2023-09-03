@@ -1,6 +1,9 @@
 ﻿using System.Linq.Expressions;
 
 namespace CommonUtils.Utils {
+    /// <summary>
+    /// Creates predicates for Linq operations
+    /// </summary>
     public static class PredicateBuilder {
         /// <summary>    
         /// Creates a predicate that evaluates to true.    

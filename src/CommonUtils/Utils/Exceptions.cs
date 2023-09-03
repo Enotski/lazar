@@ -1,10 +1,13 @@
 ﻿namespace CommonUtils.Utils {
+    /// <summary>
+    /// Helper class for operations with <see cref="Exceptions" />
+    /// </summary>
     public static class Exceptions {
         /// <summary>
-        /// Форматированный вывод сообщения об ошибке
+        /// Formatted error message output
         /// </summary>
-        /// <param name="exc">Исключение</param>
-        /// <param name="AddStackTrace">Включать в вывод трассировку стека</param>
+        /// <param name="exc">Exception</param>
+        /// <param name="AddStackTrace">Include stack traces in output</param>
         /// <returns></returns>
         public static string Format(this Exception exc, bool AddStackTrace = true) {
             if (exc == null) {

@@ -12,7 +12,7 @@ namespace Lazar.Presentation.WebApi.Controllers.Base {
                 if (HttpContext == null) {
                     return null;
                 }
-                return HttpContext.User.Identity.Name?.ToUpper();
+                return HttpContext.User.Identity.Name;
             }
         }
         public string RemoteIpAddress {

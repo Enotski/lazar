@@ -176,7 +176,7 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
                 if (string.IsNullOrEmpty(login)) {
                     return null;
                 }
-                var entity = await _dbContext.Users.FirstOrDefaultAsync(m => m.Login == login);
+                var entity = await _dbContext.Users.Include(x => x.Roles).FirstOrDefaultAsync(m => m.Login == login);
                 return new UserSelectorModel(entity.Id, entity.Roles.Select(r => r.Name), entity.Roles.Select(r => r.Id), entity.Name, entity.Login, entity.Password, entity.Email, entity.ChangedBy, entity.DateChange);
             } catch {
                 throw;

@@ -2,26 +2,17 @@
 
 namespace CommonUtils.Utils {
     /// <summary>
-    /// Расширения для дат
+    /// Helper class for operations with <see cref="DateTime" />
     /// </summary>
     public static class DateTimeExtension {
         /// <summary>
-        /// Преобразование даты в формат, необходимый для DataGrid
-        /// </summary>
-        public static string ToDataGridFormat(this DateTime dateTime) {
-            if (dateTime == null)
-                return "";
-            return dateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffffff");
-        }
-
-        /// <summary>
-        /// 
+        /// Expression to select records in a range of dates
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="source"></param>
-        /// <param name="getDate"></param>
-        /// <param name="fromDate"></param>
-        /// <param name="toDate"></param>
+        /// <param name="expression">Predicate expression</param>
+        /// <param name="getDate"><see cref="DateTime" /> property</param>
+        /// <param name="fromDate">Lower bound</param>
+        /// <param name="toDate">Upper bound</param>
         /// <returns></returns>
         public static Expression<Func<T, bool>> WhereDateBetween<T>(this Expression<Func<T, bool>> expression, Expression<Func<T, DateTime>> getDate, string fromDate, string toDate) {
             if (string.IsNullOrEmpty(fromDate) && string.IsNullOrEmpty(toDate))
@@ -39,27 +30,11 @@ namespace CommonUtils.Utils {
             }
             return expression.And(getDate.Chain(DateBetween(tmpFrom, tmpTo)));
         }
-        public static IQueryable<T> WhereDateBetween<T>(this IQueryable<T> source, Expression<Func<T, DateTime>> getDate, string fromDate, string toDate) {
-            if (string.IsNullOrEmpty(fromDate) && string.IsNullOrEmpty(toDate))
-                return source; // The simplest query is no query
-
-            DateTime tmp;
-            DateTime? tmpTo = null;
-            if (!string.IsNullOrEmpty(toDate) && DateTime.TryParse(toDate, out tmp)) {
-                tmpTo = tmp.AddDays(1);
-            }
-
-            DateTime? tmpFrom = null;
-            if (!string.IsNullOrEmpty(fromDate) && DateTime.TryParse(fromDate, out tmp)) {
-                tmpFrom = tmp;
-            }
-            return source.Where(getDate.Chain(DateBetween(tmpFrom, tmpTo)));
-        }
         /// <summary>
-        /// Выражение для выбора записей в промежутке
+        /// Expression to select records in a range of dates
         /// </summary>
-        /// <param name="fromDate"></param>
-        /// <param name="toDate"></param>
+        /// <param name="fromDate">Lower bound</param>
+        /// <param name="toDate">Upper bound</param>
         /// <returns></returns>
         private static Expression<Func<DateTime, bool>> DateBetween(DateTime? fromDate, DateTime? toDate) {
             if (!toDate.HasValue && !fromDate.HasValue) {

@@ -22,7 +22,7 @@
 import { DxSelectBox } from "devextreme-vue/select-box";
 import CustomStore from "devextreme/data/custom_store";
 
-import {sendRequest} from "../../../utils/requestUtils";
+import { sendRequest } from "@/utils/requestUtils";
 
 let source = [];
 
@@ -146,8 +146,7 @@ export default {
             });
         },
       });
-    }
-    else{
+    } else {
       source = this.localSource;
     }
   },

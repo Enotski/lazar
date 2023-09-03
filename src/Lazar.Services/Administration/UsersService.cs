@@ -35,18 +35,18 @@ namespace Lazar.Services.Administration {
 
                 if (newModel != null) {
                     if (newModel.Name != model.Name)
-                        res.Add($"Наименование: {model.Name} -> {newModel.Name}");
+                        res.Add($"Name: {model.Name} -> {newModel.Name}");
                     if (newModel.Login != model.Login)
-                        res.Add($"Логин: {model.Login} -> {newModel.Login}");
+                        res.Add($"Login: {model.Login} -> {newModel.Login}");
                     if (newModel.Email != model.Email)
-                        res.Add($"Почта: {model.Email} -> {newModel.Email}");
+                        res.Add($"Email: {model.Email} -> {newModel.Email}");
                     if (newModel.RoleNames != model.RoleNames)
-                        res.Add($"Роли: {model.RoleNames} -> {newModel.RoleNames}");
+                        res.Add($"Roles: {model.RoleNames} -> {newModel.RoleNames}");
                 } else {
-                    res.Add($"Наименование: {model.Name}");
-                    res.Add($"Логин: {model.Login}");
-                    res.Add($"Почта: {model.Email}");
-                    res.Add($"Роли: {model.RoleNames}");
+                    res.Add($"Name: {model.Name}");
+                    res.Add($"Login: {model.Login}");
+                    res.Add($"Email: {model.Email}");
+                    res.Add($"Roles: {model.RoleNames}");
                 }
                 return res;
             } catch {
@@ -63,14 +63,14 @@ namespace Lazar.Services.Administration {
             try {
                 bool IsHaveRight = await _repositoryManager.UserRepository.PermissionToPerformOperation(login);
                 if (!IsHaveRight) {
-                    throw new Exception("У вас недостаточно прав для выполнения данной операции");
+                    throw new Exception("You do not have sufficient rights to perform this operation");
                 }
                 if (string.IsNullOrWhiteSpace(model.Name)) {
-                    throw new Exception("Наименование не заполнено");
+                    throw new Exception("Name is required");
                 }
                 bool isExist = await _repositoryManager.UserRepository.NameExistsAsync(model.Name, model.Id);
                 if (isExist) {
-                    throw new Exception("Запись с таким наименованием уже существует");
+                    throw new Exception("Name dublicate");
                 }
             } catch {
                 throw;
@@ -87,7 +87,7 @@ namespace Lazar.Services.Administration {
                 var records = await _repositoryManager.UserRepository.GetRecordsAsync(options.Filters, options.Sorts, options.Pagination);
                 return new DataTableDto<UserTableDto>(totalRecords, _mapper.Mapper.Map<IEnumerable<UserTableDto>>(records).Select((x, i) => { x.Num = ++i; return x; }));
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Read, "Получение списка пользователей" + exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Read, "Getting a list of users" + exp.Format());
                 throw;
             }
         }
@@ -104,7 +104,7 @@ namespace Lazar.Services.Administration {
                 }
                 return new EntityResponseDto<UserDto>(_mapper.Mapper.Map<UserDto>(data));
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Read, "Получение пользователя" + exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Read, "Getting a user" + exp.Format());
                 throw;
             }
         }
@@ -119,7 +119,7 @@ namespace Lazar.Services.Administration {
                 return new EntityResponseDto<IEnumerable<ListItemDto<Guid>>>(
                      _mapper.Mapper.Map<IEnumerable<ListItemDto<Guid>>>(records));
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Read, "Получение списка пар ключ-наименование пользователей" + exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Read, "Getting a key-name list of users" + exp.Format());
                 throw;
             }
         }
@@ -143,7 +143,7 @@ namespace Lazar.Services.Administration {
 
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Create, $"{string.Join("; ", changes)}", login);
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Create, "Создание пользователя" + exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Create, "User creating" + exp.Format());
                 throw;
             }
         }
@@ -172,7 +172,7 @@ namespace Lazar.Services.Administration {
 
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, $"{string.Join("; ", changes)}", login);
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, "Обновление" + exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, "User updating" + exp.Format());
                 throw;
             }
         }
@@ -189,7 +189,7 @@ namespace Lazar.Services.Administration {
                 }
                 bool isHaveRight = await _repositoryManager.UserRepository.PermissionToPerformOperation(login);
                 if (!isHaveRight) {
-                    throw new Exception("У вас недостаточно прав для выполнения данной операции");
+                    throw new Exception("You do not have sufficient rights to perform this operation");
                 }
 
                 var entities = await _repositoryManager.UserRepository.GetRecordsAsync(ids);
@@ -200,7 +200,7 @@ namespace Lazar.Services.Administration {
 
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Delete, $"{entitiesFields}", login);
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Delete, "Удаление пользователя: " + exp.Format(), login);
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Delete, "Users deleting: " + exp.Format(), login);
                 throw;
             }
         }
@@ -215,7 +215,7 @@ namespace Lazar.Services.Administration {
                 var changes = await ChangetUserRoles(model, login, true);
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, $"{string.Join("; ", changes)}", login);
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, "Обновление роли" + exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, "User's roles list changing" + exp.Format());
                 throw;
             }
         }
@@ -230,7 +230,7 @@ namespace Lazar.Services.Administration {
                 var changes = await ChangetUserRoles(model, login);
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, $"{string.Join("; ", changes)}", login);
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, "Обновление роли" + exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Update, "User's roles list changing" + exp.Format());
                 throw;
             }
         }

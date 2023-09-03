@@ -35,9 +35,9 @@ namespace Lazar.Services.Administration {
 
                 if (newModel != null) {
                     if (newModel.Name != model.Name)
-                        res.Add($"Наименование: {model.Name} -> {newModel.Name}");
+                        res.Add($"Name: {model.Name} -> {newModel.Name}");
                 } else {
-                    res.Add($"Наименование: {model.Name}");
+                    res.Add($"Name: {model.Name}");
                 }
                 return res;
             } catch {
@@ -55,16 +55,16 @@ namespace Lazar.Services.Administration {
                 // Проверка на наличие прав для редактирования
                 bool IsHaveRight = await _repositoryManager.UserRepository.PermissionToPerformOperation(login);
                 if (!IsHaveRight) {
-                    throw new Exception("У вас недостаточно прав для выполнения данной операции");
+                    throw new Exception("You do not have sufficient rights to perform this operation");
                 }
                 // Валидация наименования
                 if (string.IsNullOrWhiteSpace(model.Name)) {
-                    throw new Exception("Наименование не заполнено");
+                    throw new Exception("Name is required");
                 }
                 // Запрет на создание дубликата наименования
                 bool isExist = await _repositoryManager.RoleRepository.NameExistsAsync(model.Name, model.Id);
                 if (isExist) {
-                    throw new Exception("Запись с таким наименованием уже существует");
+                    throw new Exception("Dublicate name");
                 }
             } catch {
                 throw;
@@ -81,7 +81,7 @@ namespace Lazar.Services.Administration {
                 var records = await _repositoryManager.RoleRepository.GetRecordsAsync(options.Filters, options.Sorts, options.Pagination);
                 return new DataTableDto<RoleTableDto>(totalRecords, _mapper.Mapper.Map<IEnumerable<RoleTableDto>>(records).Select((x, i) => { x.Num = ++i; return x; }));
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Read, "Получение списка ролей", exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Read, "Getting a list of roles", exp.Format());
                 throw;
             }
         }
@@ -96,7 +96,7 @@ namespace Lazar.Services.Administration {
                 var records = await _repositoryManager.RoleRepository.GetRecordsAsync(options.Filters, options.Sorts, options.Pagination, Guid.TryParse(options.SelectedUserId, out Guid userId) ? userId : null);
                 return new DataTableDto<RoleTableDto>(totalRecords, _mapper.Mapper.Map<IEnumerable<RoleTableDto>>(records).Select((x, i) => { x.Num = ++i; return x; }));
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Read, "Получение списка ролей", exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Read, "Getting a list of roles", exp.Format());
                 throw;
             }
         }
@@ -109,11 +109,11 @@ namespace Lazar.Services.Administration {
             try {
                 var data = await _repositoryManager.RoleRepository.GetAsync(id);
                 if (data is null) {
-                    throw new Exception("Запись не найдена");
+                    throw new Exception("Record not found");
                 }
                 return new EntityResponseDto<RoleDto>(_mapper.Mapper.Map<RoleDto>(data));
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Read, "Получение роли", exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Read, "Getting a role", exp.Format());
                 throw;
             }
         }
@@ -128,7 +128,7 @@ namespace Lazar.Services.Administration {
                 return new EntityResponseDto<IEnumerable<ListItemDto<Guid>>>(
                      _mapper.Mapper.Map<IEnumerable<ListItemDto<Guid>>>(records));
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Read, "Получение списка пар ключ-наименование ролей", exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Read, "Getting a key-name list of roles", exp.Format());
                 throw;
             }
         }
@@ -147,7 +147,7 @@ namespace Lazar.Services.Administration {
                 return new EntityResponseDto<IEnumerable<ListItemDto<Guid>>>(
                      _mapper.Mapper.Map<IEnumerable<ListItemDto<Guid>>>(records));
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Read, "Получение списка пар ключ-наименование ролей", exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Read, "Getting a key-name list of roles", exp.Format());
                 throw;
             }
         }
@@ -169,7 +169,7 @@ namespace Lazar.Services.Administration {
 
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Create, $"{string.Join("; ", changes)}", login);
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Create, "Создание роли", exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Create, "Role creating", exp.Format());
                 throw;
             }
         }
@@ -185,7 +185,7 @@ namespace Lazar.Services.Administration {
 
                 var entity = await _repositoryManager.RoleRepository.GetAsync(model.Id);
                 if (entity is null) {
-                    throw new Exception("Запись не найдена");
+                    throw new Exception("Record not found");
                 }
                 // Запись до измемнений
                 var oldDc = await _repositoryManager.RoleRepository.GetAsync(model.Id);
@@ -200,7 +200,7 @@ namespace Lazar.Services.Administration {
 
                 await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Update, $"{string.Join("; ", changes)}", login);
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Update, "Обновление роли", exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Roles, EventType.Update, "Role updating", exp.Format());
                 throw;
             }
         }
@@ -213,11 +213,11 @@ namespace Lazar.Services.Administration {
         public async Task DeleteAsync(IEnumerable<Guid> ids, string login) {
             try {
                 if (!ids.Any()) {
-                    throw new Exception("Полученный список ключей пуст");
+                    throw new Exception("List of keys is empty");
                 }
                 bool isHaveRight = await _repositoryManager.UserRepository.PermissionToPerformOperation(login);
                 if (!isHaveRight) {
-                    throw new Exception("У вас недостаточно прав для выполнения данной операции");
+                    throw new Exception("You do not have sufficient rights to perform this operation");
                 }
                 var entities = await _repositoryManager.RoleRepository.GetRecordsAsync(ids);
 

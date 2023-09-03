@@ -87,7 +87,7 @@ namespace Lazar.Infrastructure.JwtAuth.Services
 
                 return new UserAuthDto(new TokensDto(tokenOptions.AccessToken, tokenOptions.RefreshToken, _configuration.Issuer, _configuration.Audience), user.Login, user.RoleNames);
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Read, "Получение списка пользователей", exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Read, "Login attempt", exp.Format());
                 throw;
             }
         }
@@ -122,7 +122,7 @@ namespace Lazar.Infrastructure.JwtAuth.Services
 
                 return new UserAuthDto(new TokensDto(tokenOptions.AccessToken, tokenOptions.RefreshToken, _configuration.Issuer, _configuration.Audience), user.Login, user.RoleNames);
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Read, "Получение списка пользователей", exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Read, "Register attempt", exp.Format());
                 throw;
             }
         }
@@ -138,7 +138,7 @@ namespace Lazar.Infrastructure.JwtAuth.Services
                     await _authRepositoryManager.AuthRepository.DeleteAsync(loginModel);
                 }
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Read, "Получение списка пользователей", exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Read, "Logout attempt", exp.Format());
                 throw;
             }
         }
@@ -167,7 +167,7 @@ namespace Lazar.Infrastructure.JwtAuth.Services
 
                 return new UserAuthDto(new TokensDto(tokenOptions.AccessToken, tokenOptions.RefreshToken, _configuration.Issuer, _configuration.Audience), loginModel.Login, user.RoleNames);
             } catch (Exception exp) {
-                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Read, "Получение списка пользователей", exp.Format());
+                await _repositoryManager.SystemLogRepository.AddAsync(SubSystemType.Users, EventType.Read, "Token refresh attempt", exp.Format());
                 throw;
             }
         }

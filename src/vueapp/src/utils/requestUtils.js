@@ -69,19 +69,25 @@ export async function sendRequest(url, method = "GET", args = {}) {
   if (method === "GET") {
     return await instance
       .get(url)
-      .then((response) => response)
+      .then((response) => {
+        if (response.data.Result !== undefined && response.data.Result !== 0)
+          throw response.data.Message;
+        return response.data;
+      })
       .catch((ex) => {
         console.log(ex);
-        throw new Error("Data Loading Error");
+        throw ex;
       });
   }
   return await instance
     .post(url, args)
     .then((response) => {
+      if (response.data.Result !== undefined && response.data.Result !== 0)
+        throw response.data.Message;
       return response.data;
     })
     .catch((ex) => {
       console.log(ex);
-      throw new Error("Data Loading Error");
+      throw ex;
     });
 }

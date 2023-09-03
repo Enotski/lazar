@@ -4,6 +4,9 @@ using Lazar.Domain.Interfaces.Options;
 using Lazar.Domain.Interfaces.Repositories.Base;
 
 namespace Lazar.Domain.Interfaces.Repositories.Logging {
+    /// <summary>
+    /// System logs repository
+    /// </summary>
     public interface ISystemLogRepository : ILogRepository<SystemLog> {
         /// <summary>
         /// Adds an entry to the event log

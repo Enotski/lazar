@@ -25,16 +25,6 @@ namespace Lazar.Presentation.WebApi.Controllers.Logging {
             }
         }
         [HttpPost]
-        [Route("delete")]
-        public async Task<IActionResult> Delete([FromBody] IEnumerable<Guid> ids) {
-            try {
-                await _serviceManager.LoggingService.DeleteRecordsAsync(ids, UserIdentityName);
-                return Ok(new SuccessResponseDto());
-            } catch (Exception exp) {
-                return Ok(new ErrorResponseDto(exp));
-            }
-        }
-        [HttpPost]
         [Route("clear")]
         public async Task<IActionResult> Clear() {
             try {
