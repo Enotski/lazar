@@ -35,11 +35,10 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
 import { LogoGithub as GitIcon } from "@vicons/carbon";
 import { NIcon } from "naive-ui";
 
-export default defineComponent({
+export default {
   components: {
     NIcon,
     GitIcon,
@@ -54,7 +53,7 @@ export default defineComponent({
   created() {},
   watch: {},
   methods: {},
-});
+};
 </script>
 <style>
 .footer-shadow {

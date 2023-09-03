@@ -107,7 +107,6 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
 import {
   AccountCircleOutlined as AccountIcon,
   NoAccountsOutlined as NoAccountIcon,
@@ -128,7 +127,7 @@ import {
 } from "naive-ui";
 import AuthService from "@/services/authService";
 
-export default defineComponent({
+export default {
   components: {
     NButton,
     NDropdown,
@@ -287,7 +286,7 @@ export default defineComponent({
       };
     },
   },
-});
+};
 </script>
 <style>
 .badge-ref {
