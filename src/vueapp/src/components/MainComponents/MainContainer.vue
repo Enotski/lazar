@@ -5,65 +5,79 @@
     > -->
     <div class="row content-container justify-center align-center">
       <div class="col-3 mb-3">
-        <n-card size="small">
-          <template #cover>
-            <div>
-              <router-link to="/signals">
-                <div>
-                  <div class="h-25">
-                    <img src="../../assets/SignalsCover.png" />
-                  </div>
-                  <span class="nav nav-link text-secondary">Signals</span>
-                </div></router-link
-              >
-              <div>
-                <span>Analog, discrete, quantized, digital</span>
+        <div class="card border-info">
+          <router-link to="/signals" class="text-decoration-none text-info">
+            <div class="card-header">
+              <span class="nav">Signals</span>
+            </div>
+            <div class="card-body p-0 overflow-hidden">
+              <div class="h-25 text-center">
+                <img src="../../assets/1.png" style="max-height: 150px" />
               </div>
             </div>
-          </template>
-        </n-card>
+            <div class="card-footer">
+              <span>Analog, discrete, quantized, digital</span>
+            </div>
+          </router-link>
+        </div>
       </div>
       <div class="col-3 mb-3">
-        <n-card title="Card with Cover" size="small">
-          <template #cover>
-            <div class="h-25">
-              <img src="../../assets/CorrelationCover.png" />
+        <div class="card border-info">
+          <router-link to="/signals" class="text-decoration-none text-info">
+            <div class="card-header">
+              <span class="nav">Signals</span>
             </div>
-          </template>
-          <div>Card Content</div>
-        </n-card>
+            <div class="card-body p-0 overflow-hidden">
+              <div class="h-25 text-center">
+                <img src="../../assets/2.png" style="max-height: 150px" />
+              </div>
+            </div>
+            <div class="card-footer">
+              <span>Analog, discrete, quantized, digital</span>
+            </div>
+          </router-link>
+        </div>
       </div>
       <div class="col-3 mb-3">
-        <n-card title="Card with Cover" size="small">
-          <template #cover>
-            <div class="h-25">
-              <img src="../../assets/FourierCover.png" />
+        <div class="card border-info">
+          <router-link to="/signals" class="text-decoration-none text-info">
+            <div class="card-header">
+              <span class="nav">Signals</span>
             </div>
-          </template>
-          <div>Card Content</div>
-        </n-card>
+            <div class="card-body p-0 overflow-hidden">
+              <div class="h-25 text-center">
+                <img src="../../assets/3.png" style="max-height: 150px" />
+              </div>
+            </div>
+            <div class="card-footer">
+              <span>Analog, discrete, quantized, digital</span>
+            </div>
+          </router-link>
+        </div>
       </div>
       <div class="col-3 mb-3">
-        <n-card title="Card with Cover" size="small">
-          <template #cover>
-            <div class="h-25">
-              <img src="../../assets/NoizeCover.png" />
+        <div class="card border-info">
+          <router-link to="/signals" class="text-decoration-none text-info">
+            <div class="card-header">
+              <span class="nav">Signals</span>
             </div>
-          </template>
-          <div>Card Content</div>
-        </n-card>
+            <div class="card-body p-0 overflow-hidden">
+              <div class="h-25 text-center">
+                <img src="../../assets/4.png" style="max-height: 150px" />
+              </div>
+            </div>
+            <div class="card-footer">
+              <span>Analog, discrete, quantized, digital</span>
+            </div>
+          </router-link>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { NCard } from "naive-ui";
-
 export default {
-  components: {
-    NCard,
-  },
   data() {
     return {};
   },
