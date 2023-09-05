@@ -8,7 +8,7 @@ import "./css/site.css";
 
 import UsersPage from "./components/AdministrationPages/UsersPage.vue";
 import SystemLogPage from "./components/AdministrationPages/SystemLogPage.vue";
-import DspPage from "./components/DspPages/DspPage.vue";
+import AvgSpectrumPage from "./components/DspPages/AvgSpectrumPage.vue";
 import FarrowPage from "./components/DspPages/FarrowPage.vue";
 import FilterBanksPage from "./components/DspPages/FilterBanksPage.vue";
 import FiltersPage from "./components/DspPages/FiltersPage.vue";
@@ -31,13 +31,13 @@ const routes = [
   { path: "/users", component: UsersPage },
   { path: "/system-log", component: SystemLogPage },
   { path: "/correlation", component: CorrelationPage },
-  { path: "/dsp", component: DspPage },
+  { path: "/avg-spectrum", component: AvgSpectrumPage },
   { path: "/farrow", component: FarrowPage },
   { path: "/filter-banks", component: FilterBanksPage },
   { path: "/filters", component: FiltersPage },
   { path: "/fourier", component: FourierPage },
   { path: "/goertzel", component: GoertzelPage },
-  { path: "/mel-spectrum", component: MelSpectrumPage },
+  { path: "/mel", component: MelSpectrumPage },
   { path: "/mfcc", component: MfccPage },
   { path: "/modulation", component: ModulationPage },
   { path: "/noise", component: NoisePage },
