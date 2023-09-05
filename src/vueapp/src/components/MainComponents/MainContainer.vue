@@ -3,7 +3,7 @@
     <!-- <div
       class="d-flex flex-column fill-height justify-center align-center text-white cards-mr-vertical content-container"
     > -->
-    <div class="row content-container justify-center align-center">
+    <div class="row content-container justify-center align-center m-0">
       <div class="col-4 mb-3">
         <div class="card border-danger">
           <router-link to="/signals" class="text-decoration-none text-danger">
@@ -40,7 +40,10 @@
       </div>
       <div class="col-4 mb-3">
         <div class="card border-success">
-          <router-link to="/correlation" class="text-decoration-none text-success">
+          <router-link
+            to="/correlation"
+            class="text-decoration-none text-success"
+          >
             <div class="card-header">
               <span class="nav">Correlation</span>
             </div>
@@ -74,7 +77,10 @@
       </div>
       <div class="col-4 mb-3">
         <div class="card border-danger">
-          <router-link to="/modulation" class="text-decoration-none text-danger">
+          <router-link
+            to="/modulation"
+            class="text-decoration-none text-danger"
+          >
             <div class="card-header">
               <span class="nav">Modulation</span>
             </div>
@@ -118,14 +124,19 @@
               </div>
             </div>
             <div class="card-footer">
-              <span>Windows, filtration: Hann, Blackman, Flattop, Kaiser etc.</span>
+              <span
+                >Windows, filtration: Hann, Blackman, Flattop, Kaiser etc.</span
+              >
             </div>
           </router-link>
         </div>
       </div>
       <div class="col-4 mb-3">
         <div class="card border-success">
-          <router-link to="/resampling" class="text-decoration-none text-success">
+          <router-link
+            to="/resampling"
+            class="text-decoration-none text-success"
+          >
             <div class="card-header">
               <span class="nav">Resampling</span>
             </div>
@@ -135,7 +146,9 @@
               </div>
             </div>
             <div class="card-footer">
-              <span>CIC filters, decimation, interpolation, moving average</span>
+              <span
+                >CIC filters, decimation, interpolation, moving average</span
+              >
             </div>
           </router-link>
         </div>
@@ -159,7 +172,10 @@
       </div>
       <div class="col-4 mb-3">
         <div class="card border-success">
-          <router-link to="/avg-spectrum" class="text-decoration-none text-success">
+          <router-link
+            to="/avg-spectrum"
+            class="text-decoration-none text-success"
+          >
             <div class="card-header">
               <span class="nav">Average spectrum</span>
             </div>
@@ -176,7 +192,10 @@
       </div>
       <div class="col-4 mb-3">
         <div class="card border-danger">
-          <router-link to="/filter-banks" class="text-decoration-none text-danger">
+          <router-link
+            to="/filter-banks"
+            class="text-decoration-none text-danger"
+          >
             <div class="card-header">
               <span class="nav">Filter banks</span>
             </div>
@@ -290,7 +309,7 @@ export default {
 
 <style>
 .parallax {
-  background-image: url("../../assets/bg-light.gif");
+  /* background-image: url("../../assets/bg-light.gif"); */
   background-attachment: fixed;
   display: flex;
   justify-content: center;
