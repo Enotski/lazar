@@ -37,20 +37,20 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
                 var column = opt.ColumnName.TrimToUpper();
                 switch (column) {
                     case "NAME": {
-                            predicate = predicate.And(m => m.Name.ToUpper().Contains(val));
-                            break;
-                        }
+                        predicate = predicate.And(m => m.Name.ToUpper().Contains(val));
+                        break;
+                    }
                     case "CHANGEDBY": {
-                            predicate = predicate.And(m => !string.IsNullOrEmpty(m.ChangedBy) && m.ChangedBy.ToUpper().Contains(val));
-                            break;
-                        }
+                        predicate = predicate.And(m => !string.IsNullOrEmpty(m.ChangedBy) && m.ChangedBy.ToUpper().Contains(val));
+                        break;
+                    }
                     case "DATEOFCHANGE": {
-                            var interval = val.Split(';');
-                            if (interval.Length == 2) {
-                                predicate = predicate.WhereDateBetween(x => x.DateChange, interval[0], interval[1]);
-                            }
-                            break;
+                        var interval = val.Split(';');
+                        if (interval.Length == 2) {
+                            predicate = predicate.WhereDateBetween(x => x.DateChange, interval[0], interval[1]);
                         }
+                        break;
+                    }
                 }
             }
             return predicate;
@@ -64,26 +64,38 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
             if (options is null || !options.Any()) {
                 return null;
             }
-            //TODO: переписать .OrderBy(x => true) делает плохой SQL
-            var ordered = _dbContext.Roles.OrderBy(x => true);
-            foreach (var opt in options) {
-                var column = opt.ColumnName.TrimToUpper();
-                switch (column) {
-                    case "NAME": {
-                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.Name) : ordered.ThenByDescending(m => m.Name);
+            return query => {
+                IOrderedQueryable<Role> ordered = null;
+
+                foreach (var opt in options) {
+                    var column = opt.ColumnName.TrimToUpper();
+                    switch (column) {
+                        case "NAME": {
+                            if (ordered == null)
+                                ordered = opt.Type == SortType.Ascending ? query.OrderBy(m => m.Name) : query.OrderByDescending(m => m.Name);
+                            else
+                                ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.Name) : ordered.ThenByDescending(m => m.Name);
                             break;
                         }
-                    case "CHANGEDBY": {
-                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.ChangedBy) : ordered.ThenByDescending(m => m.ChangedBy);
+                        case "CHANGEDBY": {
+                            if (ordered == null)
+                                ordered = opt.Type == SortType.Ascending ? query.OrderBy(m => m.ChangedBy) : query.OrderByDescending(m => m.ChangedBy);
+                            else
+                                ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.ChangedBy) : ordered.ThenByDescending(m => m.ChangedBy);
                             break;
                         }
-                    default: {
-                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.DateChange) : ordered.ThenByDescending(m => m.DateChange);
+                        default: {
+                            if (ordered == null)
+                                ordered = opt.Type == SortType.Ascending ? query.OrderBy(m => m.DateChange) : query.OrderByDescending(m => m.DateChange);
+                            else
+                                ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.DateChange) : ordered.ThenByDescending(m => m.DateChange);
                             break;
                         }
+                    }
                 }
-            }
-            return orb => ordered;
+
+                return ordered;
+            };
         }
         /// <summary>
         /// Generates a predicate of the returned data
@@ -96,11 +108,11 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
             }
             switch (columnSelector.TrimToUpper()) {
                 case "NAME": {
-                        return x => x.Name;
-                    }
+                    return x => x.Name;
+                }
                 case "CHANGEDBY": {
-                        return x => x.ChangedBy;
-                    }
+                    return x => x.ChangedBy;
+                }
             }
             return null;
         }
@@ -164,7 +176,7 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
                     Expression<Func<Role, bool>> userPredicate = x => x.Users.Select(u => u.Id).Contains(userId.Value);
                     filter = filter != null ? filter.And(userPredicate) : userPredicate;
                 }
-           
+
                 return await BuildQuery(filter, ordered, paginationOption).ToListAsync();
             } catch {
                 throw;

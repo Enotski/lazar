@@ -1,6 +1,7 @@
 ﻿using CommonUtils.Utils;
 using Lazar.Domain.Core.EntityModels.Logging;
 using Lazar.Domain.Core.Enums;
+using Lazar.Domain.Core.Models.Administration;
 using Lazar.Domain.Interfaces.Options;
 using Lazar.Domain.Interfaces.Repositories.Logging;
 using Lazar.Infrastructure.Data.Ef.Context;
@@ -70,39 +71,52 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Logging {
             if (options is null || !options.Any()) {
                 return null;
             }
-            //TODO: переписать .OrderBy(x => true) делает плохой SQL
-            var ordered = _dbContext.SystemLogs.OrderBy(x => true);
-            foreach (var opt in options) {
-                var column = opt.ColumnName.TrimToUpper();
-                switch (column) {
-                    case "SUBSYSTEMNAME": {
-                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.SubSystem)
-                                : ordered.ThenByDescending(m => m.SubSystem);
+            return query => {
+                IOrderedQueryable<SystemLog> ordered = null;
+
+                foreach (var opt in options) {
+                    var column = opt.ColumnName.TrimToUpper();
+                    switch (column) {
+                        case "SUBSYSTEMNAME": {
+                            if (ordered == null)
+                                ordered = opt.Type == SortType.Ascending ? query.OrderBy(m => m.SubSystem) : query.OrderByDescending(m => m.SubSystem);
+                            else
+                                ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.SubSystem) : ordered.ThenByDescending(m => m.SubSystem);
                             break;
                         }
-                    case "EVENTTYPENAME": {
-                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.EventType)
-                                : ordered.ThenByDescending(m => m.EventType);
+                        case "EVENTTYPENAME": {
+                            if (ordered == null)
+                                ordered = opt.Type == SortType.Ascending ? query.OrderBy(m => m.EventType) : query.OrderByDescending(m => m.EventType);
+                            else
+                                ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.EventType) : ordered.ThenByDescending(m => m.EventType);
                             break;
                         }
-                    case "DESCRIPTION": {
-                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.Description)
-                                : ordered.ThenByDescending(m => m.Description);
+                        case "DESCRIPTION": {
+                            if (ordered == null)
+                                ordered = opt.Type == SortType.Ascending ? query.OrderBy(m => m.Description) : query.OrderByDescending(m => m.Description);
+                            else
+                                ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.Description) : ordered.ThenByDescending(m => m.Description);
                             break;
                         }
-                    case "CHANGEDBY": {
-                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.ChangedBy)
-                                : ordered.ThenByDescending(m => m.ChangedBy);
+                        case "CHANGEDBY": {
+                            if (ordered == null)
+                                ordered = opt.Type == SortType.Ascending ? query.OrderBy(m => m.ChangedBy) : query.OrderByDescending(m => m.ChangedBy);
+                            else
+                                ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.ChangedBy) : ordered.ThenByDescending(m => m.ChangedBy);
                             break;
                         }
-                    default: {
-                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.DateChange)
-                                : ordered.ThenByDescending(m => m.DateChange);
+                        default: {
+                            if (ordered == null)
+                                ordered = opt.Type == SortType.Ascending ? query.OrderBy(m => m.DateChange) : query.OrderByDescending(m => m.DateChange);
+                            else
+                                ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.DateChange) : ordered.ThenByDescending(m => m.DateChange);
                             break;
                         }
+                    }
                 }
-            }
-            return orb => ordered;
+
+                return ordered;
+            };
         }
         /// <summary>
         /// Generates a predicate of the returned data

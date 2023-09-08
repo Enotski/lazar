@@ -23,10 +23,10 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
 
         #region private
         /// <summary>
-        /// Задает дополнительные условия для выборки
+        /// Specifies additional conditions for the selection
         /// </summary>
-        /// <param name="options">Параметры выборки</param> 
-        /// <returns></returns>
+        /// <param name="options">Selection options</param> 
+        /// <returns>Conditional expression</returns>
         private Expression<Func<User, bool>> BuildWherePredicate(IEnumerable<ISearchOption> options) {
             if (options is null || !options.Any()) {
                 return null;
@@ -71,48 +71,66 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
             return predicate;
         }
         /// <summary>
-        /// Используется для сортировки результирующего набора в порядке возрастания или убывания
+        /// Sort selection
         /// </summary>
-        /// <param name="options">Параметры сортировки</param> 
-        /// <returns></returns>
+        /// <param name="options">Sorting options</param> 
+        /// <returns>Sort predicate</returns>
         private Func<IQueryable<User>, IOrderedQueryable<User>> BuildSortFunction(IEnumerable<ISortOption> options) {
             if (options is null || !options.Any()) {
                 return null;
             }
-            //TODO: переписать .OrderBy(x => true) делает плохой SQL
-            var ordered = _dbContext.Users.OrderBy(x => true);
-            foreach (var opt in options) {
-                var column = opt.ColumnName.TrimToUpper();
-                switch (column) {
-                    case "NAME": {
-                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.Name) : ordered.ThenByDescending(m => m.Name);
+            return query => {
+                IOrderedQueryable<User> ordered = null;
+
+                foreach (var opt in options) {
+                    var column = opt.ColumnName.TrimToUpper();
+                    switch (column) {
+                        case "NAME": {
+                            if (ordered == null)
+                                ordered = opt.Type == SortType.Ascending ? query.OrderBy(m => m.Name) : query.OrderByDescending(m => m.Name);
+                            else
+                                ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.Name) : ordered.ThenByDescending(m => m.Name);
                             break;
                         }
-                    case "LOGIN": {
-                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.Login) : ordered.ThenByDescending(m => m.Login);
+                        case "LOGIN": {
+                            if (ordered == null)
+                                ordered = opt.Type == SortType.Ascending ? query.OrderBy(m => m.Login) : query.OrderByDescending(m => m.Login);
+                            else
+                                ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.Login) : ordered.ThenByDescending(m => m.Login);
                             break;
                         }
-                    case "EMAIL": {
-                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.Email) : ordered.ThenByDescending(m => m.Email);
+                        case "EMAIL": {
+                            if (ordered == null)
+                                ordered = opt.Type == SortType.Ascending ? query.OrderBy(m => m.Email) : query.OrderByDescending(m => m.Email);
+                            else
+                                ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.Email) : ordered.ThenByDescending(m => m.Email);
                             break;
                         }
-                    case "CHANGEDBY": {
-                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.ChangedBy) : ordered.ThenByDescending(m => m.ChangedBy);
+                        case "CHANGEDBY": {
+                            if (ordered == null)
+                                ordered = opt.Type == SortType.Ascending ? query.OrderBy(m => m.ChangedBy) : query.OrderByDescending(m => m.ChangedBy);
+                            else
+                                ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.ChangedBy) : ordered.ThenByDescending(m => m.ChangedBy);
                             break;
                         }
-                    default: {
-                            ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.DateChange) : ordered.ThenByDescending(m => m.DateChange);
+                        default: {
+                            if (ordered == null)
+                                ordered = opt.Type == SortType.Ascending ? query.OrderBy(m => m.DateChange) : query.OrderByDescending(m => m.DateChange);
+                            else
+                                ordered = opt.Type == SortType.Ascending ? ordered.ThenBy(m => m.DateChange) : ordered.ThenByDescending(m => m.DateChange);
                             break;
                         }
+                    }
                 }
-            }
-            return orb => ordered;
+
+                return ordered;
+            };
         }
         /// <summary>
-        /// Формирует предикат возвращаемого набора данных
+        /// Generates a predicate of the returned data
         /// </summary>
-        /// <param name="columnSelector"></param>
-        /// <returns></returns>
+        /// <param name="columnSelector">Property name</param>
+        /// <returns>Selector predicate</returns>
         private Expression<Func<User, string>> BuildSelectorPredicate(string columnSelector) {
             if (string.IsNullOrEmpty(columnSelector)) {
                 return null;
