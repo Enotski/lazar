@@ -1,27 +1,16 @@
 <template>
-  <nav
-    class="navbar d-flex fixed-top bg-light justify-content-between box-shadow mb-3 shadow p-3 py-2"
-  >
+  <nav class="navbar d-flex fixed-top bg-light justify-content-between box-shadow mb-3 shadow p-3 py-2">
     <div>
-      <router-link
-        to="/"
-        class="mdi mdi-waveform text-indigo bi me-2 fs-3 badge-ref"
-        ><span class="navbar-brand mb-0 h1 text-secondary fw-medium"
-          >DSP interactive articles</span
-        ></router-link
-      >
+      <router-link to="/" class="mdi mdi-waveform text-indigo bi me-2 fs-3 badge-ref"><span
+          class="navbar-brand mb-0 h1 text-secondary fw-medium">DSP interactive articles</span></router-link>
     </div>
     <div v-if="loggedIn">
       <div class="row">
         <div class="col-auto">
-          <router-link to="/users" class="nav nav-link text-secondary"
-            >Users</router-link
-          >
+          <router-link to="/users" class="nav nav-link text-secondary">Users</router-link>
         </div>
         <div class="col-auto">
-          <router-link to="/system-log" class="nav nav-link text-secondary"
-            >System log</router-link
-          >
+          <router-link to="/system-log" class="nav nav-link text-secondary">System log</router-link>
         </div>
       </div>
     </div>
@@ -39,43 +28,19 @@
             </template>
           </n-button>
           <n-modal v-model:show="showLoginModal">
-            <n-card
-              style="width: 800px"
-              title="Login / Register"
-              :bordered="false"
-              size="huge"
-              role="dialog"
-              aria-modal="true"
-            >
-              <n-form
-                ref="formRef"
-                inline
-                :label-width="80"
-                :model="formValue"
-                :rules="rules"
-                size="medium"
-              >
+            <n-card style="width: 800px" title="Login / Register" :bordered="false" size="huge" role="dialog"
+              aria-modal="true">
+              <n-form ref="formRef" inline :label-width="80" :model="formValue" :rules="rules" size="medium">
                 <n-form-item label="Login" path="login">
-                  <n-input
-                    v-model:value="formValue.login"
-                    placeholder="Input login"
-                  />
+                  <n-input v-model:value="formValue.login" placeholder="Input login" />
                 </n-form-item>
                 <div class="me-3" v-if="isRegisterForm">
                   <n-form-item label="Email" path="email">
-                    <n-input
-                      v-model:value="formValue.email"
-                      type="email"
-                      placeholder="Input email"
-                    />
+                    <n-input v-model:value="formValue.email" type="email" placeholder="Input email" />
                   </n-form-item>
                 </div>
                 <n-form-item label="Password" path="password">
-                  <n-input
-                    v-model:value="formValue.password"
-                    type="password"
-                    placeholder="Input Password"
-                  />
+                  <n-input v-model:value="formValue.password" type="password" placeholder="Input Password" />
                 </n-form-item>
                 <n-form-item>
                   <n-button @click="submit">Submit</n-button>
@@ -83,12 +48,8 @@
               </n-form>
               <template #footer>
                 <n-radio-group v-model:value="registerRadio">
-                  <n-radio-button
-                    v-for="item in registerFormRadioGroup"
-                    :key="item.key"
-                    :value="item.key"
-                    :label="item.label"
-                  />
+                  <n-radio-button v-for="item in registerFormRadioGroup" :key="item.key" :value="item.key"
+                    :label="item.label" />
                 </n-radio-group>
               </template>
             </n-card>
@@ -246,7 +207,7 @@ export default {
         onPositiveClick: () => {
           this.logOut();
         },
-        onNegativeClick: () => {},
+        onNegativeClick: () => { },
       });
     },
     async logOut() {

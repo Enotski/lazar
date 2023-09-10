@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="mt-auto footer fixed-bottom bg-light p-3 text-body-secondary footer-shadow"
-  >
+  <div class="mt-auto footer bg-light p-3 text-body-secondary footer-shadow">
     <div class="container-fluid text-secondary">
       <div class="row mr-row">
         <div class="row col-auto me-auto">
@@ -10,23 +8,13 @@
           </div>
         </div>
         <div class="row col-auto ms-auto align-center">
-          <div
-            class="col-auto d-content"
-            title="Original articles about digital signal processing"
-          >
-            <a
-              href="https://github.com/hukenovs/dsp-theory"
-              class="text-decoration-none text-reset fw-semibold"
-              ><n-icon><git-icon /></n-icon> Original articles</a
-            >
+          <div class="col-auto d-content" title="Original articles about digital signal processing">
+            <a href="https://github.com/hukenovs/dsp-theory"
+              class="text-decoration-none text-reset fw-semibold"><n-icon><git-icon /></n-icon> Original articles</a>
           </div>
           <div class="col d-content ml-3" title="My github">
-            <a
-              href="https://github.com/Enotski"
-              class="text-reset text-decoration-none fw-semibold"
-            >
-              <n-icon><git-icon /></n-icon>Enotski</a
-            >
+            <a href="https://github.com/Enotski" class="text-reset text-decoration-none fw-semibold">
+              <n-icon><git-icon /></n-icon>Enotski</a>
           </div>
         </div>
       </div>
@@ -50,7 +38,7 @@ export default {
       links: ["mdi-facebook", "mdi-twitter", "mdi-linkedin", "mdi-instagram"],
     };
   },
-  created() {},
+  created() { },
   watch: {},
   methods: {},
 };

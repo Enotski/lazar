@@ -27,30 +27,30 @@ import CorrelationPage from "./components/DspPages/CorrelationPage.vue";
 import MainContainer from "./components/MainComponents/MainContainer.vue";
 
 const routes = [
-  { path: "/", component: MainContainer },
-  { path: "/users", component: UsersPage },
-  { path: "/system-log", component: SystemLogPage },
-  { path: "/correlation", component: CorrelationPage },
-  { path: "/avg-spectrum", component: AvgSpectrumPage },
-  { path: "/farrow", component: FarrowPage },
-  { path: "/filter-banks", component: FilterBanksPage },
-  { path: "/filters", component: FiltersPage },
-  { path: "/fourier", component: FourierPage },
-  { path: "/goertzel", component: GoertzelPage },
-  { path: "/mel", component: MelSpectrumPage },
-  { path: "/mfcc", component: MfccPage },
-  { path: "/modulation", component: ModulationPage },
-  { path: "/noise", component: NoisePage },
-  { path: "/resampling", component: ResamplingPage },
-  { path: "/signals", component: SignalsPage },
-  { path: "/spectrum", component: SpectrumPage },
-  { path: "/wavelets", component: WaveletsPage },
-  { path: "/windows", component: WindowsPage },
+    { path: "/", component: MainContainer },
+    { path: "/users", component: UsersPage },
+    { path: "/system-log", component: SystemLogPage },
+    { path: "/correlation", component: CorrelationPage },
+    { path: "/avg-spectrum", component: AvgSpectrumPage },
+    { path: "/farrow", component: FarrowPage },
+    { path: "/filter-banks", component: FilterBanksPage },
+    { path: "/filters", component: FiltersPage },
+    { path: "/fourier", component: FourierPage },
+    { path: "/goertzel", component: GoertzelPage },
+    { path: "/mel", component: MelSpectrumPage },
+    { path: "/mfcc", component: MfccPage },
+    { path: "/modulation", component: ModulationPage },
+    { path: "/noise", component: NoisePage },
+    { path: "/resampling", component: ResamplingPage },
+    { path: "/signals", component: SignalsPage },
+    { path: "/spectrum", component: SpectrumPage },
+    { path: "/wavelets", component: WaveletsPage },
+    { path: "/windows", component: WindowsPage },
 ];
 
 const router = createRouter({
-  routes: routes,
-  history: createWebHistory(),
+    routes: routes,
+    history: createWebHistory(),
 });
 
 createApp(App).use(router).mount("#app");
