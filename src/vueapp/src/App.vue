@@ -21,7 +21,7 @@ export default {
     NavPannel,
     FooterPannel,
     NDialogProvider,
-    NMessageProvider,
+    NMessageProvider
   },
 };
 </script>
