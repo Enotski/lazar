@@ -1,13 +1,24 @@
 <template>
-  <div class="container-fluid content-container">Correlation</div>
+  <div class="container-fluid dsp-content-container">
+    <DspTheoryDrawer :equations="equations"></DspTheoryDrawer>
+  </div>
 </template>
 
 <script>
+import DspTheoryDrawer from "./DspTheoryDrawer.vue";
+import { TheoryEquations as equation } from "@/content/theoryEquations";
+
 export default {
+  components: {
+    DspTheoryDrawer,
+  },
   data() {
-    return {};
+    return {
+      equations: equation.e_7,
+    };
   },
   computed: {},
+  mounted() {},
   methods: {},
 };
 </script>

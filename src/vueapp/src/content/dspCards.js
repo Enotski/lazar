@@ -1,0 +1,98 @@
+export const DspCards = [
+  {
+    to: "/signals",
+    title: "Signals",
+    src: "1.png",
+    text: "Signals, analog, digital, Z-transform",
+  },
+  {
+    to: "/fourier",
+    title: "Fourier Transform",
+    src: "2.png",
+    text: "Discrete Fourier Transform. FFT, IFFT",
+  },
+  {
+    to: "/correlation",
+    title: "Correlation",
+    src: "3.png",
+    text: "Correlation, convolution: linear / circular / fast",
+  },
+  {
+    to: "/noise",
+    title: "Noise",
+    src: "4.png",
+    text: "Random signals AWGN, Noise",
+  },
+  {
+    to: "/modulation",
+    title: "Modulation",
+    src: "5.png",
+    text: "Modulation. AM-, FM-, Chirp signals",
+  },
+  {
+    to: "/filters",
+    title: "Filters",
+    src: "6.png",
+    text: "IIR / FIR filters",
+  },
+  {
+    to: "/windows",
+    title: "Windows",
+    src: "7.png",
+    text: "Windows, filtration: Hann, Blackman, Flattop, Kaiser etc.",
+  },
+  {
+    to: "/resampling",
+    title: "Resampling",
+    src: "8.png",
+    text: "CIC filters, decimation, interpolation, moving average",
+  },
+  {
+    to: "/spectrum",
+    title: "Welch's Method",
+    src: "9.png",
+    text: "Spectrum analysis: Welch's Method",
+  },
+  {
+    to: "/avg-spectrum",
+    title: "Average spectrum",
+    src: "10.png",
+    text: "Spectrum analysis: average spectrum",
+  },
+  {
+    to: "/filter-banks",
+    title: "Filter banks",
+    src: "11.png",
+    text: "Filter banks for audio processing",
+  },
+  {
+    to: "/farrow",
+    title: "Farrow",
+    src: "12.png",
+    text: "Filter Farrow",
+  },
+  {
+    to: "/mel",
+    title: "Mel-spectrum",
+    src: "13.png",
+    text: "Mel-spectrum",
+  },
+  {
+    to: "/mfcc",
+    title: "MFCC",
+    src: "14.png",
+    text: "Mel-frequency cepstrum",
+  },
+  {
+    to: "/wavelets",
+    title: "Wavelets",
+    src: "15.png",
+    text: "Wavelets processings",
+  },
+  {
+    to: "/goertzel",
+    title: "Goertzel",
+    src: "16.png",
+    text: "Goertzel alghoritm",
+  },
+];
