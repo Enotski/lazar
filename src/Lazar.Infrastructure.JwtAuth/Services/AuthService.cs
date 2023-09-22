@@ -9,8 +9,7 @@ using Lazar.Infrastructure.JwtAuth.Models.Dto;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
 
-namespace Lazar.Infrastructure.JwtAuth.Services
-{
+namespace Lazar.Infrastructure.JwtAuth.Services {
     /// <summary>
     /// Authentication service
     /// </summary>
@@ -65,9 +64,9 @@ namespace Lazar.Infrastructure.JwtAuth.Services
                 var isExist = await _repositoryManager.UserRepository.LoginExistsAsync(model.Login);
                 if (!isExist)
                     throw new Exception("User not found");
-
+                var passwordHelper = new PasswordHelper();
                 var user = await _repositoryManager.UserRepository.GetByLoginAsync(model.Login);
-                if (user.Password != model.Password)
+                if (!passwordHelper.VerifyPasword(model.Password, user.Password))
                     throw new Exception("Invalid password");
 
                 var claims = GetClaims(user);

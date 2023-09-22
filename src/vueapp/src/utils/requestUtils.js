@@ -1,4 +1,4 @@
-export const apiUrl = "https://localhost:7188/api";
+export const apiUrl = "http://localhost:8080/api";
 import authHeader from "@/services/authHeader";
 import axios from "axios";
 import authService from "@/services/authService";

@@ -91,10 +91,12 @@ namespace Lazar.Presentation.WebApi {
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment()) {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+            //if (app.Environment.IsDevelopment()) {
+            //    app.UseSwagger();
+            //    app.UseSwaggerUI();
+            //}
+            app.UseSwagger();
+            app.UseSwaggerUI();
             //app.UseCookiePolicy(cookiePolicyOptions);
             app.UseHttpsRedirection();
             app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
