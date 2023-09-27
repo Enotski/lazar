@@ -12,12 +12,12 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
     /// <summary>
     /// Repository of role
     /// </summary>
-    public class RoleRepository : NameRepository<Role>, IRoleRepository {
+    public class RolesRepository : NameRepository<Role>, IRolesRepository {
         /// <summary>
         /// Main constructor
         /// </summary>
         /// <param name="dbContext">Ef context</param>
-        public RoleRepository(LazarContext dbContext) : base(dbContext) { }
+        public RolesRepository(LazarContext dbContext) : base(dbContext) { }
         #region private
         /// <summary>
         /// Specifies additional conditions for the selection
@@ -178,27 +178,6 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
                 }
 
                 return await BuildQuery(filter, ordered, paginationOption).ToListAsync();
-            } catch {
-                throw;
-            }
-        }
-        /// <summary>
-        /// Returns a list of unique values ​​in a specific column
-        /// </summary>
-        /// <param name="searchOptions">Filtration</param>
-        /// <param name="sortOptions">Sorting</param> 
-        /// <param name="paginationOption">Pagination</param> 
-        /// <param name="columnSelector">Name of specific column</param> 
-        /// <returns>List of entities specific property values</returns>
-        public async Task<IEnumerable<string>> GetRecordsBySelectorAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption, string columnSelector) {
-            try {
-                var selector = BuildSelectorPredicate(columnSelector);
-                if (selector is null) {
-                    return new List<string>();
-                }
-                var filter = BuildWherePredicate(searchOptions);
-                var ordered = BuildSortFunction(sortOptions);
-                return await BuildQuery(filter, ordered, paginationOption).Select(selector).Distinct().ToListAsync();
             } catch {
                 throw;
             }

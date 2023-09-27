@@ -7,7 +7,7 @@ namespace Lazar.Domain.Interfaces.Repositories.Administration {
     /// <summary>
     /// Users repository
     /// </summary>
-    public interface IUserRepository : INameRepository<User>, ILoginRepository<User> {
+    public interface IUsersRepository : INameRepository<User>, ILoginRepository<User> {
         /// <summary>
         /// Operation Permissions
         /// </summary>
@@ -46,15 +46,6 @@ namespace Lazar.Domain.Interfaces.Repositories.Administration {
         /// <param name="ids">List of Keys</param>
         /// <returns>List of entities selector models</returns>
         Task<IEnumerable<UserSelectorModel>> GetRecordsAsync(IEnumerable<Guid> ids);
-        /// <summary>
-        /// Returns a list of unique values ​​in a specific column
-        /// </summary>
-        /// <param name="searchOptions">Filtration</param>
-        /// <param name="sortOptions">Sorting</param> 
-        /// <param name="paginationOption">Pagination</param> 
-        /// <param name="columnSelector">Name of specific column</param> 
-        /// <returns>List of entities specific property values</returns>
-        Task<IEnumerable<string>> GetRecordsBySelectorAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption, string columnSelector);
         /// <summary>
         /// Return with roles include
         /// </summary>

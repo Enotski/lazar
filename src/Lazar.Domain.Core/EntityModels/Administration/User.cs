@@ -20,7 +20,7 @@ namespace Lazar.Domain.Core.Models.Administration {
             Login = login;
             Email = email;
             Password = password;
-            Roles = roles.ToList();
+            Roles = roles?.ToList();
             base.Update(name, changedBy);
         }
         public void Update(IEnumerable<Role> roles, string changedBy) {

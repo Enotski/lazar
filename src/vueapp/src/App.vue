@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column min-vh-100">
+  <div class="d-flex flex-column min-vh-100 custom-font-family">
     <n-message-provider>
       <n-dialog-provider>
         <NavPannel />
@@ -21,7 +21,7 @@ export default {
     NavPannel,
     FooterPannel,
     NDialogProvider,
-    NMessageProvider
+    NMessageProvider,
   },
 };
 </script>

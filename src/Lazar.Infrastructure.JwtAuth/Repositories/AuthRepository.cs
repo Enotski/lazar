@@ -8,8 +8,8 @@ namespace Lazar.Infrastructure.JwtAuth.Repositories {
     /// <summary>
     /// Authentication repository
     /// </summary>
-    public class AuthReppository : BaseRepository<AuthModel>, IAuthRepository {
-        public AuthReppository(LazarContext context) : base(context) {
+    public class AuthRepository : BaseRepository<AuthModel>, IAuthRepository {
+        public AuthRepository(LazarContext context) : base(context) {
         }
         /// <summary>
         /// Get model by login

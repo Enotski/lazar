@@ -7,7 +7,7 @@ namespace Lazar.Srevices.Iterfaces.Logging {
     /// <summary>
     /// Service of system events logging
     /// </summary>
-    public interface ILoggingervice : ILogService {
+    public interface ISystemLogService : ILogService {
         /// <summary>
         /// System event records for presentation layer
         /// </summary>

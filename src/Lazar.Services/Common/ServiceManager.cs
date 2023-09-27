@@ -14,8 +14,8 @@ namespace Lazar.Services.Common {
         /// <summary>
         /// Service of roles
         /// </summary>
-        public IRoleService RoleService => _lazyRoleService.Value;
-        private Lazy<IRoleService> _lazyRoleService;
+        public IRolesService RoleService => _lazyRoleService.Value;
+        private Lazy<IRolesService> _lazyRoleService;
         /// <summary>
         /// Service of users
         /// </summary>
@@ -24,13 +24,13 @@ namespace Lazar.Services.Common {
         /// <summary>
         /// Service of system events logging
         /// </summary>
-        public ILoggingervice LoggingService => _lazyLoggingervice.Value;
-        private Lazy<ILoggingervice> _lazyLoggingervice;
+        public ISystemLogService LoggingService => _lazyLoggingervice.Value;
+        private Lazy<ISystemLogService> _lazyLoggingervice;
 
         public ServiceManager(IRepositoryManager repositoryManager, IModelMapper mapper) {
-            _lazyRoleService = new Lazy<IRoleService>(() => new RoleService(repositoryManager, mapper));
+            _lazyRoleService = new Lazy<IRolesService>(() => new RolesService(repositoryManager, mapper));
             _lazyUsersService = new Lazy<IUsersService>(() => new UsersService(repositoryManager, mapper));
-            _lazyLoggingervice = new Lazy<ILoggingervice>(() => new Loggingervice(repositoryManager, mapper));
+            _lazyLoggingervice = new Lazy<ISystemLogService>(() => new SystemLogService(repositoryManager, mapper));
         }
     }
 }

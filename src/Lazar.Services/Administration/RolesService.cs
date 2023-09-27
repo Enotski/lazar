@@ -15,11 +15,11 @@ namespace Lazar.Services.Administration {
     /// <summary>
     /// Service of roles
     /// </summary>
-    public class RoleService : IRoleService {
+    public class RolesService : IRolesService {
         private readonly IRepositoryManager _repositoryManager;
         private readonly IModelMapper _mapper;
 
-        public RoleService(IRepositoryManager repositoryManager, IModelMapper mapper) {
+        public RolesService(IRepositoryManager repositoryManager, IModelMapper mapper) {
             _repositoryManager = repositoryManager ?? throw new ArgumentNullException(nameof(repositoryManager));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }

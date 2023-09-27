@@ -14,12 +14,12 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
     /// <summary>
     /// Repository of user
     /// </summary>
-    public class UserRepository : NameRepository<User>, IUserRepository {
+    public class UsersRepository : NameRepository<User>, IUsersRepository {
         /// <summary>
         /// Main constructor
         /// </summary>
         /// <param name="dbContext">Ef context</param>
-        public UserRepository(LazarContext context) : base(context) { }
+        public UsersRepository(LazarContext context) : base(context) { }
 
         #region private
         /// <summary>
@@ -226,27 +226,6 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
             } catch { throw; }
         }
         /// <summary>
-        /// Returns a list of unique values ​​in a specific column
-        /// </summary>
-        /// <param name="searchOptions">Filtration</param>
-        /// <param name="sortOptions">Sorting</param> 
-        /// <param name="paginationOption">Pagination</param> 
-        /// <param name="columnSelector">Name of specific column</param> 
-        /// <returns>List of entities specific property values</returns>
-        public async Task<IEnumerable<string>> GetRecordsBySelectorAsync(IEnumerable<ISearchOption> searchOptions, IEnumerable<ISortOption> sortOptions, IPaginatedOption paginationOption, string columnSelector) {
-            try {
-                var selector = BuildSelectorPredicate(columnSelector);
-                if (selector is null) {
-                    return new List<string>();
-                }
-                var filter = BuildWherePredicate(searchOptions);
-                var ordered = BuildSortFunction(sortOptions);
-                return await BuildQuery(filter, ordered, paginationOption).Select(selector).Distinct().ToListAsync();
-            } catch {
-                throw;
-            }
-        }
-        /// <summary>
         /// Operation Permissions
         /// </summary>
         /// <param name="login">Login of user</param>
@@ -254,7 +233,7 @@ namespace Lazar.Infrastructure.Data.Ef.Repositories.Administration {
         public async Task<bool> PermissionToPerformOperation(string login) {
             try {
                 return true;
-            } catch (Exception ex) {
+            } catch {
                 throw;
             }
         }

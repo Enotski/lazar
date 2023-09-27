@@ -20,7 +20,7 @@ namespace Lazar.Infrastructure.JwtAuth.Common.Auth {
 
         public AuthRepositoryManager(LazarContext context) {
             _lazyTokenRepository = new Lazy<ITokenRepository>(() => new TokenRepository());
-            _lazyAuthRepository = new Lazy<IAuthRepository>(() => new AuthReppository(context));
+            _lazyAuthRepository = new Lazy<IAuthRepository>(() => new AuthRepository(context));
         }
     }
 }

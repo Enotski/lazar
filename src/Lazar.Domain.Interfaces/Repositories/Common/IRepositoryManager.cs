@@ -9,11 +9,11 @@ namespace Lazar.Domain.Interfaces.Repositories.Common {
         /// <summary>
         /// Roles repository
         /// </summary>
-        IRoleRepository RoleRepository { get; }
+        IRolesRepository RoleRepository { get; }
         /// <summary>
         /// Users repository
         /// </summary>
-        IUserRepository UserRepository { get; }
+        IUsersRepository UserRepository { get; }
         /// <summary>
         /// System logs repository
         /// </summary>

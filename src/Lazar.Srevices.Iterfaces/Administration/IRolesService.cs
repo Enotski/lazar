@@ -8,7 +8,7 @@ namespace Lazar.Srevices.Iterfaces.Administration {
     /// <summary>
     /// Service of roles
     /// </summary>
-    public interface IRoleService : IBaseService {
+    public interface IRolesService : IBaseService {
         /// <summary>
         /// Records for presentation layer
         /// </summary>

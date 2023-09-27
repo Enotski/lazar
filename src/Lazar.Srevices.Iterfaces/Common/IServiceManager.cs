@@ -9,7 +9,7 @@ namespace Lazar.Srevices.Iterfaces.Common {
         /// <summary>
         /// Service of roles
         /// </summary>
-        IRoleService RoleService { get; }
+        IRolesService RoleService { get; }
         /// <summary>
         /// Service of users
         /// </summary>
@@ -17,6 +17,6 @@ namespace Lazar.Srevices.Iterfaces.Common {
         /// <summary>
         /// Service of system events logging
         /// </summary>
-        ILoggingervice LoggingService { get; }
+        ISystemLogService LoggingService { get; }
     }
 }

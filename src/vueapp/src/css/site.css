@@ -13,3 +13,12 @@
     overflow-y: scroll;
     max-height: 72vh;
 }
+
+.custom-font-family {
+    font-family: dancing-font;
+}
+
+@font-face {
+    font-family: 'dancing-font';
+    src: url('~@/assets/fonts/DancingScript-Regular.ttf') format('truetype');
+}

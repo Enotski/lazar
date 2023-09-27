@@ -12,12 +12,12 @@ namespace Lazar.Services.Logging {
     /// <summary>
     /// Service of system events logging
     /// </summary>
-    public class Loggingervice : ILoggingervice
+    public class SystemLogService : ISystemLogService
     {
         private readonly IRepositoryManager _repositoryManager;
         private readonly IModelMapper _mapper;
 
-        public Loggingervice(IRepositoryManager repositoryManager, IModelMapper mapper) {
+        public SystemLogService(IRepositoryManager repositoryManager, IModelMapper mapper) {
             _repositoryManager = repositoryManager ?? throw new ArgumentNullException(nameof(repositoryManager));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
